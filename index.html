@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Antony Britto C J — DevOps Architect, Cloud Architect, and Platform Engineering leader with 12+ years of cloud expertise.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Antony Britto C J | DevOps & Cloud Architect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="#hero" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#expertise">Expertise</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="hero" id="hero">
+    <div class="hero__bg"></div>
+    <div class="container hero__content">
+      <div class="hero__text">
+        <p class="hero__greeting">Hello, I'm</p>
+        <h1 class="hero__name">Antony Britto C J</h1>
+        <p class="hero__title">
+          <span class="hero__title-line">DevOps Architect</span>
+          <span class="hero__title-sep">·</span>
+          <span class="hero__title-line">Cloud Architect</span>
+          <span class="hero__title-sep">·</span>
+          <span class="hero__title-line">Platform Engineering</span>
+        </p>
+        <p class="hero__subtitle">Designing secure, scalable, and resilient cloud-native platforms that accelerate business transformation.</p>
+        <div class="hero__actions">
+          <a href="#contact" class="btn btn--primary">Get in Touch</a>
+          <a href="https://www.linkedin.com/in/brittocj/" target="_blank" rel="noopener noreferrer" class="btn btn--outline">LinkedIn</a>
+        </div>
+        <div class="hero__stats">
+          <div class="hero__stat">
+            <span class="hero__stat-value">12+</span>
+            <span class="hero__stat-label">Years Cloud Expertise</span>
+          </div>
+          <div class="hero__stat">
+            <span class="hero__stat-value">230+</span>
+            <span class="hero__stat-label">Servers Migrated</span>
+          </div>
+          <div class="hero__stat">
+            <span class="hero__stat-value">40–60%</span>
+            <span class="hero__stat-label">Cost Reduction</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero__image-wrap">
+        <div class="hero__image-ring"></div>
+        <img src="assets/profile.png" alt="Antony Britto C J" class="hero__image" width="320" height="320">
+      </div>
+    </div>
+    <a href="#about" class="hero__scroll" aria-label="Scroll to about section">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </a>
+  </header>
+
+  <main>
+    <section class="section about" id="about">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__tag">About Me</span>
+          <h2 class="section__title">Building the Future of Cloud Infrastructure</h2>
+        </div>
+        <div class="about__grid">
+          <div class="about__content">
+            <p class="about__lead">DevOps & Cloud Architect specializing in cloud architecture, platform engineering, Kubernetes, DevSecOps, and infrastructure modernization.</p>
+            <p>With over 26 years in IT and 12+ years of dedicated cloud expertise, I design and deliver enterprise-scale multi-cloud solutions across AWS, Azure, GCP, and OCI. I lead engineering teams, drive cloud migrations, and implement Infrastructure as Code, CI/CD automation, and AI-enabled platforms.</p>
+            <p>Passionate about building secure, scalable, and resilient cloud-native platforms — bridging the gap between development and operations to accelerate business transformation.</p>
+            <div class="about__info">
+              <div class="about__info-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Kochi, Kerala, India</span>
+              </div>
+              <div class="about__info-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <a href="mailto:hello@brittocj.com">hello@brittocj.com</a>
+              </div>
+              <div class="about__info-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                <a href="tel:+918050582288">+91 80505 82288</a>
+              </div>
+            </div>
+          </div>
+          <div class="about__highlights">
+            <h3>Career Highlights</h3>
+            <ul class="highlights__list">
+              <li>Led cloud and platform engineering teams of 5–8 engineers</li>
+              <li>Designed enterprise multi-cloud solutions across AWS, Azure, GCP & OCI</li>
+              <li>Migrated 200+ production servers with minimal downtime</li>
+              <li>Delivered Kubernetes platforms and standardized cloud-native deployments</li>
+              <li>Reduced infrastructure costs by 40–60% through governance and automation</li>
+              <li>Implemented IaC, GitOps, CI/CD and DevSecOps practices</li>
+              <li>Built AI-enabled platforms using RAG, LangChain, OpenAI and Rasa</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section expertise" id="expertise">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__tag">Expertise</span>
+          <h2 class="section__title">Core Skills & Technologies</h2>
+        </div>
+        <div class="expertise__grid">
+          <div class="expertise__card">
+            <div class="expertise__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>
+            </div>
+            <h3>Cloud Architecture</h3>
+            <p>AWS, Azure, GCP, Oracle Cloud Infrastructure — multi-cloud design, migration, and governance.</p>
+            <div class="expertise__tags">
+              <span>AWS</span><span>Azure</span><span>GCP</span><span>OCI</span>
+            </div>
+          </div>
+          <div class="expertise__card">
+            <div class="expertise__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            </div>
+            <h3>Platform Engineering</h3>
+            <p>Kubernetes, containers, GitOps, and standardized cloud-native deployment platforms.</p>
+            <div class="expertise__tags">
+              <span>Kubernetes</span><span>Docker</span><span>Helm</span><span>OpenShift</span>
+            </div>
+          </div>
+          <div class="expertise__card">
+            <div class="expertise__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <h3>DevSecOps & CI/CD</h3>
+            <p>Automated pipelines, security scanning, and seamless development-to-production workflows.</p>
+            <div class="expertise__tags">
+              <span>Jenkins</span><span>GitLab CI</span><span>GitHub Actions</span><span>Azure DevOps</span>
+            </div>
+          </div>
+          <div class="expertise__card">
+            <div class="expertise__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+            </div>
+            <h3>Infrastructure as Code</h3>
+            <p>Declarative infrastructure management with Terraform, CloudFormation, Ansible, and Bicep.</p>
+            <div class="expertise__tags">
+              <span>Terraform</span><span>CloudFormation</span><span>Ansible</span><span>Bicep</span>
+            </div>
+          </div>
+          <div class="expertise__card">
+            <div class="expertise__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <h3>Observability & SRE</h3>
+            <p>Monitoring, logging, tracing, and site reliability engineering for mission-critical systems.</p>
+            <div class="expertise__tags">
+              <span>Prometheus</span><span>Grafana</span><span>ELK</span><span>OpenTelemetry</span>
+            </div>
+          </div>
+          <div class="expertise__card">
+            <div class="expertise__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a4 4 0 014 4c0 1.95-1.4 3.58-3.25 3.93L12 22l-.75-12.07A4.001 4.001 0 0112 2z"/><path d="M8.5 8.5L2 15M15.5 8.5L22 15"/></svg>
+            </div>
+            <h3>AI Platform Engineering</h3>
+            <p>RAG pipelines, AI agents, conversational AI, and generative AI platform integration.</p>
+            <div class="expertise__tags">
+              <span>LangChain</span><span>OpenAI</span><span>Rasa</span><span>Vector DBs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="skills__categories">
+          <div class="skills__category">
+            <h4>Languages & Scripting</h4>
+            <div class="skills__list">
+              <span>Python</span><span>Go</span><span>Java</span><span>JavaScript</span><span>TypeScript</span><span>Bash</span><span>Perl</span><span>C#</span><span>PHP</span>
+            </div>
+          </div>
+          <div class="skills__category">
+            <h4>Frameworks & Tools</h4>
+            <div class="skills__list">
+              <span>FastAPI</span><span>Flask</span><span>Django</span><span>Spring Boot</span><span>React</span><span>Angular</span><span>Terraform</span><span>Vault</span>
+            </div>
+          </div>
+          <div class="skills__category">
+            <h4>Databases & Messaging</h4>
+            <div class="skills__list">
+              <span>PostgreSQL</span><span>MongoDB</span><span>Redis</span><span>Neo4j</span><span>DynamoDB</span><span>Kafka</span><span>Elasticsearch</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section experience" id="experience">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__tag">Experience</span>
+          <h2 class="section__title">Professional Journey</h2>
+        </div>
+        <div class="timeline">
+          <article class="timeline__item">
+            <div class="timeline__marker"></div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <div>
+                  <h3>Lead Solutions Architect</h3>
+                  <p class="timeline__company">VF Interactive · Kochi</p>
+                </div>
+                <span class="timeline__date">2016 – Present</span>
+              </div>
+              <p>Lead cloud architecture, DevOps transformation, platform engineering, and AI platform initiatives across multi-cloud environments.</p>
+              <ul>
+                <li>Architect multi-cloud environments across AWS, Azure, GCP, and OCI</li>
+                <li>Drive Kubernetes adoption, cloud migration, and infrastructure modernization</li>
+                <li>Establish DevSecOps, CI/CD, GitOps, and Infrastructure as Code standards</li>
+                <li>Develop AI/ML solutions including conversational AI platforms using Rasa</li>
+                <li>Provide technical leadership, presales support, and architecture governance</li>
+              </ul>
+            </div>
+          </article>
+          <article class="timeline__item">
+            <div class="timeline__marker"></div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <div>
+                  <h3>DevOps Engineer</h3>
+                  <p class="timeline__company">NTT Emerio · Singapore</p>
+                </div>
+                <span class="timeline__date">2015 – 2016</span>
+              </div>
+              <p>Designed and developed a security appliance with a team of 12, enhancing network security solutions.</p>
+              <ul>
+                <li>Customized Linux kernel and rebuilt base OS for improved stability</li>
+                <li>Developed automated deployment scripts, reducing deployment times by 40%</li>
+                <li>Integrated security best practices into DevOps workflows</li>
+              </ul>
+            </div>
+          </article>
+          <article class="timeline__item">
+            <div class="timeline__marker"></div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <div>
+                  <h3>Senior Solutions Architect</h3>
+                  <p class="timeline__company">VF Interactive · Kochi</p>
+                </div>
+                <span class="timeline__date">2014 – 2015</span>
+              </div>
+              <p>Led a technical team in solving complex business problems with cloud-native solutions.</p>
+              <ul>
+                <li>Developed Python web applications using monolithic and microservices architectures</li>
+                <li>Implemented Docker and Kubernetes for standardized deployment processes</li>
+                <li>Mentored junior engineers and conducted code reviews</li>
+              </ul>
+            </div>
+          </article>
+          <article class="timeline__item">
+            <div class="timeline__marker"></div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <div>
+                  <h3>Linux DevOps Engineer</h3>
+                  <p class="timeline__company">IBM India · Chennai</p>
+                </div>
+                <span class="timeline__date">2013 – 2014</span>
+              </div>
+              <p>Provided Level 3 support for Linux systems following ITIL, Six Sigma, and Lean practices.</p>
+              <ul>
+                <li>Configured and maintained RHEL servers and Satellite server for patch management</li>
+                <li>Automated routine tasks using Bash, Python, and Perl scripting</li>
+              </ul>
+            </div>
+          </article>
+          <article class="timeline__item">
+            <div class="timeline__marker"></div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <div>
+                  <h3>Linux/AWS DevOps Engineer</h3>
+                  <p class="timeline__company">Manorama Online · Kottayam</p>
+                </div>
+                <span class="timeline__date">2012</span>
+              </div>
+              <p>Designed and implemented AWS cloud architecture for web servers and managed production infrastructure.</p>
+              <ul>
+                <li>Administered Amazon cloud services and collaborated with Akamai CDN team</li>
+                <li>Managed production Linux and Windows servers including Apache, Nginx, and DNS</li>
+              </ul>
+            </div>
+          </article>
+          <article class="timeline__item">
+            <div class="timeline__marker"></div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <div>
+                  <h3>Technology Consultant</h3>
+                  <p class="timeline__company">McCann Erickson India · Chennai</p>
+                </div>
+                <span class="timeline__date">2008 – 2011</span>
+              </div>
+              <p>Resolved IT problems in heterogeneous environments and led technology migration projects.</p>
+            </div>
+          </article>
+          <article class="timeline__item">
+            <div class="timeline__marker"></div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <div>
+                  <h3>System Administrator</h3>
+                  <p class="timeline__company">Fullmoon Advertising · Kochi</p>
+                </div>
+                <span class="timeline__date">2004 – 2008</span>
+              </div>
+              <p>Managed Linux and Windows installations, implemented proxy server with firewall, and provided technical support.</p>
+            </div>
+          </article>
+          <article class="timeline__item">
+            <div class="timeline__marker"></div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <div>
+                  <h3>Technical Support Engineer</h3>
+                  <p class="timeline__company">Focuz Computers · Kochi</p>
+                </div>
+                <span class="timeline__date">1999 – 2004</span>
+              </div>
+              <p>Managed Linux and Windows installations, provided hardware troubleshooting, and conducted training programs.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section projects" id="projects">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__tag">Projects</span>
+          <h2 class="section__title">Key Initiatives</h2>
+        </div>
+        <div class="projects__grid">
+          <article class="project__card">
+            <div class="project__number">01</div>
+            <h3>Sovereign Edge Cloud Appliance</h3>
+            <p>Designed a sovereign edge cloud solution enabling secure, compliant cloud workloads at the edge with full data residency control.</p>
+            <div class="project__tags">
+              <span>Edge Computing</span><span>Multi-Cloud</span><span>Security</span>
+            </div>
+          </article>
+          <article class="project__card">
+            <div class="project__number">02</div>
+            <h3>Agentic DevOps Automation Platform</h3>
+            <p>Built an AI-powered DevOps automation platform leveraging agentic workflows to streamline infrastructure operations and deployments.</p>
+            <div class="project__tags">
+              <span>AI Agents</span><span>DevOps</span><span>Automation</span>
+            </div>
+          </article>
+          <article class="project__card">
+            <div class="project__number">03</div>
+            <h3>Enterprise AI Chatbot Platform</h3>
+            <p>Developed a conversational AI platform using Rasa, LangChain, and RAG pipelines for enterprise knowledge management and customer support.</p>
+            <div class="project__tags">
+              <span>RAG</span><span>LangChain</span><span>Rasa</span>
+            </div>
+          </article>
+          <article class="project__card">
+            <div class="project__number">04</div>
+            <h3>Multi-Cloud Marketplace Platform</h3>
+            <p>Architected a unified marketplace platform spanning AWS, Azure, GCP, and OCI with standardized deployment and governance.</p>
+            <div class="project__tags">
+              <span>AWS</span><span>Azure</span><span>GCP</span><span>OCI</span>
+            </div>
+          </article>
+          <article class="project__card">
+            <div class="project__number">05</div>
+            <h3>Large-Scale Cloud Migration</h3>
+            <p>Led migration of 200+ production servers and enterprise workloads across cloud platforms with minimal downtime and zero data loss.</p>
+            <div class="project__tags">
+              <span>Migration</span><span>AWS</span><span>Azure</span>
+            </div>
+          </article>
+          <article class="project__card">
+            <div class="project__number">06</div>
+            <h3>Enterprise Kubernetes Modernization</h3>
+            <p>Delivered standardized Kubernetes platforms with GitOps workflows, enabling cloud-native deployments at enterprise scale.</p>
+            <div class="project__tags">
+              <span>Kubernetes</span><span>GitOps</span><span>Helm</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section certifications" id="certifications">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__tag">Credentials</span>
+          <h2 class="section__title">Certifications & Education</h2>
+        </div>
+        <div class="certs__grid">
+          <div class="certs__section">
+            <h3>Certifications</h3>
+            <ul class="certs__list">
+              <li>
+                <span class="certs__badge">IBM</span>
+                <div>
+                  <strong>IBM SkillsBuild AI Fundamentals</strong>
+                  <span>2026</span>
+                </div>
+              </li>
+              <li>
+                <span class="certs__badge">IBM</span>
+                <div>
+                  <strong>IBM AI Literacy</strong>
+                  <span>2026</span>
+                </div>
+              </li>
+              <li>
+                <span class="certs__badge">IBM</span>
+                <div>
+                  <strong>IBM Cybersecurity Fundamentals</strong>
+                  <span>2026</span>
+                </div>
+              </li>
+              <li>
+                <span class="certs__badge">GCP</span>
+                <div>
+                  <strong>Google Cloud Gemini & Imagen</strong>
+                  <span>2025</span>
+                </div>
+              </li>
+              <li>
+                <span class="certs__badge">AWS</span>
+                <div>
+                  <strong>AWS Partner Accreditations</strong>
+                  <span>2021</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="certs__section">
+            <h3>Education</h3>
+            <ul class="certs__list">
+              <li>
+                <span class="certs__badge edu">CS</span>
+                <div>
+                  <strong>AMIETE (B.Tech Equivalent)</strong>
+                  <span>Computer Science & Engineering</span>
+                </div>
+              </li>
+              <li>
+                <span class="certs__badge edu">Dip</span>
+                <div>
+                  <strong>Diploma in Electronics and Computer Hardware Technology</strong>
+                  <span>72%</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact" id="contact">
+      <div class="container">
+        <div class="contact__wrapper">
+          <div class="contact__text">
+            <span class="section__tag">Contact</span>
+            <h2 class="section__title">Let's Build Something Great</h2>
+            <p>Whether you're looking for cloud architecture expertise, platform engineering leadership, or AI-enabled infrastructure — I'd love to connect.</p>
+            <div class="contact__links">
+              <a href="mailto:hello@brittocj.com" class="contact__link">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                hello@brittocj.com
+              </a>
+              <a href="tel:+918050582288" class="contact__link">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                +91 80505 82288
+              </a>
+              <a href="https://www.linkedin.com/in/brittocj/" target="_blank" rel="noopener noreferrer" class="contact__link">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 114.127 0 2.063 2.063 0 01-2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                linkedin.com/in/brittocj
+              </a>
+            </div>
+          </div>
+          <form class="contact__form" id="contactForm">
+            <div class="form__group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required placeholder="Your name">
+            </div>
+            <div class="form__group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required placeholder="your@email.com">
+            </div>
+            <div class="form__group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="4" required placeholder="Tell me about your project..."></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary btn--full">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>&copy; 2026 Antony Britto C J. All rights reserved.</p>
+      <p class="footer__tagline">DevOps Architect · Cloud Architect · Platform Engineering</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
