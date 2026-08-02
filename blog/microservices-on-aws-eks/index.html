@@ -35,6 +35,10 @@
   <section class="blog-post">
     <div class="container">
       <article class="blog-content">
+        <figure class="blog-featured-image">
+          <img src="../../assets/aws-eks-microservices.png" alt="Microservices architecture on Amazon Elastic Kubernetes Service" loading="lazy">
+          <figcaption>Reference architecture: Amazon EKS with ALB ingress, ECR, and managed AWS data services</figcaption>
+        </figure>
         <div class="blog-header">
           <h1 class="blog-title">Microservices Architecture on Amazon EKS</h1>
           <div class="blog-meta">
@@ -45,12 +49,7 @@
 
         <p class="blog-lead">Reference architecture for running microservices on Amazon EKS with ALB ingress, ECR, and managed AWS data services.</p>
 
-        <p>After Amazon EKS reached general availability in 2018, we began standardizing Kubernetes deployments for enterprise clients at VF Interactive. This reference design reflects patterns I have applied across production AWS environments.</p>
-
-        <figure class="blog-architecture">
-          <img src="../../assets/blog/aws-eks-architecture.svg" alt="Microservices architecture on Amazon EKS" width="900" height="520" loading="lazy">
-          <figcaption>Microservices architecture on Amazon EKS</figcaption>
-        </figure>
+        <p>After Amazon EKS reached general availability in 2018, we began standardizing Kubernetes deployments for enterprise clients at VF Interactive. The diagram above reflects patterns I have applied across production AWS environments.</p>
 
         <h2>Traffic flow</h2>
         <p>Client applications connect through an <strong>Application Load Balancer</strong> with a public IP. The ALB routes HTTP traffic to an <strong>NGINX Ingress Controller</strong> running in a frontend namespace inside the EKS cluster. The ingress distributes requests to backend microservices based on path or host rules.</p>

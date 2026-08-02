@@ -35,6 +35,10 @@
   <section class="blog-post">
     <div class="container">
       <article class="blog-content">
+        <figure class="blog-featured-image">
+          <img src="../../assets/azure-aks-microservices.png" alt="Microservices architecture on Azure Kubernetes Service" loading="lazy">
+          <figcaption>Reference architecture: Azure Kubernetes Service with managed data services, DevOps, and security integration</figcaption>
+        </figure>
         <div class="blog-header">
           <h1 class="blog-title">Microservices Architecture on Azure Kubernetes Service</h1>
           <div class="blog-meta">
@@ -45,12 +49,7 @@
 
         <p class="blog-lead">How to design a production AKS platform with ingress, Azure Pipelines, managed data services, and Azure Active Directory integration.</p>
 
-        <p>While leading cloud architecture at VF Interactive, I designed several AKS platforms for clients moving from VM-based deployments to Kubernetes. The layout below mirrors Microsoft's recommended enterprise pattern with namespaces, managed services, and GitOps-ready CI/CD.</p>
-
-        <figure class="blog-architecture">
-          <img src="../../assets/blog/azure-aks-architecture.svg" alt="Microservices architecture on Azure Kubernetes Service" width="900" height="520" loading="lazy">
-          <figcaption>Microservices architecture on Azure Kubernetes Service</figcaption>
-        </figure>
+        <p>While leading cloud architecture at VF Interactive, I designed several AKS platforms for clients moving from VM-based deployments to Kubernetes. The diagram above mirrors Microsoft's recommended enterprise pattern with namespaces, managed services, and GitOps-ready CI/CD.</p>
 
         <h2>Traffic flow</h2>
         <p>Client apps reach a <strong>public IP</strong> on an <strong>Azure Load Balancer</strong>, which forwards traffic to an <strong>NGINX Ingress</strong> controller in the frontend namespace. Ingress rules route requests to backend microservices without exposing individual pods publicly.</p>
@@ -59,9 +58,9 @@
         <h2>CI/CD and images</h2>
         <p><strong>Azure Pipelines</strong> builds and tests each service. <strong>Helm</strong> deploys chart releases into AKS. Container images push to <strong>Azure Container Registry</strong> and pull into the cluster on deployment.</p>
         <h2>Data and messaging</h2>
-        <p>Managed Azure services handle persistence: <strong>Azure Cosmos DB</strong> for globally distributed document data, <strong>Azure Managed Redis</strong> for caching, and <strong>Azure Service Bus</strong> for reliable async messaging.</p>
+        <p>Managed Azure services handle persistence: <strong>Azure DocumentDB</strong> for document workloads, <strong>Azure Cosmos DB</strong> for globally distributed data, <strong>Azure Managed Redis</strong> for caching, and <strong>Azure Service Bus</strong> for reliable async messaging.</p>
         <h2>Security and operations</h2>
-        <p><strong>Azure Active Directory</strong> integrates with Kubernetes RBAC. <strong>Managed identities</strong> access <strong>Azure Key Vault</strong> without embedded secrets. <strong>Log Analytics</strong>, <strong>Application Insights</strong>, and <strong>Azure Monitor</strong> provide unified observability.</p>
+        <p><strong>Microsoft Entra ID</strong> integrates with Kubernetes RBAC. <strong>Managed identities</strong> access <strong>Azure Key Vault</strong> without embedded secrets. <strong>Log Analytics</strong>, <strong>Application Insights</strong>, and <strong>Azure Monitor</strong> provide unified observability across the virtual network.</p>
 
         
         <h2>Implementation Checklist</h2>

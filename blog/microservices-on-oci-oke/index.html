@@ -35,6 +35,10 @@
   <section class="blog-post">
     <div class="container">
       <article class="blog-content">
+        <figure class="blog-featured-image">
+          <img src="../../assets/oci-oke-microservices.png" alt="Microservices architecture on Oracle Kubernetes Engine" loading="lazy">
+          <figcaption>Reference architecture: Oracle Kubernetes Engine with OCI Load Balancer, OCIR, and managed OCI data services</figcaption>
+        </figure>
         <div class="blog-header">
           <h1 class="blog-title">Microservices Architecture on Oracle Kubernetes Engine</h1>
           <div class="blog-meta">
@@ -45,12 +49,7 @@
 
         <p class="blog-lead">Deploying microservices on OKE with OCI Load Balancer, OCIR, Autonomous Database, and OCI Vault for enterprise workloads.</p>
 
-        <p>As OCI matured, VF Interactive began delivering OKE-based platforms for clients with Oracle database estates and data residency requirements. This design combines Kubernetes-native microservices with OCI managed services.</p>
-
-        <figure class="blog-architecture">
-          <img src="../../assets/blog/oci-oke-architecture.svg" alt="Microservices architecture on Oracle Kubernetes Engine" width="900" height="520" loading="lazy">
-          <figcaption>Microservices architecture on Oracle Kubernetes Engine</figcaption>
-        </figure>
+        <p>As OCI matured, VF Interactive began delivering OKE-based platforms for clients with Oracle database estates and data residency requirements. The diagram above combines Kubernetes-native microservices with OCI managed services.</p>
 
         <h2>Traffic flow</h2>
         <p>Client traffic hits an <strong>OCI Load Balancer</strong> public IP, which forwards to an <strong>NGINX Ingress</strong> controller in the frontend namespace. Ingress rules distribute requests across backend microservices inside the OKE cluster.</p>

@@ -35,6 +35,10 @@
   <section class="blog-post">
     <div class="container">
       <article class="blog-content">
+        <figure class="blog-featured-image">
+          <img src="../../assets/gcp-gke-microservices.png" alt="Microservices architecture on Google Kubernetes Engine" loading="lazy">
+          <figcaption>Reference architecture: Google Kubernetes Engine with Cloud Load Balancing, Artifact Registry, and managed GCP services</figcaption>
+        </figure>
         <div class="blog-header">
           <h1 class="blog-title">Microservices Architecture on Google Kubernetes Engine</h1>
           <div class="blog-meta">
@@ -45,12 +49,7 @@
 
         <p class="blog-lead">Building resilient microservices on GKE with Cloud Load Balancing, Artifact Registry, and managed Google Cloud data services.</p>
 
-        <p>Google Kubernetes Engine was an early managed Kubernetes option, and at VF Interactive we adopted GKE for workloads that benefited from tight integration with BigQuery, Pub/Sub, and Cloud SQL. This architecture reflects a production-ready GKE layout from 2020 onward.</p>
-
-        <figure class="blog-architecture">
-          <img src="../../assets/blog/gcp-gke-architecture.svg" alt="Microservices architecture on Google Kubernetes Engine" width="900" height="520" loading="lazy">
-          <figcaption>Microservices architecture on Google Kubernetes Engine</figcaption>
-        </figure>
+        <p>Google Kubernetes Engine was an early managed Kubernetes option, and at VF Interactive we adopted GKE for workloads that benefited from tight integration with BigQuery, Pub/Sub, and Cloud SQL. The diagram above reflects a production-ready GKE layout from 2020 onward.</p>
 
         <h2>Traffic flow</h2>
         <p>Users connect through <strong>Cloud Load Balancing</strong> with a global anycast IP. Traffic enters an <strong>Ingress</strong> controller in the frontend namespace, which routes to backend microservices based on URL paths and hostnames.</p>
