@@ -66,15 +66,68 @@
 
   fadeElements.forEach(el => fadeObserver.observe(el));
 
-  // Contact form — opens mailto with form data
-  contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const message = document.getElementById('message').value.trim();
+  // Contact form — sends message to brits@brittocj.com via FormSubmit
+  if (contactForm) {
+    const formStatus = document.getElementById('formStatus');
+    const formSubmit = document.getElementById('formSubmit');
+    const defaultButtonText = formSubmit.textContent;
+    const CONTACT_EMAIL = 'brits@brittocj.com';
 
-    const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-    window.location.href = `mailto:hello@brittocj.com?subject=${subject}&body=${body}`;
-  });
+    const setFormStatus = (message, type) => {
+      formStatus.textContent = message;
+      formStatus.className = `form__status form__status--${type}`;
+      formStatus.hidden = false;
+    };
+
+    const clearFormStatus = () => {
+      formStatus.textContent = '';
+      formStatus.className = 'form__status';
+      formStatus.hidden = true;
+    };
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearFormStatus();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      formSubmit.disabled = true;
+      formSubmit.textContent = 'Sending…';
+
+      const formData = new FormData(contactForm);
+      formData.set('name', name);
+      formData.set('email', email);
+      formData.set('message', message);
+      formData.set('_subject', `Portfolio Contact from ${name}`);
+      formData.set('_captcha', 'false');
+      formData.set('_template', 'table');
+
+      try {
+        const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+          method: 'POST',
+          body: formData,
+          headers: { Accept: 'application/json' },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Failed to send message.');
+        }
+
+        contactForm.reset();
+        setFormStatus('Message sent! I\'ll get back to you soon.', 'success');
+      } catch (err) {
+        setFormStatus(
+          err.message || 'Something went wrong. Please try again or email brits@brittocj.com directly.',
+          'error'
+        );
+      } finally {
+        formSubmit.disabled = false;
+        formSubmit.textContent = defaultButtonText;
+      }
+    });
+  }
 })();

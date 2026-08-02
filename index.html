@@ -25,6 +25,7 @@
         <li><a href="#experience">Experience</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#certifications">Certifications</a></li>
+        <li><a href="blog/">Blog</a></li>
         <li><a href="#contact" class="nav__cta">Contact</a></li>
       </ul>
     </div>
@@ -420,35 +421,49 @@
               <li>
                 <span class="certs__badge">IBM</span>
                 <div>
-                  <strong>IBM SkillsBuild AI Fundamentals</strong>
+                  <strong>Cybersecurity Fundamentals (IBM SkillsBuild)</strong>
                   <span>2026</span>
                 </div>
               </li>
               <li>
                 <span class="certs__badge">IBM</span>
                 <div>
-                  <strong>IBM AI Literacy</strong>
+                  <strong>AI Literacy (IBM SkillsBuild)</strong>
                   <span>2026</span>
                 </div>
               </li>
               <li>
                 <span class="certs__badge">IBM</span>
                 <div>
-                  <strong>IBM Cybersecurity Fundamentals</strong>
+                  <strong>AI Fundamentals: Foundations for Understanding AI (IBM SkillsBuild)</strong>
                   <span>2026</span>
                 </div>
               </li>
               <li>
-                <span class="certs__badge">GCP</span>
+                <span class="certs__badge">Google Cloud</span>
                 <div>
-                  <strong>Google Cloud Gemini & Imagen</strong>
+                  <strong>Build Real World AI Applications with Gemini and Imagen (Google Cloud)</strong>
                   <span>2025</span>
                 </div>
               </li>
               <li>
                 <span class="certs__badge">AWS</span>
                 <div>
-                  <strong>AWS Partner Accreditations</strong>
+                  <strong>AWS Partner: Technical Accredited</strong>
+                  <span>2021</span>
+                </div>
+              </li>
+              <li>
+                <span class="certs__badge">AWS</span>
+                <div>
+                  <strong>AWS Partner: SAP on AWS (Technical)</strong>
+                  <span>2021</span>
+                </div>
+              </li>
+              <li>
+                <span class="certs__badge">AWS</span>
+                <div>
+                  <strong>AWS Partner: Accreditation (Business)</strong>
                   <span>2021</span>
                 </div>
               </li>
@@ -512,7 +527,9 @@
               <label for="message">Message</label>
               <textarea id="message" name="message" rows="4" required placeholder="Tell me about your project..."></textarea>
             </div>
-            <button type="submit" class="btn btn--primary btn--full">Send Message</button>
+            <input type="text" name="_honey" class="form__honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <p class="form__status" id="formStatus" role="status" aria-live="polite" hidden></p>
+            <button type="submit" class="btn btn--primary btn--full" id="formSubmit">Send Message</button>
           </form>
         </div>
       </div>
