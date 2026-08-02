@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="OKE microservices reference architecture with OCI Load Balancer, OCIR, and Autonomous Database.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Microservices Architecture on Oracle Kubernetes Engine | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Microservices Architecture on Oracle Kubernetes Engine</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 April 18, 2022</div>
+            <div class="blog-meta-item">⏱️ 5 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Deploying microservices on OKE with OCI Load Balancer, OCIR, Autonomous Database, and OCI Vault for enterprise workloads.</p>
+
+        <p>As OCI matured, VF Interactive began delivering OKE-based platforms for clients with Oracle database estates and data residency requirements. This design combines Kubernetes-native microservices with OCI managed services.</p>
+
+        <figure class="blog-architecture">
+          <img src="../../assets/blog/oci-oke-architecture.svg" alt="Microservices architecture on Oracle Kubernetes Engine" width="900" height="520" loading="lazy">
+          <figcaption>Microservices architecture on Oracle Kubernetes Engine</figcaption>
+        </figure>
+
+        <h2>Traffic flow</h2>
+        <p>Client traffic hits an <strong>OCI Load Balancer</strong> public IP, which forwards to an <strong>NGINX Ingress</strong> controller in the frontend namespace. Ingress rules distribute requests across backend microservices inside the OKE cluster.</p>
+        <h2>Microservice layout</h2>
+        <p>Backend namespaces host <code>microservice1</code> through <code>microservice5</code> with the same API-orchestration-data layering used on other clouds. <strong>OCI VCN-Native Pod Networking</strong> integrates pods directly into your virtual cloud network.</p>
+        <h2>CI/CD and images</h2>
+        <p><strong>OCI DevOps</strong> pipelines build, test, and deploy services. Images push to <strong>Oracle Container Image Registry (OCIR)</strong>. <strong>Helm</strong> charts promote releases across dev, staging, and production clusters.</p>
+        <h2>Data and messaging</h2>
+        <p>Persistence uses <strong>Autonomous Database</strong> for Oracle and compatible SQL workloads, <strong>OCI Cache</strong> with Redis for session and query caching, and <strong>OCI Streaming</strong> for event-driven integration between services.</p>
+        <h2>Security and operations</h2>
+        <p><strong>OCI IAM</strong> controls cluster and API access. <strong>OCI Vault</strong> manages secrets and encryption keys. <strong>OCI Monitoring</strong>, <strong>Logging</strong>, and <strong>APM</strong> provide operational visibility across the stack.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">OCI</span>
+            <span class="blog-tag">OKE</span>
+            <span class="blog-tag">Kubernetes</span>
+            <span class="blog-tag">Microservices</span>
+            <span class="blog-tag">OCIR</span>
+            <span class="blog-tag">Autonomous Database</span>
+            <span class="blog-tag">Helm</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

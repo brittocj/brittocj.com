@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Production AKS reference architecture with ingress, Azure DevOps, and managed Azure data services.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Microservices Architecture on Azure Kubernetes Service | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Microservices Architecture on Azure Kubernetes Service</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 May 16, 2019</div>
+            <div class="blog-meta-item">⏱️ 5 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">How to design a production AKS platform with ingress, Azure Pipelines, managed data services, and Azure Active Directory integration.</p>
+
+        <p>While leading cloud architecture at VF Interactive, I designed several AKS platforms for clients moving from VM-based deployments to Kubernetes. The layout below mirrors Microsoft's recommended enterprise pattern with namespaces, managed services, and GitOps-ready CI/CD.</p>
+
+        <figure class="blog-architecture">
+          <img src="../../assets/blog/azure-aks-architecture.svg" alt="Microservices architecture on Azure Kubernetes Service" width="900" height="520" loading="lazy">
+          <figcaption>Microservices architecture on Azure Kubernetes Service</figcaption>
+        </figure>
+
+        <h2>Traffic flow</h2>
+        <p>Client apps reach a <strong>public IP</strong> on an <strong>Azure Load Balancer</strong>, which forwards traffic to an <strong>NGINX Ingress</strong> controller in the frontend namespace. Ingress rules route requests to backend microservices without exposing individual pods publicly.</p>
+        <h2>Microservice layout</h2>
+        <p>The backend namespace hosts a chain of services: <code>microservice1</code> through <code>microservice5</code> with clear separation between API, orchestration, and data layers. <strong>Azure CNI powered by Cilium</strong> provides performant pod networking and network policy enforcement.</p>
+        <h2>CI/CD and images</h2>
+        <p><strong>Azure Pipelines</strong> builds and tests each service. <strong>Helm</strong> deploys chart releases into AKS. Container images push to <strong>Azure Container Registry</strong> and pull into the cluster on deployment.</p>
+        <h2>Data and messaging</h2>
+        <p>Managed Azure services handle persistence: <strong>Azure Cosmos DB</strong> for globally distributed document data, <strong>Azure Managed Redis</strong> for caching, and <strong>Azure Service Bus</strong> for reliable async messaging.</p>
+        <h2>Security and operations</h2>
+        <p><strong>Azure Active Directory</strong> integrates with Kubernetes RBAC. <strong>Managed identities</strong> access <strong>Azure Key Vault</strong> without embedded secrets. <strong>Log Analytics</strong>, <strong>Application Insights</strong>, and <strong>Azure Monitor</strong> provide unified observability.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Azure</span>
+            <span class="blog-tag">AKS</span>
+            <span class="blog-tag">Kubernetes</span>
+            <span class="blog-tag">Microservices</span>
+            <span class="blog-tag">Azure DevOps</span>
+            <span class="blog-tag">Helm</span>
+            <span class="blog-tag">Azure AD</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GKE microservices reference architecture with Cloud Load Balancing, Artifact Registry, and managed GCP services.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Microservices Architecture on Google Kubernetes Engine | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Microservices Architecture on Google Kubernetes Engine</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 September 14, 2020</div>
+            <div class="blog-meta-item">⏱️ 5 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Building resilient microservices on GKE with Cloud Load Balancing, Artifact Registry, and managed Google Cloud data services.</p>
+
+        <p>Google Kubernetes Engine was an early managed Kubernetes option, and at VF Interactive we adopted GKE for workloads that benefited from tight integration with BigQuery, Pub/Sub, and Cloud SQL. This architecture reflects a production-ready GKE layout from 2020 onward.</p>
+
+        <figure class="blog-architecture">
+          <img src="../../assets/blog/gcp-gke-architecture.svg" alt="Microservices architecture on Google Kubernetes Engine" width="900" height="520" loading="lazy">
+          <figcaption>Microservices architecture on Google Kubernetes Engine</figcaption>
+        </figure>
+
+        <h2>Traffic flow</h2>
+        <p>Users connect through <strong>Cloud Load Balancing</strong> with a global anycast IP. Traffic enters an <strong>Ingress</strong> controller in the frontend namespace, which routes to backend microservices based on URL paths and hostnames.</p>
+        <h2>Microservice layout</h2>
+        <p>Services run in isolated namespaces with <code>microservice1</code> acting as the edge API, <code>microservice2</code> handling orchestration, and <code>microservice3</code> to <code>microservice5</code> owning data access. <strong>VPC-native GKE</strong> networking assigns each pod a routable IP from your VPC subnet.</p>
+        <h2>CI/CD and images</h2>
+        <p><strong>Cloud Build</strong> triggers on commits to build and scan images. Artifacts land in <strong>Artifact Registry</strong>. <strong>Helm</strong> or <strong>Config Sync</strong> deploys workloads. Workload Identity lets pods authenticate to GCP APIs without static keys.</p>
+        <h2>Data and messaging</h2>
+        <p>External stores include <strong>Cloud SQL</strong> for relational data, <strong>Firestore</strong> for document workloads, <strong>Memorystore</strong> for Redis caching, and <strong>Pub/Sub</strong> for event-driven communication between services.</p>
+        <h2>Security and operations</h2>
+        <p><strong>Cloud IAM</strong> and <strong>Workload Identity</strong> enforce least-privilege access. <strong>Secret Manager</strong> stores sensitive configuration. <strong>Cloud Monitoring</strong> and <strong>Cloud Trace</strong> deliver metrics, logs, and request tracing.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">GCP</span>
+            <span class="blog-tag">GKE</span>
+            <span class="blog-tag">Kubernetes</span>
+            <span class="blog-tag">Microservices</span>
+            <span class="blog-tag">Cloud Build</span>
+            <span class="blog-tag">Artifact Registry</span>
+            <span class="blog-tag">Helm</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

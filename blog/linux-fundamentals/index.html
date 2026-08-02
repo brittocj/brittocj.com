@@ -26,7 +26,8 @@
         <li><a href="../../index.html#experience">Experience</a></li>
         <li><a href="../../index.html#projects">Projects</a></li>
         <li><a href="../../index.html#certifications">Certifications</a></li>
-        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+        <li><a href="../">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
       </ul>
     </div>
   </nav>
@@ -37,7 +38,7 @@
         <div class="blog-header">
           <h1 class="blog-title">Linux Fundamentals: The Foundation Every Cloud Engineer Needs</h1>
           <div class="blog-meta">
-            <div class="blog-meta-item">📅 August 2, 2026</div>
+            <div class="blog-meta-item">📅 October 21, 2013</div>
             <div class="blog-meta-item">⏱️ 15 min read</div>
           </div>
         </div>
@@ -51,23 +52,23 @@
 
         <h2>A Brief Map of Linux Distributions</h2>
         <p>Linux is a kernel - the core software that manages hardware resources and system calls. Everything else (package managers, init systems, default tooling, desktop environments) is layered on top by the distribution, or <em>distro</em>. This distinction matters because when you're troubleshooting a production system, you need to know which tools and conventions are available.</p>
-        <p>Distributions cluster into a few major families, each with shared lineage, packaging formats, and culture:</p>
+        <p>Distributions cluster into a few major families, each with shared lineage, packaging formats, and culture. Four names anchor most of what you will see in production: <strong>Debian</strong>, <strong>Red Hat</strong>, <strong>Arch</strong>, and <strong>Alpine</strong>. The distros below are either those parents or derivatives built on the same foundations.</p>
 
-        <h3>The Debian / Ubuntu Family</h3>
-        <p>Debian is one of the oldest community-driven distributions, known for its strict commitment to free software and its stability. Ubuntu, built on Debian, is arguably the most widely used Linux distribution in cloud environments today. It uses <code>apt</code> (Advanced Package Tool) for package management and <code>.deb</code> packages. Most cloud provider default images - Amazon Linux 2023 being a notable exception - trace their lineage here. If you're spinning up a generic VM or a container base image, you're probably on this branch.</p>
-        <p><strong>Key distros:</strong> Debian, Ubuntu, Ubuntu Server, Linux Mint, Pop!_OS</p>
+        <h3>Debian</h3>
+        <p>Debian is one of the oldest community-driven distributions, known for its strict commitment to free software and its stability. Ubuntu, built on Debian, is arguably the most widely used Linux distribution in cloud environments today. This family uses <code>apt</code> (Advanced Package Tool) for package management and <code>.deb</code> packages. Most cloud provider default images trace their lineage here. If you are spinning up a generic VM or a container base image, you are probably on this branch.</p>
+        <p><strong>Also in this family:</strong> Ubuntu, Ubuntu Server, Linux Mint, Pop!_OS</p>
 
-        <h3>The Red Hat Family</h3>
-        <p>Red Hat Enterprise Linux (RHEL) is the dominant choice in regulated industries, large enterprises, and legacy on-premises environments that have extended into hybrid cloud. It uses <code>dnf</code> (formerly <code>yum</code>) and <code>.rpm</code> packages. CentOS was the free community rebuild of RHEL for many years until Red Hat shifted its strategy - a move that sent many teams toward AlmaLinux and Rocky Linux as drop-in replacements. Fedora is the upstream proving ground where new features land before making their way into RHEL. Amazon Linux 2023 is RHEL-adjacent in many of its conventions.</p>
-        <p><strong>Key distros:</strong> RHEL, Fedora, CentOS (legacy), AlmaLinux, Rocky Linux, Amazon Linux</p>
+        <h3>Red Hat</h3>
+        <p>Red Hat Enterprise Linux (RHEL) is the dominant choice in regulated industries, large enterprises, and legacy on-premises environments that have extended into hybrid cloud. This family uses <code>dnf</code> (formerly <code>yum</code>) and <code>.rpm</code> packages. CentOS was the free community rebuild of RHEL for many years until Red Hat shifted its strategy, a move that sent many teams toward AlmaLinux and Rocky Linux as drop-in replacements. Fedora is the upstream proving ground where new features land before making their way into RHEL. Amazon Linux 2023 is Red Hat-adjacent in many of its conventions.</p>
+        <p><strong>Also in this family:</strong> RHEL, Fedora, CentOS (legacy), AlmaLinux, Rocky Linux, Amazon Linux</p>
 
-        <h3>The Arch / Independent Family</h3>
-        <p>Arch Linux is a rolling-release distribution that gives you a minimal base and lets you build up from there. It uses <code>pacman</code> for package management. Arch users are stereotypically associated with manual configuration and a philosophy of "know what runs on your system." It's less common in production cloud environments but popular among developers who want a fast, customized local machine. Manjaro makes Arch more approachable. NixOS takes a radically different approach - declarative, reproducible system configuration - and is gaining serious traction among engineers who work heavily with infrastructure as code.</p>
-        <p><strong>Key distros:</strong> Arch Linux, Manjaro, NixOS, Void Linux</p>
+        <h3>Arch</h3>
+        <p>Arch Linux is a rolling-release distribution that gives you a minimal base and lets you build up from there. It uses <code>pacman</code> for package management. Arch is less common in production cloud environments but popular among developers who want a fast, customized local machine. Manjaro makes Arch more approachable. NixOS takes a radically different approach with declarative, reproducible system configuration and is gaining traction among engineers who work heavily with infrastructure as code.</p>
+        <p><strong>Also in this family:</strong> Arch Linux, Manjaro, NixOS, Void Linux</p>
 
-        <h3>The Container / Minimal Subset</h3>
-        <p>Some distributions are designed specifically to be as small as possible. Alpine Linux, used as the base for a huge number of Docker images, uses <code>apk</code> for package management and <code>musl libc</code> instead of the more common <code>glibc</code>. This causes occasional compatibility issues with software compiled against glibc, but the image sizes are dramatically smaller. Wolfi and Chainguard Images take the container-native philosophy further, building from scratch with supply-chain security as a first-class concern.</p>
-        <p><strong>Key distros:</strong> Alpine Linux, Wolfi, Flatcar Container Linux</p>
+        <h3>Alpine</h3>
+        <p>Alpine Linux is designed to be as small as possible. It is used as the base for a huge number of Docker images, uses <code>apk</code> for package management, and ships with <code>musl libc</code> instead of the more common <code>glibc</code>. This causes occasional compatibility issues with software compiled against glibc, but image sizes are dramatically smaller. Wolfi and Chainguard Images take the container-native philosophy further, building from scratch with supply-chain security as a first-class concern.</p>
+        <p><strong>Also in this family:</strong> Alpine Linux, Wolfi, Flatcar Container Linux</p>
 
         <p><strong>Practical takeaway:</strong> When you land on a new system, your first move should be identifying the distribution and version. <code>cat /etc/os-release</code> works across all modern distributions and gives you a clean, parseable output.</p>
         <pre><code>$ cat /etc/os-release
