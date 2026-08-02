@@ -39,7 +39,7 @@
           <h1 class="blog-title">Microservices Architecture on Amazon EKS</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 July 9, 2018</div>
-            <div class="blog-meta-item">⏱️ 5 min read</div>
+            <div class="blog-meta-item">⏱️ 3 min read</div>
           </div>
         </div>
 
@@ -62,6 +62,23 @@
         <p>External data stores sit outside the cluster: <strong>Amazon RDS</strong> for relational data, <strong>DynamoDB</strong> for key-value workloads, <strong>ElastiCache</strong> for caching, and <strong>Amazon SQS</strong> for asynchronous messaging between services.</p>
         <h2>Security and operations</h2>
         <p><strong>IAM</strong> provides RBAC integration through IRSA. <strong>AWS Secrets Manager</strong> stores credentials. <strong>Amazon VPC CNI</strong> assigns pod IPs from your VPC. <strong>CloudWatch</strong> and <strong>X-Ray</strong> deliver logs, metrics, and distributed tracing.</p>
+
+        
+        <h2>Implementation Checklist</h2>
+        <p>Provision EKS with private API endpoints where possible. Enable IRSA for pod-level AWS permissions. Deploy the AWS Load Balancer Controller before exposing services. Configure cluster autoscaling and horizontal pod autoscaling per service. Set resource requests and limits on every deployment.</p>
+        <h2>Production Hardening</h2>
+        <p>Enable control plane logging. Restrict security groups to minimum required ports. Use separate AWS accounts per environment. Scan images in ECR on push. Run pod security standards or OPA policies to block privileged containers.</p>
+        <h2>When to Choose EKS</h2>
+        <p>EKS fits teams already invested in AWS who need Kubernetes without managing the control plane. If your workloads are simple and stateless, ECS or Lambda may be simpler. Choose EKS when service count, team autonomy, or portability requirements justify Kubernetes operational overhead.</p>
+
+
+        
+        <h2>Networking Deep Dive</h2>
+        <p>The AWS VPC CNI assigns real VPC IP addresses to pods, which simplifies integration with existing security groups and network appliances but requires careful IP planning. Ensure your VPC CIDR and subnet sizes accommodate peak pod count. Use custom networking or prefix delegation for large clusters. Security groups attach directly to pod ENIs in some configurations, giving fine-grained control at the cost of complexity.</p>
+        <p>For service-to-service communication inside the cluster, prefer ClusterIP services with network policies restricting east-west traffic. Expose only the ingress controller and API gateway through the ALB. Internal microservices should never have public endpoints.</p>
+        <h2>Observability Stack</h2>
+        <p>Deploy CloudWatch Container Insights or Prometheus with AMP (Amazon Managed Prometheus) for metrics. Ship logs to CloudWatch Logs with structured JSON. Enable X-Ray tracing on ingress and critical services. Correlate traces with logs using shared trace IDs. Dashboards should show golden signals per service: latency, traffic, errors, and saturation.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

@@ -39,7 +39,7 @@
           <h1 class="blog-title">Testing Infrastructure: Unit, Integration, and End-to-End Tests</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 April 4, 2017</div>
-            <div class="blog-meta-item">⏱️ 4 min read</div>
+            <div class="blog-meta-item">⏱️ 1 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,20 @@
         <h2>CI Integration</h2>
         <p>Plan on PR, apply on merge to dev, promote with gates. Cost estimation and policy checks are tests too. Failed pipelines block releases.</p>
         <p>Reliable infrastructure is tested infrastructure.</p>
+
+        
+        <h2>CI Pipeline Integration</h2>
+        <p>Run terraform validate and plan on every pull request. Apply only from protected branches. Use separate cloud accounts for CI testing to prevent accidents. Tear down ephemeral environments automatically after tests complete.</p>
+        <h2>Chaos Experiments</h2>
+        <p>Start with controlled experiments: terminate a single node, inject latency, fill disk. Document system behavior. Expand scope as confidence grows. Never run chaos in production without stakeholder approval and rollback plans.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

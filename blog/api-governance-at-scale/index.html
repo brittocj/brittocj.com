@@ -39,7 +39,7 @@
           <h1 class="blog-title">API Governance and Management at Scale</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 February 11, 2020</div>
-            <div class="blog-meta-item">⏱️ 3 min read</div>
+            <div class="blog-meta-item">⏱️ 2 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,22 @@
         <h2>Governance Without Bureaucracy</h2>
         <p>Lightweight design reviews for external-facing APIs. Automated linting of OpenAPI specs in CI. A central catalog (Backstage or dedicated portal) for discovery.</p>
         <p>Good API governance accelerates teams. Bad governance sends them around the platform.</p>
+
+        
+        <h2>Versioning and Deprecation</h2>
+        <p>Publish a versioning policy and stick to it. Breaking changes require a new major version, a migration guide, and a sunset date for the old version. Clients need at least one release cycle to adapt. Internal services are not exempt: undocumented breaking changes destroy trust as quickly as public API changes do.</p>
+        <h2>Operational Governance</h2>
+        <p>Rate limits protect your platform and signal fair usage. Authentication should be consistent across services: OAuth2, API keys, or mutual TLS, but not a mix without clear rules. Log every API call with correlation IDs so support and engineering can trace issues across service boundaries.</p>
+        <h2>Measuring API Health</h2>
+        <p>Track adoption, error rates, latency percentiles, and time-to-first-successful-call for new consumers. APIs with declining usage may be candidates for retirement. APIs with high error rates need better documentation or design fixes, not more consumers.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

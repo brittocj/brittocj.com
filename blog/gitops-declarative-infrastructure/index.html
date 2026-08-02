@@ -39,7 +39,7 @@
           <h1 class="blog-title">GitOps: Declarative Infrastructure for Modern Teams</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 October 22, 2019</div>
-            <div class="blog-meta-item">⏱️ 5 min read</div>
+            <div class="blog-meta-item">⏱️ 2 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,22 @@
         <h2>Practical Lessons From the Field</h2>
         <p>Start with one non-critical workload. Prove the promotion path from dev to staging to production. Add progressive delivery and automated sync only after the basics work. GitOps pairs well with platform engineering: golden paths become Git templates that teams fork and customize within guardrails.</p>
         <p>The goal is not more YAML. The goal is predictable, reviewable change at the speed your business requires.</p>
+
+        
+        <h2>Repository Structure</h2>
+        <p>Separate repos for infrastructure, application manifests, and policy. Use environment branches or overlay directories with Kustomize. Avoid one giant repo that requires every team to have write access to production configuration.</p>
+        <h2>Handling Secrets in GitOps</h2>
+        <p>Never commit plaintext secrets. Use sealed secrets, external secrets operators, or cloud-native secret stores referenced from manifests. Rotate credentials on a schedule and automate the rotation through the same GitOps pipeline.</p>
+        <h2>Rollback Strategy</h2>
+        <p>Git revert is your rollback. Tag releases that reach production. Practice rollbacks in staging so on-call engineers know the steps before an incident forces them to learn.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Auto-syncing to production without approval gates causes incidents. Storing secrets in Git, even encrypted poorly, creates risk. Monolithic repos where every team shares write access lead to accidental cross-team changes. Drift detection without remediation process just generates noise.</p>
+        <h2>Getting Started</h2>
+        <p>Pick one non-critical application and one environment. Set up Argo CD or Flux with a simple repo structure. Practice a full promotion cycle from dev to staging. Document the workflow and train one product team before expanding platform-wide.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

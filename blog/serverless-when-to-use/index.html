@@ -39,7 +39,7 @@
           <h1 class="blog-title">Serverless Computing: When and When Not to Use It</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 November 2, 2018</div>
-            <div class="blog-meta-item">⏱️ 4 min read</div>
+            <div class="blog-meta-item">⏱️ 2 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,20 @@
         <h2>Hybrid Approaches</h2>
         <p>Many enterprises use both: Kubernetes for core services, functions for event handling. Watch data egress costs and vendor lock-in on proprietary event sources. Abstract critical logic behind interfaces you own.</p>
         <p>Choose serverless for operational simplicity at the right scale, not because it is fashionable.</p>
+
+        
+        <h2>Cost Modeling</h2>
+        <p>Serverless is cheap at low volume and expensive at sustained high volume. Model your expected invocation count, duration, and memory before choosing serverless over containers. The crossover point often surprises teams.</p>
+        <h2>Cold Start Mitigation</h2>
+        <p>Provisioned concurrency, smaller runtimes, and keeping dependencies minimal reduce cold starts. For latency-sensitive APIs, measure P99 cold start impact before committing to serverless.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

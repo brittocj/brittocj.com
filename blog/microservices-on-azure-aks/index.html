@@ -39,7 +39,7 @@
           <h1 class="blog-title">Microservices Architecture on Azure Kubernetes Service</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 May 16, 2019</div>
-            <div class="blog-meta-item">⏱️ 5 min read</div>
+            <div class="blog-meta-item">⏱️ 3 min read</div>
           </div>
         </div>
 
@@ -62,6 +62,29 @@
         <p>Managed Azure services handle persistence: <strong>Azure Cosmos DB</strong> for globally distributed document data, <strong>Azure Managed Redis</strong> for caching, and <strong>Azure Service Bus</strong> for reliable async messaging.</p>
         <h2>Security and operations</h2>
         <p><strong>Azure Active Directory</strong> integrates with Kubernetes RBAC. <strong>Managed identities</strong> access <strong>Azure Key Vault</strong> without embedded secrets. <strong>Log Analytics</strong>, <strong>Application Insights</strong>, and <strong>Azure Monitor</strong> provide unified observability.</p>
+
+        
+        <h2>Implementation Checklist</h2>
+        <p>Create AKS with Azure CNI and plan IP address space carefully. Integrate with Azure Active Directory for cluster admin access. Deploy ingress controller and cert-manager for TLS. Configure Azure Monitor container insights from day one. Use Azure Key Vault provider for secrets.</p>
+        <h2>Production Hardening</h2>
+        <p>Enable Azure Policy for Kubernetes. Use private clusters for production where network requirements allow. Separate node pools for system and user workloads. Apply pod disruption budgets for critical services.</p>
+        <h2>When to Choose AKS</h2>
+        <p>AKS is the natural choice for enterprises standardized on Azure with Microsoft identity, hybrid connectivity through ExpressRoute, and existing Azure DevOps pipelines. Evaluate AKS when Kubernetes portability matters but Azure managed services handle persistence.</p>
+
+
+        
+        <h2>Networking Deep Dive</h2>
+        <p>Azure CNI assigns VNet IPs to pods, similar to AWS. Plan subnet sizes for nodes and pods together. Azure Network Policy or Cilium enforces east-west rules. Private Link connects to PaaS services without public internet exposure. ExpressRoute or VPN connects on-premises networks for hybrid workloads.</p>
+        <h2>Observability Stack</h2>
+        <p>Container Insights collects metrics and logs automatically. Application Insights provides APM with distributed tracing when SDKs are instrumented. Create workbooks that correlate ingress latency with backend service health. Alert on pod restart loops and OOMKilled events before users report outages.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

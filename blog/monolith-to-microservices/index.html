@@ -39,7 +39,7 @@
           <h1 class="blog-title">From Monolith to Microservices: A Pragmatic Migration Strategy</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 August 27, 2014</div>
-            <div class="blog-meta-item">⏱️ 4 min read</div>
+            <div class="blog-meta-item">⏱️ 2 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,20 @@
         <h2>Avoid Common Traps</h2>
         <p>Too many services too soon. Shared databases between services. Synchronous chains that amplify failures. Invest in platform capabilities (service mesh, API gateway, standard libraries) as you grow.</p>
         <p>A pragmatic migration respects that the monolith paid for your success. Evolve it, do not declare war on it.</p>
+
+        
+        <h2>Identifying Service Boundaries</h2>
+        <p>Look for natural seams: different release cadences, different scaling needs, or different team ownership. Domain-driven design bounded contexts help. Do not split along technical layers only (API service, database service) unless you enjoy distributed monolith pain.</p>
+        <h2>Data Ownership Rules</h2>
+        <p>Each service owns its data store. Other services access data through APIs, not shared databases. Shared databases between services recreate monolith coupling with network latency added.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

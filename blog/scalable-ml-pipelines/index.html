@@ -39,7 +39,7 @@
           <h1 class="blog-title">Building Scalable ML Pipelines with Cloud Infrastructure</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 August 22, 2024</div>
-            <div class="blog-meta-item">⏱️ 4 min read</div>
+            <div class="blog-meta-item">⏱️ 2 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,20 @@
         <h2>What Enterprise Teams Get Wrong</h2>
         <p>Treating notebooks as production code. Skipping data versioning. Deploying models without rollback paths. Build the same discipline you apply to application releases: CI/CD, testing, and observability from the start.</p>
         <p>Scalable ML is less about the algorithm and more about the platform around it.</p>
+
+        
+        <h2>Feature Stores and Reproducibility</h2>
+        <p>Version training features alongside model artifacts. The same feature computation logic should power training and inference. Drift between training and serving features silently degrades model quality in production.</p>
+        <h2>Scaling Training and Inference Separately</h2>
+        <p>Training is batch-heavy and GPU-intensive. Inference is latency-sensitive and often CPU-sufficient. Design separate infrastructure for each phase. Autoscale inference on request rate, not on training schedule.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

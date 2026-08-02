@@ -39,7 +39,7 @@
           <h1 class="blog-title">Understanding Cloud Networking: VPCs, Subnets, and Routing</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 February 6, 2017</div>
-            <div class="blog-meta-item">⏱️ 5 min read</div>
+            <div class="blog-meta-item">⏱️ 2 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,20 @@
         <h2>Security Layers</h2>
         <p>Security groups are stateful firewalls at the instance level. NACLs for subnet boundaries. Private endpoints keep traffic off the public internet. Network policies in Kubernetes add another layer for pods.</p>
         <p>Solid VPC design prevents the networking surprises that derail migrations and scale-out efforts.</p>
+
+        
+        <h2>Subnet Design Patterns</h2>
+        <p>Use /24 subnets per availability zone for application tiers unless you have a documented reason to go smaller or larger. Reserve IP space for load balancers, NAT gateways, and future growth. Plan pod CIDR ranges separately when using Kubernetes with VPC-native networking to avoid overlap with node subnets.</p>
+        <h2>Hybrid Connectivity</h2>
+        <p>Site-to-site VPN is fast to set up but limited in throughput. Dedicated interconnect suits steady, high-volume traffic between on-premises data centers and cloud. Always design failover: a single VPN tunnel is a single point of failure.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

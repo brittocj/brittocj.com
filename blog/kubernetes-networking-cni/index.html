@@ -39,7 +39,7 @@
           <h1 class="blog-title">Kubernetes Networking: Understanding CNI Plugins</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 June 3, 2020</div>
-            <div class="blog-meta-item">⏱️ 5 min read</div>
+            <div class="blog-meta-item">⏱️ 2 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,20 @@
         <h2>Debugging Network Issues</h2>
         <p>When a pod cannot reach a service, work through DNS resolution, network policies, security groups, and CNI health in that order. Tools like <code>kubectl exec</code>, <code>nslookup</code>, and <code>ss -tlnp</code> inside the pod narrow the failure domain quickly.</p>
         <p>Understanding CNI is what separates teams that fight Kubernetes networking from teams that operate it confidently.</p>
+
+        
+        <h2>Choosing a CNI Plugin</h2>
+        <p>Evaluate based on performance requirements, network policy needs, observability features, and operational familiarity. Calico suits policy-heavy environments. Cilium adds eBPF-based visibility. Flannel is simpler but less feature-rich. Test with your actual traffic patterns before standardizing.</p>
+        <h2>Service Mesh Decision</h2>
+        <p>Do not adopt a service mesh because it is trendy. Adopt when you need mutual TLS everywhere, advanced traffic shaping, or consistent observability across polyglot services. Meshes add operational complexity that must be justified.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Choosing a CNI without testing at production traffic volumes leads to performance surprises. Ignoring IP address exhaustion in large clusters causes scheduling failures. Deploying a service mesh before mastering basic ingress and network policies adds complexity without benefit.</p>
+        <h2>Getting Started</h2>
+        <p>Deploy a test cluster with your candidate CNI. Run network policy tests between namespaces. Measure pod-to-pod latency under load. Document the debugging workflow for DNS failures and connection timeouts before going to production.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

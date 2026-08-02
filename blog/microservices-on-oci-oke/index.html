@@ -39,7 +39,7 @@
           <h1 class="blog-title">Microservices Architecture on Oracle Kubernetes Engine</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 April 18, 2022</div>
-            <div class="blog-meta-item">⏱️ 5 min read</div>
+            <div class="blog-meta-item">⏱️ 2 min read</div>
           </div>
         </div>
 
@@ -62,6 +62,29 @@
         <p>Persistence uses <strong>Autonomous Database</strong> for Oracle and compatible SQL workloads, <strong>OCI Cache</strong> with Redis for session and query caching, and <strong>OCI Streaming</strong> for event-driven integration between services.</p>
         <h2>Security and operations</h2>
         <p><strong>OCI IAM</strong> controls cluster and API access. <strong>OCI Vault</strong> manages secrets and encryption keys. <strong>OCI Monitoring</strong>, <strong>Logging</strong>, and <strong>APM</strong> provide operational visibility across the stack.</p>
+
+        
+        <h2>Implementation Checklist</h2>
+        <p>Deploy OKE on flexible shapes for cost efficiency. Configure OCI IAM policies for cluster and node pool management. Set up OCIR in the same region as the cluster. Use OCI Load Balancer for ingress with proper backend set health checks.</p>
+        <h2>Production Hardening</h2>
+        <p>Store secrets in OCI Vault and reference them from Kubernetes secrets via CSI drivers. Enable OCI Cloud Guard for security posture management. Use compartment isolation per environment. Monitor with OCI APM and Logging.</p>
+        <h2>When to Choose OKE</h2>
+        <p>OKE fits organizations with Oracle database estates, data residency requirements in specific regions, or commercial commitments to OCI. Kubernetes skills transfer directly. Managed services handle the control plane while OCI native services handle persistence and identity.</p>
+
+
+        
+        <h2>Networking Deep Dive</h2>
+        <p>OKE VCN-native pod networking integrates pods into your virtual cloud network. Security lists and NSGs control traffic at the VCN level. Service Gateway provides private access to OCI services. FastConnect links on-premises data centers with predictable latency.</p>
+        <h2>Observability Stack</h2>
+        <p>OCI Monitoring tracks cluster and node health metrics. Logging ingests application logs with search and retention policies. APM traces requests across services and highlights slow database calls. Set alarms on API error rates and certificate expiry.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

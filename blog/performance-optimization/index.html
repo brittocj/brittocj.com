@@ -39,7 +39,7 @@
           <h1 class="blog-title">Performance Optimization: From Application to Infrastructure</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 November 18, 2024</div>
-            <div class="blog-meta-item">⏱️ 4 min read</div>
+            <div class="blog-meta-item">⏱️ 1 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,20 @@
         <h2>Systematic Approach</h2>
         <p>Define SLOs. Load test before launch. Compare before and after every change. Document bottlenecks and revisit as traffic grows.</p>
         <p>Fast systems are designed, measured, and iterated, not guessed.</p>
+
+        
+        <h2>Profiling Workflow</h2>
+        <p>Reproduce the slow path reliably. Profile before optimizing. Fix the largest bottleneck first. Measure again. Repeat. Optimizing code that is not on the critical path wastes time.</p>
+        <h2>Infrastructure Scaling</h2>
+        <p>Horizontal scaling solves capacity problems. Vertical scaling solves inefficient single-node performance. Autoscaling policies need tuning: scale-up fast, scale-down slow to avoid flapping.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>

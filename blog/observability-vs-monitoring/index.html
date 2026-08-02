@@ -39,7 +39,7 @@
           <h1 class="blog-title">Observability vs. Monitoring: Why the Distinction Matters</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 September 19, 2017</div>
-            <div class="blog-meta-item">⏱️ 5 min read</div>
+            <div class="blog-meta-item">⏱️ 2 min read</div>
           </div>
         </div>
 
@@ -53,6 +53,20 @@
         <h2>SRE Practices That Stick</h2>
         <p>Define SLIs and SLOs tied to user experience. Alert on symptoms, not every internal metric. Runbooks linked from alerts reduce mean time to recovery. Blameless postmortems turn incidents into durable improvements.</p>
         <p>Observability is an investment in unknown unknowns. Monitoring is the safety net for known risks. You need both.</p>
+
+        
+        <h2>Instrumenting Effectively</h2>
+        <p>Add correlation IDs at the edge and propagate through every service call. Structure logs as JSON for parsing. Use consistent metric naming conventions. Sample traces in high-throughput paths but never sample error traces.</p>
+        <h2>Alert Design</h2>
+        <p>Every alert should be actionable by the on-call engineer receiving it. If the response is always "wait and see," it should be a dashboard, not a page. Review alerts quarterly and delete noisy ones ruthlessly.</p>
+
+
+        
+        <h2>Common Pitfalls</h2>
+        <p>Adopting tools before defining outcomes leads to expensive experiments without business value. Copying another organization's architecture without understanding your constraints creates fragile systems. Skipping documentation means every new team member relearns lessons the hard way.</p>
+        <h2>Getting Started</h2>
+        <p>Define success metrics before implementation. Start with the smallest scope that proves value. Review results with stakeholders weekly during the first month. Iterate based on evidence, not assumptions.</p>
+
 
         <div class="blog-tags">
           <div class="blog-tags-title">Topics &amp; Tags</div>
