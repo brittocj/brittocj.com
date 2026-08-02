@@ -71,7 +71,7 @@
     const formStatus = document.getElementById('formStatus');
     const formSubmit = document.getElementById('formSubmit');
     const defaultButtonText = formSubmit.textContent;
-    const CONTACT_EMAIL = 'brits@brittocj.com';
+    const FORMSUBMIT_KEY = 'e91a6b67557e276576cf2b7d588d8fec';
 
     const setFormStatus = (message, type) => {
       formStatus.textContent = message;
@@ -105,7 +105,7 @@
       formData.set('_template', 'table');
 
       try {
-        const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+        const response = await fetch(`https://formsubmit.co/ajax/${FORMSUBMIT_KEY}`, {
           method: 'POST',
           body: formData,
           headers: { Accept: 'application/json' },
