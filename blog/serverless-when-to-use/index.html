@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Evaluating serverless vs. containers, cold start challenges, and cost implications.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Serverless Computing: When and When Not to Use It | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Serverless Computing: When and When Not to Use It</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 June 22, 2026</div>
+            <div class="blog-meta-item">⏱️ 4 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Evaluating serverless vs. containers, cold start challenges, and cost implications.</p>
+
+        <p>Serverless removes server management and scales to zero. It is excellent for event-driven workloads, APIs with variable traffic, and glue logic between services. It is a poor default for steady high-throughput systems or workloads with strict latency requirements at cold start.</p>
+        <h2>When Serverless Wins</h2>
+        <p>Infrequent jobs, webhooks, file processing triggers, and prototype APIs. Pay per invocation aligns cost with usage. Managed scaling handles traffic spikes without capacity planning.</p>
+        <h2>When Containers Win</h2>
+        <p>Long-running processes, custom runtimes, predictable baseline load, and teams already standardized on Kubernetes. Containers offer more control over networking, filesystem, and dependencies.</p>
+        <h2>Hybrid Approaches</h2>
+        <p>Many enterprises use both: Kubernetes for core services, functions for event handling. Watch data egress costs and vendor lock-in on proprietary event sources. Abstract critical logic behind interfaces you own.</p>
+        <p>Choose serverless for operational simplicity at the right scale, not because it is fashionable.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Serverless</span>
+            <span class="blog-tag">Lambda</span>
+            <span class="blog-tag">Cloud Functions</span>
+            <span class="blog-tag">Containers</span>
+            <span class="blog-tag">Architecture</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

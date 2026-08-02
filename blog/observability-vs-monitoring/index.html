@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Understanding logs, metrics, traces, and how to build truly observable systems.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Observability vs. Monitoring: Why the Distinction Matters | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Observability vs. Monitoring: Why the Distinction Matters</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 June 30, 2026</div>
+            <div class="blog-meta-item">⏱️ 5 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Understanding logs, metrics, traces, and how to build truly observable systems.</p>
+
+        <p>Monitoring tells you when something you predicted might break has broken. Observability lets you ask new questions about systems you did not anticipate failing. Both matter. Confusing them leads to alert fatigue without diagnostic depth.</p>
+        <h2>The Three Pillars</h2>
+        <p><strong>Metrics</strong> are aggregated numbers over time: CPU, request rate, error ratio. <strong>Logs</strong> are discrete events with context. <strong>Traces</strong> follow a request across services. Together they answer: what is broken, where, and why.</p>
+        <h2>Building Observable Systems</h2>
+        <p>Instrument at boundaries: HTTP handlers, database calls, queue consumers. Use OpenTelemetry for vendor-neutral collection. Standardize on Prometheus and Grafana or your cloud provider's managed stack, but keep export paths open.</p>
+        <h2>SRE Practices That Stick</h2>
+        <p>Define SLIs and SLOs tied to user experience. Alert on symptoms, not every internal metric. Runbooks linked from alerts reduce mean time to recovery. Blameless postmortems turn incidents into durable improvements.</p>
+        <p>Observability is an investment in unknown unknowns. Monitoring is the safety net for known risks. You need both.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Observability</span>
+            <span class="blog-tag">Monitoring</span>
+            <span class="blog-tag">Prometheus</span>
+            <span class="blog-tag">Grafana</span>
+            <span class="blog-tag">OpenTelemetry</span>
+            <span class="blog-tag">SRE</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

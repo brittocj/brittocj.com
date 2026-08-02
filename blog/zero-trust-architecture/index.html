@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Implementing zero-trust principles for identity, access control, and network security at enterprise scale.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Zero Trust Architecture in Cloud Environments | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Zero Trust Architecture in Cloud Environments</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 July 5, 2026</div>
+            <div class="blog-meta-item">⏱️ 4 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Implementing zero-trust principles for identity, access control, and network security at enterprise scale.</p>
+
+        <p>Zero trust replaces the assumption that internal networks are safe. Every request is authenticated, authorized, and encrypted regardless of origin. In cloud environments where perimeters are fluid, this is not optional.</p>
+        <h2>Identity as the Perimeter</h2>
+        <p>Strong identity federation across clouds, short-lived credentials, and role-based access with least privilege. Service accounts need the same rigor as human users. Tools like IAM policies, workload identity, and secrets managers enforce boundaries programmatically.</p>
+        <h2>Network Micro-Segmentation</h2>
+        <p>Security groups, network policies, and private endpoints limit blast radius. East-west traffic between services should be explicitly allowed, not implicitly trusted. For hybrid setups, connect on-premises and cloud with encrypted tunnels and consistent policy.</p>
+        <h2>Continuous Verification</h2>
+        <p>Integrate vulnerability scanning, policy-as-code checks, and runtime threat detection into CI/CD. DevSecOps is zero trust applied to the delivery pipeline. Security reviews become automated gates rather than end-of-project checklists.</p>
+        <p>Zero trust is a journey of smaller perimeters and stronger identity, not a single product purchase.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Zero Trust</span>
+            <span class="blog-tag">Security</span>
+            <span class="blog-tag">IAM</span>
+            <span class="blog-tag">DevSecOps</span>
+            <span class="blog-tag">Cloud Security</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

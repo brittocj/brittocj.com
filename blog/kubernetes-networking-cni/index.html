@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Deep dive into Container Networking Interface, overlay networks, and service mesh considerations.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Kubernetes Networking: Understanding CNI Plugins | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Kubernetes Networking: Understanding CNI Plugins</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 July 10, 2026</div>
+            <div class="blog-meta-item">⏱️ 5 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Deep dive into Container Networking Interface, overlay networks, and service mesh considerations.</p>
+
+        <p>Kubernetes networking confuses many teams because pods get IPs, services get virtual IPs, and nodes have their own interfaces. The Container Networking Interface (CNI) is the plugin layer that makes pod-to-pod communication possible on every node.</p>
+        <h2>How CNI Fits Together</h2>
+        <p>When the kubelet starts a pod, it calls the configured CNI plugin. The plugin assigns an IP, sets up routes, and may apply network policies. Common choices include Calico for policy-rich flat networking, Cilium for eBPF-powered observability and security, and Flannel for simpler overlay setups. Your choice affects performance, policy expressiveness, and operational complexity.</p>
+        <h2>Services, Ingress, and Beyond</h2>
+        <p>ClusterIP services provide stable endpoints inside the cluster. Ingress or Gateway API resources expose HTTP routes to the outside world. For east-west traffic encryption, mutual TLS, and fine-grained retries, a service mesh (Istio, Linkerd) adds a data plane proxy. Not every cluster needs a mesh on day one. Start with solid CNI and ingress, then add mesh when cross-service security or traffic management justifies the overhead.</p>
+        <h2>Debugging Network Issues</h2>
+        <p>When a pod cannot reach a service, work through DNS resolution, network policies, security groups, and CNI health in that order. Tools like <code>kubectl exec</code>, <code>nslookup</code>, and <code>ss -tlnp</code> inside the pod narrow the failure domain quickly.</p>
+        <p>Understanding CNI is what separates teams that fight Kubernetes networking from teams that operate it confidently.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Kubernetes</span>
+            <span class="blog-tag">CNI</span>
+            <span class="blog-tag">Networking</span>
+            <span class="blog-tag">Calico</span>
+            <span class="blog-tag">Cilium</span>
+            <span class="blog-tag">Service Mesh</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

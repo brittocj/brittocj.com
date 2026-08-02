@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Network architecture patterns, VPC design, and connectivity between cloud and on-premises.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Understanding Cloud Networking: VPCs, Subnets, and Routing | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Understanding Cloud Networking: VPCs, Subnets, and Routing</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 May 25, 2026</div>
+            <div class="blog-meta-item">⏱️ 5 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Network architecture patterns, VPC design, and connectivity between cloud and on-premises.</p>
+
+        <p>Cloud networking is software-defined but the fundamentals persist: IP addressing, routing, firewalls, and DNS. VPCs are your private network boundaries in the cloud.</p>
+        <h2>VPC Design Principles</h2>
+        <p>Segment by environment and tier: public subnets for load balancers, private subnets for applications and data. Avoid overlapping CIDR blocks across VPCs and on-premises networks. Plan for growth.</p>
+        <h2>Connectivity Patterns</h2>
+        <p>VPN for quick hybrid links. Dedicated interconnect for production throughput. Transit gateways and hub-spoke topologies simplify multi-VPC routing. DNS resolution across boundaries needs explicit design.</p>
+        <h2>Security Layers</h2>
+        <p>Security groups are stateful firewalls at the instance level. NACLs for subnet boundaries. Private endpoints keep traffic off the public internet. Network policies in Kubernetes add another layer for pods.</p>
+        <p>Solid VPC design prevents the networking surprises that derail migrations and scale-out efforts.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Networking</span>
+            <span class="blog-tag">VPC</span>
+            <span class="blog-tag">Hybrid Cloud</span>
+            <span class="blog-tag">AWS</span>
+            <span class="blog-tag">Azure</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

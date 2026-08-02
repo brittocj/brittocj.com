@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Best practices for building resilient, cost-effective multi-cloud architectures across AWS, Azure, GCP, and OCI.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Designing Multi-Cloud Strategies for Enterprise Scale | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Designing Multi-Cloud Strategies for Enterprise Scale</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 July 15, 2026</div>
+            <div class="blog-meta-item">⏱️ 5 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Best practices for building resilient, cost-effective multi-cloud architectures across AWS, Azure, GCP, and OCI.</p>
+
+        <p>Multi-cloud is rarely a goal in itself. It is a response to acquisition history, regulatory requirements, vendor negotiations, or the need to place workloads where they perform best. After architecting solutions across AWS, Azure, GCP, and OCI for enterprise clients, the pattern is consistent: success depends less on how many clouds you use and more on how deliberately you govern them.</p>
+        <h2>Start With Workload Placement, Not Provider Preference</h2>
+        <p>Map each workload to a cloud based on capability fit, data residency, existing team skills, and commercial terms. A marketplace platform might span four providers for customer choice, while a regulated workload might stay on a single cloud with strict controls. Document the rationale so future teams do not reverse good decisions without understanding why they were made.</p>
+        <h2>Build a Consistent Abstraction Layer</h2>
+        <p>Without shared standards, every cloud becomes a snowflake. Standardize on Terraform modules, container images, CI/CD patterns, and observability stacks that work across providers. Kubernetes often serves as the compute abstraction. For networking, accept that VPC designs differ and invest in clear connectivity patterns: hub-and-spoke, cloud exchange, or dedicated interconnects.</p>
+        <h2>Governance and Cost Control at Scale</h2>
+        <p>Centralize identity federation, tagging policies, and security baselines. FinOps across multiple clouds requires a single cost view and accountability model. Teams that migrated 200+ servers with minimal downtime did so by treating migration waves as products: defined scope, rollback plans, and measurable success criteria.</p>
+        <p>Multi-cloud done well gives you optionality without chaos. Done poorly, it multiplies operational burden by the number of providers you adopt.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Multi-Cloud</span>
+            <span class="blog-tag">AWS</span>
+            <span class="blog-tag">Azure</span>
+            <span class="blog-tag">GCP</span>
+            <span class="blog-tag">OCI</span>
+            <span class="blog-tag">Cloud Architecture</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

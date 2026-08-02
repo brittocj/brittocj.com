@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Strategic approaches to FinOps, reserved instances, and building cost-conscious cloud cultures.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Cloud Cost Optimization: Beyond Just Shutting Down Resources | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Cloud Cost Optimization: Beyond Just Shutting Down Resources</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 June 27, 2026</div>
+            <div class="blog-meta-item">⏱️ 5 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Strategic approaches to FinOps, reserved instances, and building cost-conscious cloud cultures.</p>
+
+        <p>Turning off idle instances is table stakes. Sustained 40 to 60 percent cost reduction, which I have delivered across enterprise migrations, comes from architecture, governance, and culture working together.</p>
+        <h2>Right-Sizing and Commitment Strategies</h2>
+        <p>Analyze utilization before resizing. Reserved instances and savings plans reward predictable workloads. Spot and preemptible instances suit fault-tolerant batch jobs. Autoscaling prevents paying for peak capacity around the clock.</p>
+        <h2>Architectural Cost Levers</h2>
+        <p>Serverless and containers reduce waste when workloads are bursty. Data transfer between regions and clouds is a silent budget killer. Design data gravity intentionally. Cache aggressively. Lifecycle policies on object storage tier cold data automatically.</p>
+        <h2>FinOps as a Practice</h2>
+        <p>Tag everything. Assign cost centers. Review spend monthly with engineering leads, not only finance. Make cost visible in CI/CD: estimate Terraform plan costs before merge. Teams optimize what they can see.</p>
+        <p>Cost optimization is continuous engineering, not a one-time cleanup project.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">FinOps</span>
+            <span class="blog-tag">Cost Optimization</span>
+            <span class="blog-tag">Cloud Governance</span>
+            <span class="blog-tag">AWS</span>
+            <span class="blog-tag">Azure</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

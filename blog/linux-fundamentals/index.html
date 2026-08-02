@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Linux fundamentals for cloud engineers: distributions, filesystem hierarchy, permissions, processes, networking, and the four commands that unlock any Linux system.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Linux Fundamentals: The Foundation Every Cloud Engineer Needs | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Linux Fundamentals: The Foundation Every Cloud Engineer Needs</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 August 2, 2026</div>
+            <div class="blog-meta-item">⏱️ 15 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Every Kubernetes node, every EC2 instance, every containerized workload - underneath it all, Linux is running the show. Yet many cloud engineers work for years without truly understanding the operating system they depend on daily. This article changes that.</p>
+
+        <h2>Why Linux Still Matters in a Cloud-Native World</h2>
+        <p>It's tempting to think that cloud-native tooling has abstracted Linux away. You click buttons in a console, write Helm charts, or push a Dockerfile, and something runs somewhere. But the moment something breaks - a pod stuck in <code>CrashLoopBackOff</code>, a network call timing out at a mysterious boundary, a disk silently filling up - you'll reach for a terminal. And what happens next depends entirely on how well you understand what's underneath.</p>
+        <p>Linux is not just the foundation of the cloud; it <em>is</em> the cloud. Over 96% of the world's top web servers run Linux. Every major cloud provider's virtual machine offering defaults to a Linux base image. Containers share the Linux kernel of the host. Knowing Linux is not optional for cloud engineers - it's the difference between guessing and knowing.</p>
+        <p>This article covers what you need to build a durable mental model: how Linux distributions relate to each other, how the filesystem is organized, how to manage processes and permissions, and - crucially - how to teach yourself anything else you need to know, no matter which distribution you're working on.</p>
+
+        <h2>A Brief Map of Linux Distributions</h2>
+        <p>Linux is a kernel - the core software that manages hardware resources and system calls. Everything else (package managers, init systems, default tooling, desktop environments) is layered on top by the distribution, or <em>distro</em>. This distinction matters because when you're troubleshooting a production system, you need to know which tools and conventions are available.</p>
+        <p>Distributions cluster into a few major families, each with shared lineage, packaging formats, and culture:</p>
+
+        <h3>The Debian / Ubuntu Family</h3>
+        <p>Debian is one of the oldest community-driven distributions, known for its strict commitment to free software and its stability. Ubuntu, built on Debian, is arguably the most widely used Linux distribution in cloud environments today. It uses <code>apt</code> (Advanced Package Tool) for package management and <code>.deb</code> packages. Most cloud provider default images - Amazon Linux 2023 being a notable exception - trace their lineage here. If you're spinning up a generic VM or a container base image, you're probably on this branch.</p>
+        <p><strong>Key distros:</strong> Debian, Ubuntu, Ubuntu Server, Linux Mint, Pop!_OS</p>
+
+        <h3>The Red Hat Family</h3>
+        <p>Red Hat Enterprise Linux (RHEL) is the dominant choice in regulated industries, large enterprises, and legacy on-premises environments that have extended into hybrid cloud. It uses <code>dnf</code> (formerly <code>yum</code>) and <code>.rpm</code> packages. CentOS was the free community rebuild of RHEL for many years until Red Hat shifted its strategy - a move that sent many teams toward AlmaLinux and Rocky Linux as drop-in replacements. Fedora is the upstream proving ground where new features land before making their way into RHEL. Amazon Linux 2023 is RHEL-adjacent in many of its conventions.</p>
+        <p><strong>Key distros:</strong> RHEL, Fedora, CentOS (legacy), AlmaLinux, Rocky Linux, Amazon Linux</p>
+
+        <h3>The Arch / Independent Family</h3>
+        <p>Arch Linux is a rolling-release distribution that gives you a minimal base and lets you build up from there. It uses <code>pacman</code> for package management. Arch users are stereotypically associated with manual configuration and a philosophy of "know what runs on your system." It's less common in production cloud environments but popular among developers who want a fast, customized local machine. Manjaro makes Arch more approachable. NixOS takes a radically different approach - declarative, reproducible system configuration - and is gaining serious traction among engineers who work heavily with infrastructure as code.</p>
+        <p><strong>Key distros:</strong> Arch Linux, Manjaro, NixOS, Void Linux</p>
+
+        <h3>The Container / Minimal Subset</h3>
+        <p>Some distributions are designed specifically to be as small as possible. Alpine Linux, used as the base for a huge number of Docker images, uses <code>apk</code> for package management and <code>musl libc</code> instead of the more common <code>glibc</code>. This causes occasional compatibility issues with software compiled against glibc, but the image sizes are dramatically smaller. Wolfi and Chainguard Images take the container-native philosophy further, building from scratch with supply-chain security as a first-class concern.</p>
+        <p><strong>Key distros:</strong> Alpine Linux, Wolfi, Flatcar Container Linux</p>
+
+        <p><strong>Practical takeaway:</strong> When you land on a new system, your first move should be identifying the distribution and version. <code>cat /etc/os-release</code> works across all modern distributions and gives you a clean, parseable output.</p>
+        <pre><code>$ cat /etc/os-release
+NAME="Ubuntu"
+VERSION="22.04.3 LTS (Jammy Jellyfish)"
+ID=ubuntu
+ID_LIKE=debian
+...</code></pre>
+        <p>Once you know the family, you know the package manager, and you know where to look for configuration files.</p>
+
+        <h2>The Filesystem Hierarchy: A Map You'll Use Every Day</h2>
+        <p>Unlike Windows, Linux does not have drive letters. Everything is mounted under a single root - <code>/</code>. The Filesystem Hierarchy Standard (FHS) defines what goes where, and understanding it means you know where to look without guessing.</p>
+        <pre><code>/
+├── bin       → Essential command binaries (ls, cp, mv, bash)
+├── boot      → Kernel and bootloader files
+├── dev       → Device files (disks, terminals, random)
+├── etc       → System-wide configuration files
+├── home      → User home directories
+├── lib       → Shared libraries for /bin and /sbin
+├── mnt       → Temporary mount points
+├── opt       → Optional/third-party software
+├── proc      → Virtual filesystem exposing kernel and process info
+├── root      → Home directory for the root user
+├── run       → Runtime data (PIDs, sockets, early boot state)
+├── sbin      → System administration binaries
+├── srv       → Data served by system services
+├── sys       → Virtual filesystem for kernel/hardware information
+├── tmp       → Temporary files (cleared on reboot)
+├── usr       → Secondary hierarchy: user-installed programs and data
+└── var       → Variable data: logs, caches, spool files</code></pre>
+        <p>A few directories deserve extra attention for cloud engineers:</p>
+        <p><code>/etc</code> is where almost every service writes its configuration. <code>sshd_config</code>, <code>nginx.conf</code>, <code>resolv.conf</code> - if something is configuring how a service behaves, look here first.</p>
+        <p><code>/proc</code> is a window into the live state of the kernel. <code>/proc/meminfo</code> shows memory usage. <code>/proc/&lt;PID&gt;/</code> contains everything about a running process. Many system tools (<code>top</code>, <code>ps</code>, <code>free</code>) are actually just reading and formatting <code>/proc</code> data.</p>
+        <p><code>/var/log</code> is where service logs land when there's no centralized log aggregator. <code>journalctl</code> is usually the better interface on systemd-based systems, but understanding that logs live in <code>/var/log</code> matters when you're debugging a system that isn't sending logs anywhere useful.</p>
+
+        <h2>Users, Groups, and Permissions</h2>
+        <p>Linux permissions are built on three concepts: <strong>owner</strong>, <strong>group</strong>, and <strong>everyone else</strong>. Each file and directory has a set of read (<code>r</code>), write (<code>w</code>), and execute (<code>x</code>) permissions for each of these three categories.</p>
+        <pre><code>$ ls -la /etc/ssh/sshd_config
+-rw-r--r-- 1 root root 3287 Jan 12 09:04 /etc/ssh/sshd_config</code></pre>
+        <p>Breaking down <code>-rw-r--r--</code>:</p>
+        <ul>
+          <li><code>-</code> → regular file (would be <code>d</code> for directory, <code>l</code> for symlink)</li>
+          <li><code>rw-</code> → owner (root) can read and write</li>
+          <li><code>r--</code> → group (root) can only read</li>
+          <li><code>r--</code> → everyone else can only read</li>
+        </ul>
+        <p><code>chmod</code> modifies permissions. <code>chown</code> changes the owner. You can use symbolic notation (<code>chmod u+x script.sh</code>) or octal notation (<code>chmod 644 config.yaml</code>). Octal is faster once you've internalized it: 4=read, 2=write, 1=execute. <code>644</code> means owner reads and writes (6), group reads (4), others read (4). <code>755</code> means owner reads, writes, executes (7), group and others read and execute (5,5).</p>
+        <p>The <code>sudo</code> command lets authorized users run commands with elevated privileges without logging in as root. <code>/etc/sudoers</code> (edited with <code>visudo</code>) controls who gets what. In cloud environments, the default user on most AMIs (<code>ubuntu</code>, <code>ec2-user</code>, <code>centos</code>) is already configured with passwordless sudo.</p>
+
+        <h2>Processes: Knowing What's Running and Why</h2>
+        <p>Every running program is a process with a unique Process ID (PID). Understanding how to inspect and manage processes is essential for debugging.</p>
+        <pre><code>ps aux              # Snapshot of all running processes
+top                 # Interactive process monitor
+htop                # Better interactive monitor (install separately)
+pgrep nginx         # Find PIDs by name
+kill &lt;PID&gt;          # Send SIGTERM (graceful shutdown)
+kill -9 &lt;PID&gt;       # Send SIGKILL (immediate termination, no cleanup)</code></pre>
+        <p><code>systemd</code> is the init system on virtually every modern Linux distribution. Services are managed as units:</p>
+        <pre><code>systemctl status nginx         # Is it running? Any recent errors?
+systemctl start nginx          # Start it
+systemctl stop nginx           # Stop it
+systemctl restart nginx        # Stop and start
+systemctl enable nginx         # Start on boot
+journalctl -u nginx -f         # Follow logs for a specific unit
+journalctl -u nginx --since "1 hour ago"   # Filtered log slice</code></pre>
+        <p>For cloud engineers dealing with containerized workloads, <code>systemd</code> often manages container runtimes themselves (Docker, containerd) rather than individual services. But the concepts translate - you're still asking "is this unit healthy, and what does its log say?"</p>
+
+        <h2>Networking Essentials</h2>
+        <p>Cloud networking is built on the same fundamentals as Linux networking. Understanding the tools gives you diagnostic capability at any layer.</p>
+        <pre><code>ip addr show              # Network interfaces and IP addresses
+ip route show             # Routing table
+ss -tlnp                  # Listening sockets (replacement for netstat)
+curl -v https://example.com   # HTTP/S request with verbose output
+dig example.com           # DNS resolution details
+traceroute example.com    # Packet path to destination</code></pre>
+        <p>Two commands that save significant time in cloud environments:</p>
+        <p><code>ss -tlnp</code> (or <code>ss -tulnp</code> for UDP too) tells you what's listening on which port and which process owns it. When a pod won't start because the port is already bound, this is how you find out who's holding it.</p>
+        <p><code>curl -v</code> is an underrated debugging tool. The verbose flag shows you connection establishment, TLS handshake, request headers, response headers, and body - all the information you need to distinguish a DNS failure from a TLS certificate problem from an application error.</p>
+
+        <h2>Teaching Yourself Anything: The Four Commands That Unlock Linux</h2>
+        <p>Here is the highest-leverage thing this article can give you: <strong>four commands that make every other command discoverable, regardless of which distribution you're on or which tool you're unfamiliar with.</strong></p>
+        <p>You don't need to memorize every flag for every command. You need to know how to find them - quickly, reliably, without a browser.</p>
+
+        <h3><code>man</code> - The Manual Pages</h3>
+        <p><code>man</code> is the primary documentation system in Linux. Every standard command and many system calls have a manual page.</p>
+        <pre><code>man ls          # Full documentation for the ls command
+man 5 passwd    # Section 5: file formats (the /etc/passwd format, not the command)
+man -k search   # Search manual page titles and descriptions</code></pre>
+        <p>Manual pages are divided into sections. Section 1 is user commands. Section 5 is file formats and conventions. Section 8 is system administration commands. When you're unsure what a flag does or what a configuration directive means, <code>man</code> is the authoritative source - not a Stack Overflow post from 2014.</p>
+        <p>Pro tip: Inside <code>man</code>, press <code>/</code> to search, <code>n</code> to jump to the next match, and <code>q</code> to quit.</p>
+
+        <h3><code>info</code> - Extended Documentation</h3>
+        <p><code>info</code> is the GNU project's documentation format, and for GNU tools it often contains more detail than <code>man</code>. Not every tool has an <code>info</code> page, but for core utilities like <code>grep</code>, <code>sed</code>, <code>awk</code>, and <code>tar</code>, it can be more thorough.</p>
+        <pre><code>info grep       # Extended docs for grep
+info coreutils  # Documentation for the GNU core utilities as a whole</code></pre>
+        <p>The navigation is different from <code>man</code> - it uses a hyperlinked structure. Arrow keys move, <code>Enter</code> follows links, <code>l</code> goes back, <code>q</code> quits.</p>
+
+        <h3><code>apropos</code> - Find Commands by Concept</h3>
+        <p><code>apropos</code> searches manual page descriptions for a keyword. This is the command for when you know what you want to do but don't know which command does it.</p>
+        <pre><code>apropos disk         # Find all commands related to disk
+apropos "network interface"   # Find commands related to network interfaces
+apropos compress     # Find compression-related tools</code></pre>
+        <pre><code>$ apropos compress
+bzip2 (1)            - a block-sorting file compressor
+gzip (1)             - compress or expand files
+lz4 (1)              - lz4, unlz4, lz4cat - Compress or decompress .lz4 files
+xz (1)               - Compress or decompress .xz and .lzma files
+zip (1)              - package and compress (archive) files
+zstd (1)             - zstd, unzstd, zstdcat - Compress or decompress .zst files</code></pre>
+        <p>On a fresh system, you may need to run <code>mandb</code> first to build the search index.</p>
+
+        <h3><code>whereis</code> - Find Where a Command Lives</h3>
+        <p><code>whereis</code> locates the binary, source code, and manual page for a command. It's useful for confirming which version of a tool is actually being invoked, especially when multiple versions are installed.</p>
+        <pre><code>whereis python3
+# python3: /usr/bin/python3 /usr/lib/python3 /usr/share/man/man1/python3.1.gz</code></pre>
+        <p>This is different from <code>which</code>, which only shows the binary that would be executed in your current PATH. <code>whereis</code> searches a broader set of standard locations. When you're debugging "why is the wrong version of this tool being used," combining <code>which</code> and <code>whereis</code> gives you the full picture.</p>
+
+        <h3>Putting Them Together</h3>
+        <p>Imagine you land on an unfamiliar Alpine Linux container and need to manipulate some network packets - you've never used this distribution before and aren't sure what tools are available.</p>
+        <pre><code>apropos packet          # What commands exist around "packet"?
+whereis tcpdump         # Is tcpdump installed, and where?
+man tcpdump             # What are the flags I need?</code></pre>
+        <p>Three commands, and you have everything you need to proceed - no internet access required. This workflow works whether you're on Ubuntu 22.04, RHEL 9, Alpine 3.18, or an embedded system you've never seen before. The commands may not be identical across distributions, but the pattern is.</p>
+
+        <h2>Shell Scripting: Automating What You Do Twice</h2>
+        <p>Any task you perform more than twice is a candidate for a script. Bash is available everywhere, and even simple scripts save meaningful time.</p>
+        <pre><code>#!/bin/bash
+set -euo pipefail        # Exit on error, undefined var, or pipe failure
+
+# Check if a service is healthy
+SERVICE="nginx"
+if systemctl is-active --quiet "$SERVICE"; then
+    echo "$SERVICE is running"
+else
+    echo "$SERVICE is NOT running - restarting..."
+    systemctl restart "$SERVICE"
+fi</code></pre>
+        <p><code>set -euo pipefail</code> at the top of every script is a discipline worth building. <code>-e</code> exits on any command failure. <code>-u</code> treats unset variables as errors (catches typos in variable names). <code>-o pipefail</code> propagates failures through pipes, so <code>false | true</code> fails rather than succeeding because the last command succeeded.</p>
+
+        <h2>Building a Linux Mental Model</h2>
+        <p>Linux rewards depth. The more you understand about how processes, files, permissions, and the network stack relate to each other, the faster you'll move when something goes wrong. The tools covered here - <code>man</code>, <code>info</code>, <code>apropos</code>, <code>whereis</code> - are the ones that ensure you're never truly stuck on an unfamiliar system.</p>
+        <p>Start with curiosity. The next time you run a command you don't fully understand, run <code>man</code> on it first. Look at the flags you never use. Follow one unfamiliar option down its path. Over time, this builds a mental model of Linux that makes cloud engineering intuitive rather than reactive.</p>
+        <p>The distribution might change. The kernel doesn't. The commands to understand it don't either.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics & Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Linux</span>
+            <span class="blog-tag">Cloud Engineering</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Kubernetes</span>
+            <span class="blog-tag">Containers</span>
+            <span class="blog-tag">System Administration</span>
+            <span class="blog-tag">Networking</span>
+            <span class="blog-tag">Shell Scripting</span>
+            <span class="blog-tag">Ubuntu</span>
+            <span class="blog-tag">RHEL</span>
+            <span class="blog-tag">Alpine Linux</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

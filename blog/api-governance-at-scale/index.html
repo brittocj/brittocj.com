@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Implementing API standards, versioning strategies, and developer experience considerations.">
+  <meta name="author" content="Antony Britto C J">
+  <title>API Governance and Management at Scale | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">API Governance and Management at Scale</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 June 12, 2026</div>
+            <div class="blog-meta-item">⏱️ 3 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Implementing API standards, versioning strategies, and developer experience considerations.</p>
+
+        <p>APIs are contracts between teams. Without governance, every service invents its own conventions and integration becomes expensive.</p>
+        <h2>Standards That Matter</h2>
+        <p>Consistent naming, error formats, pagination, and authentication. OpenAPI specifications as the source of truth. Version in URLs or headers, but pick one approach and document deprecation timelines.</p>
+        <h2>Developer Experience</h2>
+        <p>Sandbox environments, interactive documentation, and SDKs where justified. Rate limiting and quotas protect backends. Analytics show which APIs deliver value and which linger unused.</p>
+        <h2>Governance Without Bureaucracy</h2>
+        <p>Lightweight design reviews for external-facing APIs. Automated linting of OpenAPI specs in CI. A central catalog (Backstage or dedicated portal) for discovery.</p>
+        <p>Good API governance accelerates teams. Bad governance sends them around the platform.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">API Management</span>
+            <span class="blog-tag">REST</span>
+            <span class="blog-tag">Governance</span>
+            <span class="blog-tag">Developer Experience</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
