@@ -7,10 +7,10 @@
   const contactForm = document.getElementById('contactForm');
 
   const BLOG_PREVIEW = [
+    { slug: 'devops-ready-reckoner', title: 'DevOps Ready Reckoner: Essential Cheat Sheets' },
     { slug: 'owning-google-us', title: 'The Day I Legally Owned google.us for a Short Time' },
     { slug: 'agentic-ai-in-india', title: 'My Vision for the Future of Agentic AI in India' },
     { slug: 'microservices-on-azure-aks', title: 'Microservices Architecture on Azure Kubernetes Service' },
-    { slug: 'linux-fundamentals', title: 'Linux Fundamentals: The Foundation Every Cloud Engineer Needs' },
   ];
 
   function getBlogArticleHref(slug) {

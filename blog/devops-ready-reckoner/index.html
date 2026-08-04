@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DevOps ready reckoner: cheat sheets for Terraform, Kubernetes, kubectl, K3s, Docker, Docker Compose, Helm, Ansible, Git, and CI/CD.">
+  <meta name="author" content="Antony Britto C J">
+  <title>DevOps Ready Reckoner: Essential Cheat Sheets | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">DevOps Ready Reckoner: Essential Cheat Sheets</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 August 4, 2026</div>
+            <div class="blog-meta-item">⏱️ 18 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">A single reference page for the tools DevOps engineers reach for daily: Terraform, Kubernetes, kubectl, K3s, Docker, Docker Compose, Helm, Ansible, Git, and CI/CD. Bookmark it, search it, and use it when you need the command or YAML skeleton fast.</p>
+
+        <nav class="reckoner-toc" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#terraform">Terraform</a></li>
+            <li><a href="#kubectl">kubectl</a></li>
+            <li><a href="#kubernetes-yaml">Kubernetes YAML</a></li>
+            <li><a href="#k3s">K3s</a></li>
+            <li><a href="#dockerfile">Dockerfile</a></li>
+            <li><a href="#docker-compose">Docker Compose</a></li>
+            <li><a href="#helm">Helm</a></li>
+            <li><a href="#ansible">Ansible</a></li>
+            <li><a href="#git-cicd">Git &amp; CI/CD</a></li>
+            <li><a href="#linux-shell">Linux &amp; Shell</a></li>
+            <li><a href="#observability">Observability</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="terraform">Terraform Cheat Sheet</h2>
+        <p>Terraform manages infrastructure through declarative HCL files and a state file that tracks what exists in the real world.</p>
+
+        <h3>CLI essentials</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>terraform init</code></td><td>Download providers, set up backend</td></tr>
+            <tr><td><code>terraform fmt</code></td><td>Format HCL files</td></tr>
+            <tr><td><code>terraform validate</code></td><td>Check syntax and internal consistency</td></tr>
+            <tr><td><code>terraform plan</code></td><td>Preview changes before apply</td></tr>
+            <tr><td><code>terraform apply</code></td><td>Create or update resources</td></tr>
+            <tr><td><code>terraform apply -auto-approve</code></td><td>Apply without interactive prompt</td></tr>
+            <tr><td><code>terraform destroy</code></td><td>Remove all managed resources</td></tr>
+            <tr><td><code>terraform output</code></td><td>Print output values</td></tr>
+            <tr><td><code>terraform state list</code></td><td>List resources in state</td></tr>
+            <tr><td><code>terraform state show &lt;addr&gt;</code></td><td>Inspect one resource in state</td></tr>
+            <tr><td><code>terraform import &lt;addr&gt; &lt;id&gt;</code></td><td>Import existing resource into state</td></tr>
+            <tr><td><code>terraform workspace list</code></td><td>List workspaces (dev/stage/prod)</td></tr>
+            <tr><td><code>terraform workspace select &lt;name&gt;</code></td><td>Switch workspace</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Project structure</h3>
+        <pre><code>project/
+├── main.tf           # Primary resources
+├── variables.tf      # Input variables
+├── outputs.tf        # Exported values
+├── providers.tf      # Provider configuration
+├── versions.tf       # Terraform &amp; provider version pins
+├── terraform.tfvars  # Variable values (do not commit secrets)
+└── modules/
+    └── vpc/
+        ├── main.tf
+        ├── variables.tf
+        └── outputs.tf</code></pre>
+
+        <h3>HCL skeleton</h3>
+        <pre><code>terraform {
+  required_version = "&gt;= 1.6.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~&gt; 5.0"
+    }
+  }
+  backend "s3" {
+    bucket = "my-tf-state"
+    key    = "prod/terraform.tfstate"
+    region = "ap-south-1"
+  }
+}
+
+provider "aws" {
+  region = var.region
+}
+
+variable "region" {
+  type    = string
+  default = "ap-south-1"
+}
+
+locals {
+  common_tags = {
+    Environment = var.environment
+    ManagedBy   = "terraform"
+  }
+}
+
+resource "aws_s3_bucket" "logs" {
+  bucket = "${var.project}-logs"
+  tags   = local.common_tags
+}
+
+output "bucket_name" {
+  value = aws_s3_bucket.logs.id
+}</code></pre>
+
+        <h3>Common patterns</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Pattern</th><th>Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Conditional resource</td><td><code>count = var.enabled ? 1 : 0</code></td></tr>
+            <tr><td>For-each map</td><td><code>for_each = var.subnets</code></td></tr>
+            <tr><td>Data source</td><td><code>data "aws_ami" "latest" { ... }</code></td></tr>
+            <tr><td>Module call</td><td><code>module "vpc" { source = "./modules/vpc" }</code></td></tr>
+            <tr><td>Depends on</td><td><code>depends_on = [aws_iam_role_policy.attach]</code></td></tr>
+            <tr><td>Lifecycle</td><td><code>lifecycle { prevent_destroy = true }</code></td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Production tip:</strong> Always run <code>terraform plan</code> in CI before merge. Store state remotely (S3 + DynamoDB lock, Terraform Cloud, or equivalent). Never commit <code>.tfstate</code> or secrets in <code>.tfvars</code>.</div>
+
+        <h2 id="kubectl">kubectl Cheat Sheet</h2>
+        <p><code>kubectl</code> is the CLI for Kubernetes. Install it separately or use it through K3s (<code>k3s kubectl</code>).</p>
+
+        <h3>Context and configuration</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>kubectl config get-contexts</code></td><td>List available clusters</td></tr>
+            <tr><td><code>kubectl config use-context &lt;ctx&gt;</code></td><td>Switch cluster</td></tr>
+            <tr><td><code>kubectl cluster-info</code></td><td>API server and CoreDNS endpoints</td></tr>
+            <tr><td><code>kubectl api-resources</code></td><td>List all resource types</td></tr>
+            <tr><td><code>kubectl explain pod.spec</code></td><td>Field documentation</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Pods and workloads</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>kubectl get pods -A</code></td><td>All pods in all namespaces</td></tr>
+            <tr><td><code>kubectl get pods -o wide</code></td><td>Pods with node and IP</td></tr>
+            <tr><td><code>kubectl describe pod &lt;name&gt;</code></td><td>Events, conditions, container state</td></tr>
+            <tr><td><code>kubectl logs &lt;pod&gt; -f</code></td><td>Stream container logs</td></tr>
+            <tr><td><code>kubectl logs &lt;pod&gt; -c &lt;container&gt;</code></td><td>Logs from one container</td></tr>
+            <tr><td><code>kubectl logs &lt;pod&gt; --previous</code></td><td>Logs from crashed container</td></tr>
+            <tr><td><code>kubectl exec -it &lt;pod&gt; -- /bin/sh</code></td><td>Shell into running pod</td></tr>
+            <tr><td><code>kubectl port-forward pod/&lt;pod&gt; 8080:80</code></td><td>Local access to pod port</td></tr>
+            <tr><td><code>kubectl run tmp --image=nginx --rm -it -- /bin/sh</code></td><td>Ephemeral debug pod</td></tr>
+            <tr><td><code>kubectl delete pod &lt;name&gt; --grace-period=0 --force</code></td><td>Force delete stuck pod</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Deployments, Services, Ingress</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>kubectl get deploy,svc,ing</code></td><td>List common workload objects</td></tr>
+            <tr><td><code>kubectl rollout status deploy/&lt;name&gt;</code></td><td>Watch rollout progress</td></tr>
+            <tr><td><code>kubectl rollout history deploy/&lt;name&gt;</code></td><td>Revision history</td></tr>
+            <tr><td><code>kubectl rollout undo deploy/&lt;name&gt;</code></td><td>Rollback to previous revision</td></tr>
+            <tr><td><code>kubectl scale deploy/&lt;name&gt; --replicas=5</code></td><td>Scale replicas</td></tr>
+            <tr><td><code>kubectl set image deploy/&lt;name&gt; app=img:v2</code></td><td>Trigger rolling update</td></tr>
+            <tr><td><code>kubectl expose deploy &lt;name&gt; --port=80</code></td><td>Create ClusterIP Service</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Debugging and troubleshooting</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>kubectl get events --sort-by='.lastTimestamp'</code></td><td>Recent cluster events</td></tr>
+            <tr><td><code>kubectl top nodes</code></td><td>Node CPU/memory (needs metrics-server)</td></tr>
+            <tr><td><code>kubectl top pods</code></td><td>Pod resource usage</td></tr>
+            <tr><td><code>kubectl auth can-i create pods</code></td><td>Check RBAC permission</td></tr>
+            <tr><td><code>kubectl get pod &lt;name&gt; -o yaml</code></td><td>Full manifest</td></tr>
+            <tr><td><code>kubectl get pods -l app=myapp</code></td><td>Filter by label</td></tr>
+            <tr><td><code>kubectl cordon &lt;node&gt;</code></td><td>Mark node unschedulable</td></tr>
+            <tr><td><code>kubectl drain &lt;node&gt; --ignore-daemonsets</code></td><td>Evict pods before maintenance</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Useful output formats</h3>
+        <pre><code>kubectl get pods -o jsonpath='{.items[*].metadata.name}'
+kubectl get nodes -o custom-columns=NAME:.metadata.name,STATUS:.status.conditions[-1].type
+kubectl get deploy myapp -o jsonpath='{.spec.replicas}'</code></pre>
+
+        <h2 id="kubernetes-yaml">Kubernetes YAML Quick Reference</h2>
+        <p>Core API objects every DevOps engineer should recognize.</p>
+
+        <h3>Deployment + Service + Ingress</h3>
+        <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: production
+  labels:
+    app: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: myregistry/api:1.2.0
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+          envFrom:
+            - configMapRef:
+                name: api-config
+            - secretRef:
+                name: api-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: production
+spec:
+  selector:
+    app: api
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api
+  namespace: production
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [api.example.com]
+      secretName: api-tls
+  rules:
+    - host: api.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 80</code></pre>
+
+        <h3>ConfigMap, Secret, HPA, PVC</h3>
+        <pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+data:
+  LOG_LEVEL: info
+  FEATURE_FLAG_X: "true"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: api-secrets
+type: Opaque
+stringData:
+  DATABASE_URL: postgres://user:pass@db:5432/app
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: gp3
+  resources:
+    requests:
+      storage: 20Gi</code></pre>
+
+        <h3>Service types</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Type</th><th>Use case</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>ClusterIP</code></td><td>Internal only (default)</td></tr>
+            <tr><td><code>NodePort</code></td><td>Expose on each node IP at a static port</td></tr>
+            <tr><td><code>LoadBalancer</code></td><td>Cloud LB in front of pods</td></tr>
+            <tr><td><code>ExternalName</code></td><td>CNAME to external DNS name</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="k3s">K3s Cheat Sheet</h2>
+        <p>K3s is a lightweight, CNCF-certified Kubernetes distribution from Rancher. Ideal for edge, IoT, CI runners, and homelab clusters. It bundles <code>containerd</code>, CoreDNS, Traefik ingress, local-path storage, and a single binary.</p>
+
+        <h3>Install</h3>
+        <pre><code># Server (control plane + worker)
+curl -sfL https://get.k3s.io | sh -
+
+# Agent (join worker node)
+curl -sfL https://get.k3s.io | K3S_URL=https://&lt;server-ip&gt;:6443 \
+  K3S_TOKEN=&lt;node-token&gt; sh -
+
+# Node token (on server)
+sudo cat /var/lib/rancher/k3s/server/node-token</code></pre>
+
+        <h3>Service management</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>sudo systemctl status k3s</code></td><td>Server status</td></tr>
+            <tr><td><code>sudo systemctl restart k3s</code></td><td>Restart server</td></tr>
+            <tr><td><code>sudo k3s kubectl get nodes</code></td><td>Run kubectl without separate install</td></tr>
+            <tr><td><code>sudo cat /etc/rancher/k3s/k3s.yaml</code></td><td>Kubeconfig for remote access</td></tr>
+            <tr><td><code>sudo k3s crictl ps</code></td><td>List containers via CRI</td></tr>
+            <tr><td><code>sudo k3s ctr images ls</code></td><td>List images in containerd</td></tr>
+          </tbody>
+        </table>
+
+        <h3>K3s vs full Kubernetes</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Topic</th><th>K3s default</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Runtime</td><td>containerd</td><td>No Docker daemon required</td></tr>
+            <tr><td>Ingress</td><td>Traefik</td><td>Disable with <code>--disable traefik</code></td></tr>
+            <tr><td>Storage</td><td>local-path-provisioner</td><td>HostPath-based dynamic PVs</td></tr>
+            <tr><td>LoadBalancer</td><td>ServiceLB (Klipper)</td><td>Binds ports on nodes</td></tr>
+            <tr><td>Datastore</td><td>SQLite (single server)</td><td>Use etcd or external DB for HA</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Common install flags</h3>
+        <pre><code># /etc/rancher/k3s/config.yaml
+write-kubeconfig-mode: "0644"
+tls-san:
+  - "k3s.example.com"
+disable:
+  - traefik
+cluster-cidr: "10.42.0.0/16"
+service-cidr: "10.43.0.0/16"</code></pre>
+
+        <div class="cheat-callout"><strong>Tip:</strong> Export kubeconfig once: <code>export KUBECONFIG=/etc/rancher/k3s/k3s.yaml</code> then use plain <code>kubectl</code> for all commands below.</div>
+
+        <h2 id="dockerfile">Dockerfile Structure</h2>
+        <p>A Dockerfile is a ordered list of instructions that build an OCI image layer by layer.</p>
+
+        <h3>Instruction reference</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Instruction</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>FROM</code></td><td>Base image (required, first instruction after optional syntax)</td></tr>
+            <tr><td><code>WORKDIR</code></td><td>Set working directory for subsequent commands</td></tr>
+            <tr><td><code>COPY</code></td><td>Copy files from build context</td></tr>
+            <tr><td><code>ADD</code></td><td>Like COPY + auto-extract tar and remote URLs</td></tr>
+            <tr><td><code>RUN</code></td><td>Execute command during build (creates layer)</td></tr>
+            <tr><td><code>ENV</code></td><td>Set environment variable</td></tr>
+            <tr><td><code>ARG</code></td><td>Build-time variable (not in final image unless referenced)</td></tr>
+            <tr><td><code>EXPOSE</code></td><td>Document port (does not publish)</td></tr>
+            <tr><td><code>USER</code></td><td>Run as non-root user</td></tr>
+            <tr><td><code>CMD</code></td><td>Default command at container start (one per Dockerfile)</td></tr>
+            <tr><td><code>ENTRYPOINT</code></td><td>Main executable; CMD args append to it</td></tr>
+            <tr><td><code>HEALTHCHECK</code></td><td>Container health probe</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Multi-stage production template</h3>
+        <pre><code># syntax=docker/dockerfile:1
+
+# --- Build stage ---
+FROM golang:1.22-alpine AS builder
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app .
+
+# --- Runtime stage ---
+FROM gcr.io/distroless/static-debian12:nonroot
+WORKDIR /
+COPY --from=builder /app /app
+USER nonroot:nonroot
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=3s CMD ["/app", "healthcheck"]
+ENTRYPOINT ["/app"]</code></pre>
+
+        <h3>Node.js example</h3>
+        <pre><code>FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+FROM node:20-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+USER node
+EXPOSE 3000
+CMD ["node", "server.js"]</code></pre>
+
+        <h3>.dockerignore essentials</h3>
+        <pre><code>.git
+node_modules
+dist
+*.log
+.env
+Dockerfile*
+docker-compose*
+README.md
+.terraform</code></pre>
+
+        <h3>Build and run</h3>
+        <pre><code>docker build -t myapp:1.0.0 .
+docker build --target builder -t myapp:build .
+docker run -d -p 8080:8080 --name myapp myapp:1.0.0
+docker exec -it myapp sh
+docker logs -f myapp</code></pre>
+
+        <h2 id="docker-compose">Docker Compose YAML Structure</h2>
+        <p>Compose defines multi-container applications in a single YAML file. Compose Specification v2 is the current standard (use <code>docker compose</code>, not legacy <code>docker-compose</code>).</p>
+
+        <h3>Top-level keys</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Key</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>services</code></td><td>Container definitions (required)</td></tr>
+            <tr><td><code>networks</code></td><td>Custom networks</td></tr>
+            <tr><td><code>volumes</code></td><td>Named or external volumes</td></tr>
+            <tr><td><code>configs</code></td><td>Swarm-style configs (Compose supports)</td></tr>
+            <tr><td><code>secrets</code></td><td>Secret files mounted into services</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Full stack template</h3>
+        <pre><code>name: mystack
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: production
+    image: myregistry/api:${TAG:-latest}
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://app:secret@db:5432/app
+      REDIS_URL: redis://cache:6379/0
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
+    networks:
+      - backend
+    volumes:
+      - api-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: app
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cache:
+    image: redis:7-alpine
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+    networks:
+      - backend
+      - frontend
+    profiles:
+      - proxy
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
+
+volumes:
+  pg-data:
+  api-data:</code></pre>
+
+        <h3>Compose CLI</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>docker compose up -d</code></td><td>Start all services detached</td></tr>
+            <tr><td><code>docker compose down -v</code></td><td>Stop and remove volumes</td></tr>
+            <tr><td><code>docker compose ps</code></td><td>List running services</td></tr>
+            <tr><td><code>docker compose logs -f api</code></td><td>Follow service logs</td></tr>
+            <tr><td><code>docker compose exec api sh</code></td><td>Shell into service</td></tr>
+            <tr><td><code>docker compose config</code></td><td>Validate and render merged YAML</td></tr>
+            <tr><td><code>docker compose --profile proxy up</code></td><td>Start with profile enabled</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="helm">Helm Cheat Sheet</h2>
+        <p>Helm is the package manager for Kubernetes. Charts are templated YAML bundles versioned and released as units.</p>
+
+        <h3>CLI</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>helm repo add bitnami https://charts.bitnami.com/bitnami</code></td><td>Add chart repository</td></tr>
+            <tr><td><code>helm search repo nginx</code></td><td>Search charts</td></tr>
+            <tr><td><code>helm install myrelease bitnami/nginx</code></td><td>Install chart</td></tr>
+            <tr><td><code>helm upgrade myrelease ./chart -f values.yaml</code></td><td>Upgrade release</td></tr>
+            <tr><td><code>helm rollback myrelease 2</code></td><td>Rollback to revision 2</td></tr>
+            <tr><td><code>helm list -A</code></td><td>All releases</td></tr>
+            <tr><td><code>helm uninstall myrelease</code></td><td>Remove release</td></tr>
+            <tr><td><code>helm template myrelease ./chart</code></td><td>Render locally without install</td></tr>
+            <tr><td><code>helm get values myrelease</code></td><td>Show deployed values</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Chart structure</h3>
+        <pre><code>mychart/
+├── Chart.yaml
+├── values.yaml
+├── templates/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   ├── ingress.yaml
+│   └── _helpers.tpl
+└── charts/          # Subchart dependencies</code></pre>
+
+        <h3>values.yaml snippet</h3>
+        <pre><code>replicaCount: 3
+image:
+  repository: myregistry/api
+  tag: "1.2.0"
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
+ingress:
+  enabled: true
+  host: api.example.com
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi</code></pre>
+
+        <h2 id="ansible">Ansible Quick Reference</h2>
+        <p>Ansible automates configuration management and ad-hoc tasks over SSH (or WinRM) with YAML playbooks.</p>
+
+        <h3>CLI</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>ansible all -m ping</code></td><td>Test connectivity</td></tr>
+            <tr><td><code>ansible web -a "uptime"</code></td><td>Ad-hoc command on group</td></tr>
+            <tr><td><code>ansible-playbook site.yml</code></td><td>Run playbook</td></tr>
+            <tr><td><code>ansible-playbook site.yml --check</code></td><td>Dry run</td></tr>
+            <tr><td><code>ansible-playbook site.yml -l webservers</code></td><td>Limit to host pattern</td></tr>
+            <tr><td><code>ansible-vault encrypt secrets.yml</code></td><td>Encrypt sensitive vars</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Inventory (INI)</h3>
+        <pre><code>[webservers]
+web1 ansible_host=10.0.1.10
+web2 ansible_host=10.0.1.11
+
+[webservers:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_ed25519</code></pre>
+
+        <h3>Playbook skeleton</h3>
+        <pre><code>---
+- name: Configure web servers
+  hosts: webservers
+  become: true
+  vars:
+    app_port: 8080
+  tasks:
+    - name: Install nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Deploy config
+      ansible.builtin.template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+      notify: Reload nginx
+
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded</code></pre>
+
+        <h3>Common modules</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Module</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>ansible.builtin.copy</code></td><td>Copy file to host</td></tr>
+            <tr><td><code>ansible.builtin.template</code></td><td>Jinja2 template to file</td></tr>
+            <tr><td><code>ansible.builtin.service</code></td><td>Manage systemd service</td></tr>
+            <tr><td><code>ansible.builtin.user</code></td><td>Manage users</td></tr>
+            <tr><td><code>community.docker.docker_container</code></td><td>Manage containers</td></tr>
+            <tr><td><code>amazon.aws.ec2_instance</code></td><td>Manage EC2 instances</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="git-cicd">Git &amp; CI/CD Quick Reference</h2>
+
+        <h3>Git essentials</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>git status</code></td><td>Working tree state</td></tr>
+            <tr><td><code>git log --oneline -10</code></td><td>Recent commits</td></tr>
+            <tr><td><code>git diff</code></td><td>Unstaged changes</td></tr>
+            <tr><td><code>git stash push -m "wip"</code></td><td>Stash changes</td></tr>
+            <tr><td><code>git cherry-pick &lt;sha&gt;</code></td><td>Apply one commit</td></tr>
+            <tr><td><code>git rebase origin/main</code></td><td>Rebase on latest main</td></tr>
+            <tr><td><code>git revert &lt;sha&gt;</code></td><td>Safe undo via new commit</td></tr>
+          </tbody>
+        </table>
+
+        <h3>GitHub Actions workflow skeleton</h3>
+        <pre><code>name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check
+        working-directory: infra
+      - run: terraform init -backend=false
+        working-directory: infra
+      - run: terraform validate
+        working-directory: infra</code></pre>
+
+        <h3>Pipeline stages (mental model)</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Stage</th><th>Typical checks</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Lint</td><td>fmt, eslint, tflint, yamllint</td></tr>
+            <tr><td>Test</td><td>unit tests, terraform validate</td></tr>
+            <tr><td>Build</td><td>docker build, compile artifacts</td></tr>
+            <tr><td>Scan</td><td>trivy, snyk, checkov, tfsec</td></tr>
+            <tr><td>Deploy</td><td>helm upgrade, terraform apply (with approval)</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="linux-shell">Linux &amp; Shell One-Liners</h2>
+        <p>For deeper Linux coverage, see <a href="../linux-fundamentals/index.html">Linux Fundamentals</a>. These one-liners cover daily DevOps tasks.</p>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Task</th><th>Command</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Disk usage</td><td><code>df -h &amp;&amp; du -sh /* 2&gt;/dev/null | sort -h</code></td></tr>
+            <tr><td>Find large files</td><td><code>find / -xdev -type f -size +100M 2&gt;/dev/null</code></td></tr>
+            <tr><td>Process on port</td><td><code>ss -tlnp | grep :8080</code></td></tr>
+            <tr><td>Follow syslog</td><td><code>journalctl -u nginx -f</code></td></tr>
+            <tr><td>HTTP check</td><td><code>curl -sI https://example.com | head -1</code></td></tr>
+            <tr><td>DNS lookup</td><td><code>dig +short api.example.com</code></td></tr>
+            <tr><td>JSON pretty-print</td><td><code>curl -s url | jq .</code></td></tr>
+            <tr><td>Parallel SSH</td><td><code>parallel-ssh -i -H hosts.txt "uptime"</code></td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="observability">Observability Quick Reference</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Signal</th><th>Tools</th><th>DevOps use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Metrics</td><td>Prometheus, Grafana, CloudWatch</td><td>SLOs, alerting, capacity</td></tr>
+            <tr><td>Logs</td><td>Loki, ELK, Fluent Bit</td><td>Incident triage, audit</td></tr>
+            <tr><td>Traces</td><td>Jaeger, Tempo, OpenTelemetry</td><td>Latency debugging</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Prometheus PromQL starters</h3>
+        <pre><code>rate(http_requests_total[5m])
+histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+up{job="kubernetes-pods"} == 0</code></pre>
+
+        <h3>Incident checklist</h3>
+        <ul>
+          <li>What changed? (deploy, config, traffic, dependency)</li>
+          <li>Is it global or isolated? (one pod, one AZ, all users)</li>
+          <li>Check: <code>kubectl get pods</code>, events, recent deploys, dashboards, error rate</li>
+          <li>Mitigate first (rollback, scale, feature flag), root-cause second</li>
+          <li>Document timeline and write a blameless postmortem</li>
+        </ul>
+
+        <div class="cheat-callout"><strong>Keep this page useful:</strong> Pin it in your browser, print the sections you use most, and pair it with official docs when you need version-specific behavior. DevOps is a practice of repeatable, observable, automatable systems. These cheat sheets are the shortcuts; understanding the why behind each command is what makes you effective under pressure.</div>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Terraform</span>
+            <span class="blog-tag">Kubernetes</span>
+            <span class="blog-tag">kubectl</span>
+            <span class="blog-tag">K3s</span>
+            <span class="blog-tag">Docker</span>
+            <span class="blog-tag">Docker Compose</span>
+            <span class="blog-tag">Helm</span>
+            <span class="blog-tag">Ansible</span>
+            <span class="blog-tag">CI/CD</span>
+            <span class="blog-tag">Cheat Sheet</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
