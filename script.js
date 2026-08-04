@@ -43,6 +43,25 @@
     listItem.classList.add('nav__blog-item');
     blogLink.classList.add('nav__blog-link');
 
+    const boardLabel = blogLink.textContent.trim();
+    blogLink.textContent = '';
+
+    const swing = document.createElement('div');
+    swing.className = 'nav__blog-sign-swing';
+
+    const peg = document.createElement('span');
+    peg.className = 'nav__blog-sign-peg';
+    peg.setAttribute('aria-hidden', 'true');
+
+    const board = document.createElement('span');
+    board.className = 'nav__blog-sign-board';
+    board.textContent = boardLabel;
+
+    blogLink.appendChild(board);
+    swing.appendChild(peg);
+    swing.appendChild(blogLink);
+    listItem.insertBefore(swing, listItem.firstChild);
+
     const tooltip = document.createElement('div');
     tooltip.className = 'nav__blog-tooltip';
     tooltip.setAttribute('role', 'tooltip');
@@ -226,6 +245,54 @@
   }
 
   initReckonerTocJump();
+
+  function initBlogJumpTop() {
+    const blogPost = document.querySelector('.blog-post');
+    if (!blogPost) return;
+
+    const jumpTop = document.createElement('a');
+    jumpTop.href = '#';
+    jumpTop.className = 'blog-jump-top';
+    jumpTop.id = 'blogJumpTop';
+    jumpTop.hidden = true;
+    jumpTop.setAttribute('aria-label', 'Jump to top');
+    jumpTop.innerHTML = `
+      <span class="blog-jump-top__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 19V5"></path>
+          <path d="M5 12l7-7 7 7"></path>
+        </svg>
+      </span>
+      <span>Top</span>
+    `;
+    document.body.appendChild(jumpTop);
+
+    const reckonerJump = document.getElementById('reckonerTocJump');
+    const scrollThreshold = 400;
+
+    const updateJumpTop = () => {
+      jumpTop.hidden = window.scrollY < scrollThreshold;
+
+      const reckonerVisible = reckonerJump && !reckonerJump.hidden;
+      jumpTop.classList.toggle('blog-jump-top--offset', reckonerVisible);
+    };
+
+    jumpTop.addEventListener('click', (event) => {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', updateJumpTop, { passive: true });
+
+    if (reckonerJump) {
+      const reckonerObserver = new MutationObserver(updateJumpTop);
+      reckonerObserver.observe(reckonerJump, { attributes: true, attributeFilter: ['hidden'] });
+    }
+
+    updateJumpTop();
+  }
+
+  initBlogJumpTop();
 
   // Sticky nav background on scroll
   window.addEventListener('scroll', () => {

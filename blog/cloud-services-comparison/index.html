@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Side-by-side comparison of AWS, Azure, GCP, and OCI cloud services: compute, Kubernetes, storage, databases, networking, identity, security, and more.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Cloud Services Comparison: AWS vs Azure vs GCP vs OCI | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content blog-content--wide">
+        <div class="blog-header">
+          <h1 class="blog-title">Cloud Services Comparison: AWS vs Azure vs GCP vs OCI</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 August 4, 2026</div>
+            <div class="blog-meta-item">⏱️ 12 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">A practical mapping of equivalent services across the four major clouds. Use this when translating architectures between providers, planning multi-cloud strategy, or choosing where a workload fits best.</p>
+
+        <p>Every hyperscaler offers the same broad categories: virtual machines, managed Kubernetes, object storage, relational databases, identity, and observability. The names differ, the integration depth varies, and pricing models are never apples-to-apples. This guide maps the services I use most often when architecting across <strong>AWS</strong>, <strong>Microsoft Azure</strong>, <strong>Google Cloud (GCP)</strong>, and <strong>Oracle Cloud Infrastructure (OCI)</strong>.</p>
+
+        <p>For deeper Kubernetes reference architectures per cloud, see the dedicated posts on <a href="../microservices-on-aws-eks/index.html">Amazon EKS</a>, <a href="../microservices-on-azure-aks/index.html">Azure AKS</a>, <a href="../microservices-on-gcp-gke/index.html">Google GKE</a>, and <a href="../microservices-on-oci-oke/index.html">Oracle OKE</a>.</p>
+
+        <nav class="reckoner-toc" aria-label="Comparison sections">
+          <h2>Sections</h2>
+          <ol>
+            <li><a href="#at-a-glance">At a glance</a></li>
+            <li><a href="#compute">Compute</a></li>
+            <li><a href="#containers">Containers &amp; Kubernetes</a></li>
+            <li><a href="#serverless">Serverless</a></li>
+            <li><a href="#storage">Storage</a></li>
+            <li><a href="#databases">Databases</a></li>
+            <li><a href="#networking">Networking</a></li>
+            <li><a href="#identity">Identity &amp; access</a></li>
+            <li><a href="#security">Security &amp; secrets</a></li>
+            <li><a href="#observability">Observability</a></li>
+            <li><a href="#devops">DevOps &amp; CI/CD</a></li>
+            <li><a href="#ai-ml">AI &amp; ML</a></li>
+            <li><a href="#messaging">Messaging &amp; integration</a></li>
+            <li><a href="#when-to-choose">When to choose</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="at-a-glance">At a Glance</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Dimension</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Market position</th>
+                <td>Largest share, broadest catalog</td>
+                <td>Enterprise &amp; Microsoft ecosystem leader</td>
+                <td>Strong in data, analytics, and Kubernetes</td>
+                <td>Enterprise Oracle workloads, competitive pricing</td>
+              </tr>
+              <tr>
+                <th scope="row">Regions (approx.)</th>
+                <td>30+ regions</td>
+                <td>60+ regions</td>
+                <td>40+ regions</td>
+                <td>40+ regions</td>
+              </tr>
+              <tr>
+                <th scope="row">Primary CLI</th>
+                <td><code>aws</code></td>
+                <td><code>az</code></td>
+                <td><code>gcloud</code></td>
+                <td><code>oci</code></td>
+              </tr>
+              <tr>
+                <th scope="row">IaC ecosystem</th>
+                <td>CloudFormation, CDK, Terraform</td>
+                <td>Bicep, ARM, Terraform</td>
+                <td>Deployment Manager, Terraform</td>
+                <td>Resource Manager, Terraform</td>
+              </tr>
+              <tr>
+                <th scope="row">Billing model</th>
+                <td>Pay-as-you-go, Savings Plans, RIs</td>
+                <td>Pay-as-you-go, Reservations, Hybrid Benefit</td>
+                <td>Pay-as-you-go, Committed Use</td>
+                <td>Pay-as-you-go, UCM, often lower list compute</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="compute">Compute</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Virtual machines</th>
+                <td>EC2</td>
+                <td>Virtual Machines</td>
+                <td>Compute Engine</td>
+                <td>Compute (VM instances)</td>
+              </tr>
+              <tr>
+                <th scope="row">Auto scaling groups</th>
+                <td>EC2 Auto Scaling</td>
+                <td>Virtual Machine Scale Sets</td>
+                <td>Managed Instance Groups</td>
+                <td>Instance Pools / Cluster Networks</td>
+              </tr>
+              <tr>
+                <th scope="row">Bare metal</th>
+                <td>EC2 Bare Metal</td>
+                <td>Azure BareMetal</td>
+                <td>Bare Metal Solution</td>
+                <td>Bare Metal instances</td>
+              </tr>
+              <tr>
+                <th scope="row">Spot / preemptible</th>
+                <td>EC2 Spot Instances</td>
+                <td>Spot Virtual Machines</td>
+                <td>Spot VMs</td>
+                <td>Preemptible instances</td>
+              </tr>
+              <tr>
+                <th scope="row">VM images</th>
+                <td>AMI (EC2)</td>
+                <td>Azure Marketplace / Shared Image Gallery</td>
+                <td>Compute Engine images</td>
+                <td>Custom images / Marketplace</td>
+              </tr>
+              <tr>
+                <th scope="row">Dedicated hosts</th>
+                <td>Dedicated Hosts</td>
+                <td>Dedicated Host</td>
+                <td>Sole-tenant nodes</td>
+                <td>Dedicated VM Hosts</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="containers">Containers &amp; Kubernetes</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Managed Kubernetes</th>
+                <td>Amazon EKS</td>
+                <td>Azure Kubernetes Service (AKS)</td>
+                <td>Google Kubernetes Engine (GKE)</td>
+                <td>Oracle Kubernetes Engine (OKE)</td>
+              </tr>
+              <tr>
+                <th scope="row">Serverless containers</th>
+                <td>AWS Fargate (ECS/EKS)</td>
+                <td>Azure Container Apps</td>
+                <td>Cloud Run</td>
+                <td>OCI Container Instances</td>
+              </tr>
+              <tr>
+                <th scope="row">Container orchestration (non-K8s)</th>
+                <td>Amazon ECS</td>
+                <td>Azure Container Instances</td>
+                <td>Cloud Run Jobs</td>
+                <td>Container Instances</td>
+              </tr>
+              <tr>
+                <th scope="row">Container registry</th>
+                <td>Amazon ECR</td>
+                <td>Azure Container Registry (ACR)</td>
+                <td>Artifact Registry</td>
+                <td>OCIR (Container Registry)</td>
+              </tr>
+              <tr>
+                <th scope="row">Service mesh</th>
+                <td>App Mesh</td>
+                <td>Istio on AKS / Open Service Mesh</td>
+                <td>Anthos Service Mesh (Istio)</td>
+                <td>Istio (partner / self-managed)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="serverless">Serverless</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Functions</th>
+                <td>AWS Lambda</td>
+                <td>Azure Functions</td>
+                <td>Cloud Functions</td>
+                <td>Oracle Functions</td>
+              </tr>
+              <tr>
+                <th scope="row">API gateway</th>
+                <td>API Gateway</td>
+                <td>API Management (APIM)</td>
+                <td>API Gateway / Apigee</td>
+                <td>API Gateway</td>
+              </tr>
+              <tr>
+                <th scope="row">Event routing</th>
+                <td>EventBridge</td>
+                <td>Event Grid</td>
+                <td>Eventarc</td>
+                <td>Events / Streaming</td>
+              </tr>
+              <tr>
+                <th scope="row">Workflow orchestration</th>
+                <td>Step Functions</td>
+                <td>Logic Apps / Durable Functions</td>
+                <td>Workflows / Cloud Composer (Airflow)</td>
+                <td>Integration Cloud / OCI Functions chains</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="storage">Storage</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Object storage</th>
+                <td>Amazon S3</td>
+                <td>Azure Blob Storage</td>
+                <td>Cloud Storage</td>
+                <td>Object Storage</td>
+              </tr>
+              <tr>
+                <th scope="row">Block storage (VM disks)</th>
+                <td>Amazon EBS</td>
+                <td>Azure Managed Disks</td>
+                <td>Persistent Disk</td>
+                <td>Block Volume</td>
+              </tr>
+              <tr>
+                <th scope="row">File storage (NFS/SMB)</th>
+                <td>Amazon EFS / FSx</td>
+                <td>Azure Files</td>
+                <td>Filestore</td>
+                <td>File Storage</td>
+              </tr>
+              <tr>
+                <th scope="row">Archive / cold tier</th>
+                <td>S3 Glacier</td>
+                <td>Blob Archive tier</td>
+                <td>Archive / Coldline</td>
+                <td>Object Archive tier</td>
+              </tr>
+              <tr>
+                <th scope="row">Hybrid / on-prem sync</th>
+                <td>Storage Gateway</td>
+                <td>Azure Arc / StorSimple (legacy)</td>
+                <td>Transfer Appliance</td>
+                <td>Storage Gateway</td>
+              </tr>
+              <tr>
+                <th scope="row">Backup</th>
+                <td>AWS Backup</td>
+                <td>Azure Backup</td>
+                <td>Backup and DR</td>
+                <td>Block Volume backups / Object lifecycle</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="databases">Databases</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Managed PostgreSQL</th>
+                <td>RDS / Aurora PostgreSQL</td>
+                <td>Azure Database for PostgreSQL</td>
+                <td>Cloud SQL for PostgreSQL</td>
+                <td>Base Database / PostgreSQL on VM</td>
+              </tr>
+              <tr>
+                <th scope="row">Managed MySQL</th>
+                <td>RDS / Aurora MySQL</td>
+                <td>Azure Database for MySQL</td>
+                <td>Cloud SQL for MySQL</td>
+                <td>MySQL HeatWave (OCI)</td>
+              </tr>
+              <tr>
+                <th scope="row">Managed SQL Server</th>
+                <td>RDS for SQL Server</td>
+                <td>Azure SQL Database</td>
+                <td>Cloud SQL for SQL Server</td>
+                <td>SQL Server on VM / Azure-linked</td>
+              </tr>
+              <tr>
+                <th scope="row">Oracle Database</th>
+                <td>RDS Custom / EC2</td>
+                <td>Oracle on Azure (partner)</td>
+                <td>Oracle on GCP (partner)</td>
+                <td>Autonomous Database</td>
+              </tr>
+              <tr>
+                <th scope="row">NoSQL / document</th>
+                <td>DynamoDB</td>
+                <td>Azure Cosmos DB</td>
+                <td>Firestore / Bigtable</td>
+                <td>NoSQL Database</td>
+              </tr>
+              <tr>
+                <th scope="row">In-memory cache</th>
+                <td>ElastiCache (Redis/Memcached)</td>
+                <td>Azure Cache for Redis</td>
+                <td>Memorystore</td>
+                <td>OCI Cache with Redis</td>
+              </tr>
+              <tr>
+                <th scope="row">Data warehouse</th>
+                <td>Redshift</td>
+                <td>Synapse Analytics</td>
+                <td>BigQuery</td>
+                <td>Autonomous Data Warehouse</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="networking">Networking</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Virtual network</th>
+                <td>VPC</td>
+                <td>Virtual Network (VNet)</td>
+                <td>VPC Network</td>
+                <td>VCN (Virtual Cloud Network)</td>
+              </tr>
+              <tr>
+                <th scope="row">Load balancer (L4/L7)</th>
+                <td>ELB / ALB / NLB</td>
+                <td>Azure Load Balancer / App Gateway</td>
+                <td>Cloud Load Balancing</td>
+                <td>Load Balancer / Network Load Balancer</td>
+              </tr>
+              <tr>
+                <th scope="row">DNS</th>
+                <td>Route 53</td>
+                <td>Azure DNS</td>
+                <td>Cloud DNS</td>
+                <td>DNS Management</td>
+              </tr>
+              <tr>
+                <th scope="row">CDN</th>
+                <td>CloudFront</td>
+                <td>Azure Front Door / CDN</td>
+                <td>Cloud CDN</td>
+                <td>OCI CDN (Akamai-backed)</td>
+              </tr>
+              <tr>
+                <th scope="row">VPN</th>
+                <td>Site-to-Site VPN</td>
+                <td>VPN Gateway</td>
+                <td>Cloud VPN</td>
+                <td>Site-to-Site VPN</td>
+              </tr>
+              <tr>
+                <th scope="row">Private connectivity</th>
+                <td>Direct Connect</td>
+                <td>ExpressRoute</td>
+                <td>Cloud Interconnect</td>
+                <td>FastConnect</td>
+              </tr>
+              <tr>
+                <th scope="row">Firewall / WAF</th>
+                <td>WAF / Network Firewall</td>
+                <td>Azure Firewall / WAF</td>
+                <td>Cloud Armor</td>
+                <td>WAF / Network Firewall</td>
+              </tr>
+              <tr>
+                <th scope="row">Private PaaS access</th>
+                <td>VPC Endpoints / PrivateLink</td>
+                <td>Private Link</td>
+                <td>Private Service Connect</td>
+                <td>Service Gateway / Private Endpoint</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="identity">Identity &amp; Access</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Identity platform</th>
+                <td>AWS IAM Identity Center (SSO)</td>
+                <td>Microsoft Entra ID</td>
+                <td>Cloud Identity / Workforce Identity</td>
+                <td>IAM + Identity Domains</td>
+              </tr>
+              <tr>
+                <th scope="row">Resource IAM</th>
+                <td>AWS IAM</td>
+                <td>Azure RBAC</td>
+                <td>Cloud IAM</td>
+                <td>OCI IAM Policies</td>
+              </tr>
+              <tr>
+                <th scope="row">Workload identity</th>
+                <td>IAM Roles for Service Accounts (IRSA)</td>
+                <td>Managed Identities</td>
+                <td>Workload Identity Federation</td>
+                <td>Instance Principals / Dynamic Groups</td>
+              </tr>
+              <tr>
+                <th scope="row">MFA / conditional access</th>
+                <td>IAM MFA policies</td>
+                <td>Entra Conditional Access</td>
+                <td>Context-Aware Access</td>
+                <td>MFA / Identity Domains policies</td>
+              </tr>
+              <tr>
+                <th scope="row">Directory sync</th>
+                <td>AD Connector / IAM Identity Center</td>
+                <td>Entra Connect (native AD)</td>
+                <td>Cloud Identity sync</td>
+                <td>Identity Domains federation</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="security">Security &amp; Secrets</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Secrets management</th>
+                <td>Secrets Manager</td>
+                <td>Azure Key Vault</td>
+                <td>Secret Manager</td>
+                <td>Vault (OCI Vault)</td>
+              </tr>
+              <tr>
+                <th scope="row">Encryption keys (KMS)</th>
+                <td>AWS KMS</td>
+                <td>Key Vault keys</td>
+                <td>Cloud KMS</td>
+                <td>Vault keys</td>
+              </tr>
+              <tr>
+                <th scope="row">Certificate management</th>
+                <td>ACM</td>
+                <td>Key Vault certificates</td>
+                <td>Certificate Manager</td>
+                <td>Certificates service</td>
+              </tr>
+              <tr>
+                <th scope="row">Threat detection</th>
+                <td>GuardDuty</td>
+                <td>Microsoft Defender for Cloud</td>
+                <td>Security Command Center</td>
+                <td>Cloud Guard</td>
+              </tr>
+              <tr>
+                <th scope="row">Compliance / posture</th>
+                <td>Security Hub / Audit Manager</td>
+                <td>Defender for Cloud / Policy</td>
+                <td>Security Command Center</td>
+                <td>Cloud Guard / Compliance</td>
+              </tr>
+              <tr>
+                <th scope="row">HSM</th>
+                <td>CloudHSM</td>
+                <td>Dedicated HSM</td>
+                <td>Cloud HSM</td>
+                <td>Dedicated KMS / HSM options</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="observability">Observability</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Metrics &amp; dashboards</th>
+                <td>CloudWatch</td>
+                <td>Azure Monitor</td>
+                <td>Cloud Monitoring</td>
+                <td>Monitoring / Telemetry</td>
+              </tr>
+              <tr>
+                <th scope="row">Centralized logging</th>
+                <td>CloudWatch Logs</td>
+                <td>Log Analytics</td>
+                <td>Cloud Logging</td>
+                <td>Logging Analytics</td>
+              </tr>
+              <tr>
+                <th scope="row">APM / tracing</th>
+                <td>X-Ray</td>
+                <td>Application Insights</td>
+                <td>Cloud Trace</td>
+                <td>APM (native + partner)</td>
+              </tr>
+              <tr>
+                <th scope="row">Alerting</th>
+                <td>CloudWatch Alarms</td>
+                <td>Azure Monitor Alerts</td>
+                <td>Alerting policies</td>
+                <td>Alarms / Notifications</td>
+              </tr>
+              <tr>
+                <th scope="row">Managed Prometheus</th>
+                <td>Amazon Managed Prometheus</td>
+                <td>Azure Monitor managed Prometheus</td>
+                <td>Managed Service for Prometheus</td>
+                <td>Self-managed or partner stacks</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="devops">DevOps &amp; CI/CD</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">CI/CD pipelines</th>
+                <td>CodePipeline / CodeBuild</td>
+                <td>Azure DevOps Pipelines</td>
+                <td>Cloud Build</td>
+                <td>DevOps (build pipelines)</td>
+              </tr>
+              <tr>
+                <th scope="row">Source control (native)</th>
+                <td>CodeCommit (deprecated path)</td>
+                <td>Azure Repos</td>
+                <td>Cloud Source Repositories</td>
+                <td>DevOps Repos</td>
+              </tr>
+              <tr>
+                <th scope="row">Artifact registry</th>
+                <td>CodeArtifact</td>
+                <td>Azure Artifacts</td>
+                <td>Artifact Registry</td>
+                <td>DevOps Artifacts</td>
+              </tr>
+              <tr>
+                <th scope="row">GitOps / config mgmt</th>
+                <td>CodeDeploy / third-party</td>
+                <td>Flux on AKS / Arc</td>
+                <td>Config Sync (Anthos)</td>
+                <td>Resource Manager + third-party</td>
+              </tr>
+              <tr>
+                <th scope="row">Infrastructure deployment</th>
+                <td>CloudFormation / CDK</td>
+                <td>Bicep / ARM templates</td>
+                <td>Deployment Manager</td>
+                <td>Resource Manager (ORM)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="ai-ml">AI &amp; ML</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Managed ML platform</th>
+                <td>SageMaker</td>
+                <td>Azure Machine Learning</td>
+                <td>Vertex AI</td>
+                <td>Data Science service</td>
+              </tr>
+              <tr>
+                <th scope="row">Foundation models / LLM APIs</th>
+                <td>Amazon Bedrock</td>
+                <td>Azure OpenAI Service</td>
+                <td>Vertex AI (Gemini, PaLM)</td>
+                <td>Generative AI (OCI / Cohere)</td>
+              </tr>
+              <tr>
+                <th scope="row">GPU compute</th>
+                <td>EC2 P/G instances</td>
+                <td>NC/ND series VMs</td>
+                <td>A2 / G2 GPU VMs</td>
+                <td>GPU shapes (A10, H100)</td>
+              </tr>
+              <tr>
+                <th scope="row">Speech / vision APIs</th>
+                <td>Rekognition, Transcribe, Polly</td>
+                <td>Azure Cognitive Services</td>
+                <td>Cloud Vision, Speech-to-Text</td>
+                <td>Vision / Language AI services</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="messaging">Messaging &amp; Integration</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Service type</th>
+                <th scope="col">AWS</th>
+                <th scope="col">Azure</th>
+                <th scope="col">GCP</th>
+                <th scope="col">OCI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Message queue</th>
+                <td>Amazon SQS</td>
+                <td>Azure Service Bus (queues)</td>
+                <td>Cloud Tasks / Pub/Sub</td>
+                <td>Queue (OCI Queue)</td>
+              </tr>
+              <tr>
+                <th scope="row">Pub/sub</th>
+                <td>Amazon SNS</td>
+                <td>Event Grid / Service Bus topics</td>
+                <td>Pub/Sub</td>
+                <td>Notifications / Streaming</td>
+              </tr>
+              <tr>
+                <th scope="row">Event streaming</th>
+                <td>Amazon MSK (Kafka)</td>
+                <td>Event Hubs (Kafka API)</td>
+                <td>Pub/Sub / Dataflow</td>
+                <td>Streaming (Kafka-compatible)</td>
+              </tr>
+              <tr>
+                <th scope="row">Enterprise integration</th>
+                <td>Amazon MQ</td>
+                <td>Logic Apps / Integration Accounts</td>
+                <td>Application Integration</td>
+                <td>Integration Cloud</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="when-to-choose">When to Choose Each Cloud</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Provider</th>
+                <th scope="col">Strong fit</th>
+                <th scope="col">Consider alternatives when</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">AWS</th>
+                <td>Broadest service catalog, startup-to-enterprise scale, mature partner ecosystem, default choice for greenfield SaaS</td>
+                <td>Deep Microsoft stack integration is required, or team has no AWS experience and strong GCP/Azure alignment exists</td>
+              </tr>
+              <tr>
+                <th scope="row">Azure</th>
+                <td>Microsoft 365 / Entra ID shops, hybrid with Active Directory, .NET workloads, enterprise EA agreements</td>
+                <td>Best-in-class data analytics (BigQuery) or lowest-cost Oracle DB hosting is the priority</td>
+              </tr>
+              <tr>
+                <th scope="row">GCP</th>
+                <td>Data engineering, BigQuery analytics, Kubernetes-native teams, ML/AI with Vertex, global anycast networking</td>
+                <td>Legacy enterprise procurement favors Azure/AWS, or Oracle database consolidation is the driver</td>
+              </tr>
+              <tr>
+                <th scope="row">OCI</th>
+                <td>Oracle Database and ERP consolidation, competitive compute pricing, sovereign/regulated industry requirements</td>
+                <td>Team needs the widest third-party SaaS marketplace or smallest operational learning curve (AWS often wins)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cheat-callout"><strong>Keep this updated:</strong> Cloud providers rename and retire services regularly. Treat this table as a mental map, not a contract. Validate service names in each provider's documentation before writing Terraform modules or procurement documents. For multi-cloud governance patterns, see <a href="../multi-cloud-strategies/index.html">Designing Multi-Cloud Strategies for Enterprise Scale</a>.</div>
+
+        <h2>Practical Tips for Architects</h2>
+        <ul>
+          <li><strong>Use Terraform provider modules</strong> per cloud with consistent naming conventions for networks, tags, and IAM roles.</li>
+          <li><strong>Abstract at the workload level</strong>, not every primitive. Kubernetes + Postgres + object storage patterns port well; proprietary PaaS features do not.</li>
+          <li><strong>Standardize observability</strong> with OpenTelemetry so traces and metrics export to the same backend regardless of cloud.</li>
+          <li><strong>Document service mappings</strong> like this table in your internal wiki so onboarding engineers do not relearn equivalencies from scratch.</li>
+          <li><strong>Run proof-of-concepts</strong> on two clouds for critical workloads before committing to a multi-year contract.</li>
+        </ul>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">AWS</span>
+            <span class="blog-tag">Azure</span>
+            <span class="blog-tag">GCP</span>
+            <span class="blog-tag">OCI</span>
+            <span class="blog-tag">Multi-Cloud</span>
+            <span class="blog-tag">Cloud Architecture</span>
+            <span class="blog-tag">Comparison</span>
+            <span class="blog-tag">DevOps</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
