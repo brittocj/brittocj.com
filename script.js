@@ -228,24 +228,6 @@
 
   initBlogSearch();
 
-  function initReckonerTocJump() {
-    const toc = document.getElementById('reckoner-contents');
-    const jumpBtn = document.getElementById('reckonerTocJump');
-
-    if (!toc || !jumpBtn) return;
-
-    const tocObserver = new IntersectionObserver(
-      ([entry]) => {
-        jumpBtn.hidden = entry.isIntersecting;
-      },
-      { rootMargin: '-80px 0px 0px 0px', threshold: 0 }
-    );
-
-    tocObserver.observe(toc);
-  }
-
-  initReckonerTocJump();
-
   function initBlogJumpTop() {
     const blogPost = document.querySelector('.blog-post');
     if (!blogPost) return;
@@ -267,14 +249,10 @@
     `;
     document.body.appendChild(jumpTop);
 
-    const reckonerJump = document.getElementById('reckonerTocJump');
     const scrollThreshold = 400;
 
     const updateJumpTop = () => {
       jumpTop.hidden = window.scrollY < scrollThreshold;
-
-      const reckonerVisible = reckonerJump && !reckonerJump.hidden;
-      jumpTop.classList.toggle('blog-jump-top--offset', reckonerVisible);
     };
 
     jumpTop.addEventListener('click', (event) => {
@@ -283,12 +261,6 @@
     });
 
     window.addEventListener('scroll', updateJumpTop, { passive: true });
-
-    if (reckonerJump) {
-      const reckonerObserver = new MutationObserver(updateJumpTop);
-      reckonerObserver.observe(reckonerJump, { attributes: true, attributeFilter: ['hidden'] });
-    }
-
     updateJumpTop();
   }
 
