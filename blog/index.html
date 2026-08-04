@@ -18,7 +18,7 @@
 
     .blog-header {
       text-align: center;
-      margin-bottom: 80px;
+      margin-bottom: 48px;
     }
 
     .blog-header h1 {
@@ -145,6 +145,116 @@
       color: var(--accent-light);
     }
 
+    .blog-search {
+      max-width: 560px;
+      margin: 0 auto 48px;
+    }
+
+    .blog-search__label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .blog-search__field {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .blog-search__icon {
+      position: absolute;
+      left: 16px;
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .blog-search__input {
+      width: 100%;
+      padding: 14px 44px 14px 46px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .blog-search__input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .blog-search__input:hover {
+      border-color: var(--border-hover);
+    }
+
+    .blog-search__input:focus {
+      outline: none;
+      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .blog-search__clear {
+      position: absolute;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .blog-search__clear:hover {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text-primary);
+    }
+
+    .blog-search__status {
+      min-height: 1.25rem;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .blog-card--hidden {
+      display: none;
+    }
+
+    .blog-empty {
+      text-align: center;
+      padding: 48px 24px;
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      color: var(--text-secondary);
+    }
+
+    .blog-empty[hidden] {
+      display: none;
+    }
+
+    .blog-empty h2 {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
     @media (max-width: 768px) {
       .blog-section {
         padding: 100px 0 60px;
@@ -191,7 +301,27 @@
         <p>Thoughts on cloud architecture, DevOps, AI, and technology transformation.</p>
       </div>
 
-      <div class="blog-grid">
+      <div class="blog-search">
+        <label for="blogSearch" class="blog-search__label">Search articles</label>
+        <div class="blog-search__field">
+          <svg class="blog-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M20 20l-3.5-3.5"></path>
+          </svg>
+          <input
+            type="search"
+            id="blogSearch"
+            class="blog-search__input"
+            placeholder="Search by title, topic, or keyword..."
+            autocomplete="off"
+            enterkeyhint="search"
+          >
+          <button type="button" id="blogSearchClear" class="blog-search__clear" aria-label="Clear search" hidden>&times;</button>
+        </div>
+        <p class="blog-search__status" id="blogSearchStatus" aria-live="polite"></p>
+      </div>
+
+      <div class="blog-grid" id="blogGrid">
         <a href="agentic-ai-in-india/index.html" class="blog-card">
           <span class="blog-card-tag">Featured</span>
           <h2 class="blog-card-title">My Vision for the Future of Agentic AI in India</h2>
@@ -541,6 +671,11 @@
             <span class="blog-card-readtime">13 min</span>
           </div>
         </a>
+      </div>
+
+      <div class="blog-empty" id="blogEmpty" hidden>
+        <h2>No articles found</h2>
+        <p>Try a different keyword, such as Kubernetes, DevOps, or Azure.</p>
       </div>
     </div>
   </section>

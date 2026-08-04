@@ -483,7 +483,7 @@ def regenerate_blog_index():
         content = f.read()
     content = re.sub(
         r'<div class="blog-grid">.*?</div>\s*</div>\s*</section>',
-        f'<div class="blog-grid">\n{grid}\n      </div>\n    </div>\n  </section>',
+        f'<div class="blog-grid" id="blogGrid">\n{grid}\n      </div>\n\n      <div class="blog-empty" id="blogEmpty" hidden>\n        <h2>No articles found</h2>\n        <p>Try a different keyword, such as Kubernetes, DevOps, or Azure.</p>\n      </div>\n    </div>\n  </section>',
         content,
         flags=re.DOTALL,
     )

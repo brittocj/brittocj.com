@@ -70,11 +70,10 @@
     blogLink.setAttribute('aria-describedby', 'nav-blog-tooltip');
     tooltip.id = 'nav-blog-tooltip';
 
-    initBlogTooltipAutoShow(listItem);
+    initBlogTooltipIntro(listItem);
   }
 
-  function initBlogTooltipAutoShow(listItem) {
-    const TOOLTIP_CYCLE_MS = 6000;
+  function initBlogTooltipIntro(listItem) {
     const TOOLTIP_DISPLAY_MS = 4500;
     const isDesktop = () => window.matchMedia('(min-width: 769px)').matches;
     const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -82,63 +81,126 @@
     if (!isDesktop() || prefersReducedMotion()) return;
 
     let hideTimeout;
-    let userEngaged = false;
 
     const setTooltipOpen = (open) => {
       listItem.classList.toggle('nav__blog-item--tooltip-open', open);
     };
 
-    const isEngaged = () => userEngaged || listItem.matches(':hover') || listItem.contains(document.activeElement);
+    const isEngaged = () => listItem.matches(':hover') || listItem.contains(document.activeElement);
 
-    const showTooltip = () => {
+    const showTooltipOnce = () => {
       if (!isDesktop() || document.hidden || isEngaged()) return;
 
       setTooltipOpen(true);
-      clearTimeout(hideTimeout);
-      hideTimeout = setTimeout(() => {
+      hideTimeout = window.setTimeout(() => {
         if (!isEngaged()) setTooltipOpen(false);
       }, TOOLTIP_DISPLAY_MS);
     };
 
-    const intervalId = window.setInterval(showTooltip, TOOLTIP_CYCLE_MS);
-    const initialTimeout = window.setTimeout(showTooltip, TOOLTIP_CYCLE_MS);
+    window.setTimeout(showTooltipOnce, 800);
 
-    listItem.addEventListener('mouseenter', () => {
-      userEngaged = true;
-      clearTimeout(hideTimeout);
-    });
+    listItem.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
 
     listItem.addEventListener('mouseleave', () => {
-      userEngaged = false;
       if (!listItem.contains(document.activeElement)) {
         setTooltipOpen(false);
       }
     });
 
-    listItem.addEventListener('focusin', () => {
-      userEngaged = true;
-      clearTimeout(hideTimeout);
-    });
-
     listItem.addEventListener('focusout', () => {
-      userEngaged = false;
       if (!listItem.matches(':hover')) {
         setTooltipOpen(false);
       }
     });
 
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) setTooltipOpen(false);
-    });
-
-    window.addEventListener('beforeunload', () => {
-      clearInterval(intervalId);
-      clearTimeout(initialTimeout);
-      clearTimeout(hideTimeout);
+      if (document.hidden) {
+        clearTimeout(hideTimeout);
+        setTooltipOpen(false);
+      }
     });
   }
 
   initBlogNav();
+
+  function initBlogSearch() {
+    const searchInput = document.getElementById('blogSearch');
+    const searchClear = document.getElementById('blogSearchClear');
+    const searchStatus = document.getElementById('blogSearchStatus');
+    const blogGrid = document.getElementById('blogGrid');
+    const blogEmpty = document.getElementById('blogEmpty');
+
+    if (!searchInput || !blogGrid) return;
+
+    const cards = Array.from(blogGrid.querySelectorAll('.blog-card'));
+
+    const filterCards = (query) => {
+      const normalized = query.trim().toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const matches = !normalized || card.textContent.toLowerCase().includes(normalized);
+        card.classList.toggle('blog-card--hidden', !matches);
+        if (matches) visibleCount += 1;
+      });
+
+      const hasQuery = normalized.length > 0;
+      if (searchClear) searchClear.hidden = !hasQuery;
+
+      if (blogEmpty) {
+        blogEmpty.hidden = !hasQuery || visibleCount > 0;
+      }
+
+      if (!hasQuery) {
+        searchStatus.textContent = '';
+      } else if (visibleCount === 0) {
+        searchStatus.textContent = 'No matching articles';
+      } else if (visibleCount === 1) {
+        searchStatus.textContent = '1 article found';
+      } else {
+        searchStatus.textContent = `${visibleCount} articles found`;
+      }
+    };
+
+    const setQuery = (query, { updateUrl = true } = {}) => {
+      searchInput.value = query;
+      filterCards(query);
+
+      if (!updateUrl) return;
+
+      const url = new URL(window.location.href);
+      const trimmed = query.trim();
+      if (trimmed) {
+        url.searchParams.set('q', trimmed);
+      } else {
+        url.searchParams.delete('q');
+      }
+      window.history.replaceState({}, '', url);
+    };
+
+    searchInput.addEventListener('input', () => setQuery(searchInput.value));
+
+    if (searchClear) {
+      searchClear.addEventListener('click', () => {
+        setQuery('');
+        searchInput.focus();
+      });
+    }
+
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        setQuery('');
+        searchInput.blur();
+      }
+    });
+
+    const initialQuery = new URLSearchParams(window.location.search).get('q');
+    if (initialQuery) {
+      setQuery(initialQuery, { updateUrl: false });
+    }
+  }
+
+  initBlogSearch();
 
   // Sticky nav background on scroll
   window.addEventListener('scroll', () => {
