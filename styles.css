@@ -146,6 +146,18 @@ ul {
   transform: translateY(-2px);
 }
 
+/* Invisible bridge so the pointer can reach the tooltip without losing hover */
+.nav__blog-item:hover::after,
+.nav__blog-item:focus-within::after,
+.nav__blog-item--tooltip-open::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 300px;
+  height: 18px;
+}
+
 .nav__blog-link {
   position: relative;
   display: inline-flex;
@@ -195,7 +207,7 @@ ul {
 
 .nav__blog-tooltip {
   position: absolute;
-  top: calc(100% + 14px);
+  top: calc(100% + 6px);
   right: 0;
   width: 300px;
   padding: 14px 16px;
@@ -205,7 +217,7 @@ ul {
   box-shadow: var(--shadow-lg), 0 0 24px rgba(59, 130, 246, 0.1);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(8px);
+  transform: translateY(4px);
   transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
   pointer-events: none;
   z-index: 1100;
@@ -214,7 +226,7 @@ ul {
 .nav__blog-tooltip::before {
   content: '';
   position: absolute;
-  top: -6px;
+  top: -5px;
   right: 24px;
   width: 12px;
   height: 12px;

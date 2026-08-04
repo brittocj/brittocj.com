@@ -81,6 +81,7 @@
     if (!isDesktop() || prefersReducedMotion()) return;
 
     let hideTimeout;
+    let leaveTimeout;
 
     const setTooltipOpen = (open) => {
       listItem.classList.toggle('nav__blog-item--tooltip-open', open);
@@ -99,12 +100,18 @@
 
     window.setTimeout(showTooltipOnce, 800);
 
-    listItem.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+    listItem.addEventListener('mouseenter', () => {
+      clearTimeout(hideTimeout);
+      clearTimeout(leaveTimeout);
+    });
 
     listItem.addEventListener('mouseleave', () => {
-      if (!listItem.contains(document.activeElement)) {
-        setTooltipOpen(false);
-      }
+      clearTimeout(leaveTimeout);
+      leaveTimeout = window.setTimeout(() => {
+        if (!listItem.contains(document.activeElement)) {
+          setTooltipOpen(false);
+        }
+      }, 200);
     });
 
     listItem.addEventListener('focusout', () => {
@@ -201,6 +208,24 @@
   }
 
   initBlogSearch();
+
+  function initReckonerTocJump() {
+    const toc = document.getElementById('reckoner-contents');
+    const jumpBtn = document.getElementById('reckonerTocJump');
+
+    if (!toc || !jumpBtn) return;
+
+    const tocObserver = new IntersectionObserver(
+      ([entry]) => {
+        jumpBtn.hidden = entry.isIntersecting;
+      },
+      { rootMargin: '-80px 0px 0px 0px', threshold: 0 }
+    );
+
+    tocObserver.observe(toc);
+  }
+
+  initReckonerTocJump();
 
   // Sticky nav background on scroll
   window.addEventListener('scroll', () => {
