@@ -112,6 +112,7 @@ ul {
   display: flex;
   align-items: center;
   gap: 32px;
+  overflow: visible;
 }
 
 .nav__links a {
@@ -137,6 +138,157 @@ ul {
 .nav__cta:hover {
   opacity: 0.9;
   color: #fff !important;
+}
+
+/* Blog nav — pulse, shimmer, tooltip */
+.nav__blog-item {
+  position: relative;
+  transform: translateY(-2px);
+}
+
+.nav__blog-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border-radius: 0;
+  color: var(--accent-light) !important;
+  font-weight: 600 !important;
+  background: none;
+  border: none;
+  overflow: hidden;
+  animation: nav-blog-pulse 2.8s ease-in-out infinite;
+  box-shadow: none;
+  transition: color var(--transition), transform var(--transition);
+}
+
+.nav__blog-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.6s ease;
+}
+
+.nav__blog-link:hover,
+.nav__blog-link:focus-visible {
+  color: #bfdbfe !important;
+  box-shadow: none;
+  animation: nav-blog-wobble 0.5s ease;
+}
+
+.nav__blog-link:hover::before,
+.nav__blog-link:focus-visible::before {
+  transform: translateX(120%);
+}
+
+.nav__blog-link.active {
+  color: #bfdbfe !important;
+  background: none;
+}
+
+.nav__blog-tooltip {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  width: 300px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg), 0 0 24px rgba(59, 130, 246, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
+  pointer-events: none;
+  z-index: 1100;
+}
+
+.nav__blog-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 24px;
+  width: 12px;
+  height: 12px;
+  background: var(--bg-card);
+  border-left: 1px solid rgba(96, 165, 250, 0.3);
+  border-top: 1px solid rgba(96, 165, 250, 0.3);
+  transform: rotate(45deg);
+}
+
+.nav__blog-item:hover .nav__blog-tooltip,
+.nav__blog-item:focus-within .nav__blog-tooltip,
+.nav__blog-item--tooltip-open .nav__blog-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.nav__blog-tooltip-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-light);
+  margin-bottom: 10px;
+}
+
+.nav__blog-tooltip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav__blog-tooltip-list a {
+  display: block;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-secondary) !important;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background var(--transition), color var(--transition);
+}
+
+.nav__blog-tooltip-list a:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--accent-light) !important;
+}
+
+@keyframes nav-blog-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes nav-blog-wobble {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__blog-link {
+    animation: none;
+  }
+
+  .nav__blog-link:hover,
+  .nav__blog-link:focus-visible {
+    animation: none;
+  }
 }
 
 .nav__toggle {
@@ -944,6 +1096,30 @@ ul {
 
   .nav__links.open {
     transform: translateY(0);
+  }
+
+  .nav__blog-item {
+    transform: none;
+    width: 100%;
+  }
+
+  .nav__blog-link {
+    width: auto;
+    justify-content: flex-start;
+  }
+
+  .nav__blog-tooltip {
+    position: static;
+    width: 100%;
+    margin-top: 12px;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .nav__blog-tooltip::before {
+    display: none;
   }
 
   .hero__content {

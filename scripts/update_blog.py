@@ -13,14 +13,14 @@ NAV_OLD = """        <li><a href="../../index.html#certifications">Certification
         <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>"""
 
 NAV_NEW = """        <li><a href="../../index.html#certifications">Certifications</a></li>
-        <li><a href="../">Blog</a></li>
+        <li><a href="../index.html">Blog</a></li>
         <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>"""
 
 NAV_INDEX_OLD = """        <li><a href="../index.html#certifications">Certifications</a></li>
         <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>"""
 
 NAV_INDEX_NEW = """        <li><a href="../index.html#certifications">Certifications</a></li>
-        <li><a href="./" class="active">Blog</a></li>
+        <li><a href="index.html" class="active">Blog</a></li>
         <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>"""
 
 # Career-aligned dates (newest first on index). sort_key = YYYYMMDD
@@ -388,7 +388,7 @@ def article_html(meta, article_info):
         <li><a href="../../index.html#experience">Experience</a></li>
         <li><a href="../../index.html#projects">Projects</a></li>
         <li><a href="../../index.html#certifications">Certifications</a></li>
-        <li><a href="../">Blog</a></li>
+        <li><a href="../index.html">Blog</a></li>
         <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
       </ul>
     </div>
@@ -421,7 +421,7 @@ def article_html(meta, article_info):
         </div>
 
         <div class="blog-nav">
-          <a href="../">← Back to All Posts</a>
+          <a href="../index.html">← Back to All Posts</a>
         </div>
       </article>
     </div>
@@ -457,7 +457,7 @@ def update_article_dates():
         elif "Blog</a></li>" not in content and "../index.html#certifications" in content:
             content = content.replace(
                 '<li><a href="../index.html#certifications">Certifications</a></li>\n        <li><a href="../index.html#contact"',
-                '<li><a href="../index.html#certifications">Certifications</a></li>\n        <li><a href="../">Blog</a></li>\n        <li><a href="../index.html#contact"',
+                '<li><a href="../index.html#certifications">Certifications</a></li>\n        <li><a href="../index.html">Blog</a></li>\n        <li><a href="../index.html#contact"',
             )
         with open(path, "w", encoding="utf-8") as f:
             f.write(content)
@@ -468,7 +468,7 @@ def regenerate_blog_index():
     cards = []
     for a in sorted_articles:
         featured = 'Featured' if a.get('tag') == 'Featured' else a['tag']
-        cards.append(f"""        <a href="{a['slug']}/" class="blog-card">
+        cards.append(f"""        <a href="{a['slug']}/index.html" class="blog-card">
           <span class="blog-card-tag">{featured}</span>
           <h2 class="blog-card-title">{a['title']}</h2>
           <p class="blog-card-excerpt">{a['excerpt']}</p>

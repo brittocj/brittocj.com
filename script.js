@@ -6,6 +6,140 @@
   const navLinks = document.getElementById('navLinks');
   const contactForm = document.getElementById('contactForm');
 
+  const BLOG_PREVIEW = [
+    { slug: 'owning-google-us', title: 'The Day I Legally Owned google.us for a Short Time' },
+    { slug: 'agentic-ai-in-india', title: 'My Vision for the Future of Agentic AI in India' },
+    { slug: 'microservices-on-azure-aks', title: 'Microservices Architecture on Azure Kubernetes Service' },
+    { slug: 'linux-fundamentals', title: 'Linux Fundamentals: The Foundation Every Cloud Engineer Needs' },
+  ];
+
+  function getBlogArticleHref(slug) {
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    const blogIndex = segments.indexOf('blog');
+
+    if (blogIndex === -1) {
+      return `blog/${slug}/index.html`;
+    }
+
+    if (segments.length > blogIndex + 1) {
+      return `../${slug}/index.html`;
+    }
+
+    return `${slug}/index.html`;
+  }
+
+  function initBlogNav() {
+    if (!navLinks) return;
+
+    const blogLink = Array.from(navLinks.querySelectorAll('a')).find((link) => {
+      const text = link.textContent.trim();
+      const href = link.getAttribute('href') || '';
+      return text === 'Blog' && (href.includes('blog') || href.endsWith('index.html'));
+    });
+
+    if (!blogLink || blogLink.closest('.nav__blog-item')) return;
+
+    const listItem = blogLink.parentElement;
+    listItem.classList.add('nav__blog-item');
+    blogLink.classList.add('nav__blog-link');
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'nav__blog-tooltip';
+    tooltip.setAttribute('role', 'tooltip');
+
+    const tooltipTitle = document.createElement('p');
+    tooltipTitle.className = 'nav__blog-tooltip-title';
+    tooltipTitle.textContent = 'Latest articles';
+
+    const tooltipList = document.createElement('ul');
+    tooltipList.className = 'nav__blog-tooltip-list';
+
+    BLOG_PREVIEW.forEach((article) => {
+      const item = document.createElement('li');
+      const articleLink = document.createElement('a');
+      articleLink.href = getBlogArticleHref(article.slug);
+      articleLink.textContent = article.title;
+      item.appendChild(articleLink);
+      tooltipList.appendChild(item);
+    });
+
+    tooltip.appendChild(tooltipTitle);
+    tooltip.appendChild(tooltipList);
+    listItem.appendChild(tooltip);
+
+    blogLink.setAttribute('aria-describedby', 'nav-blog-tooltip');
+    tooltip.id = 'nav-blog-tooltip';
+
+    initBlogTooltipAutoShow(listItem);
+  }
+
+  function initBlogTooltipAutoShow(listItem) {
+    const TOOLTIP_CYCLE_MS = 6000;
+    const TOOLTIP_DISPLAY_MS = 4500;
+    const isDesktop = () => window.matchMedia('(min-width: 769px)').matches;
+    const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!isDesktop() || prefersReducedMotion()) return;
+
+    let hideTimeout;
+    let userEngaged = false;
+
+    const setTooltipOpen = (open) => {
+      listItem.classList.toggle('nav__blog-item--tooltip-open', open);
+    };
+
+    const isEngaged = () => userEngaged || listItem.matches(':hover') || listItem.contains(document.activeElement);
+
+    const showTooltip = () => {
+      if (!isDesktop() || document.hidden || isEngaged()) return;
+
+      setTooltipOpen(true);
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        if (!isEngaged()) setTooltipOpen(false);
+      }, TOOLTIP_DISPLAY_MS);
+    };
+
+    const intervalId = window.setInterval(showTooltip, TOOLTIP_CYCLE_MS);
+    const initialTimeout = window.setTimeout(showTooltip, TOOLTIP_CYCLE_MS);
+
+    listItem.addEventListener('mouseenter', () => {
+      userEngaged = true;
+      clearTimeout(hideTimeout);
+    });
+
+    listItem.addEventListener('mouseleave', () => {
+      userEngaged = false;
+      if (!listItem.contains(document.activeElement)) {
+        setTooltipOpen(false);
+      }
+    });
+
+    listItem.addEventListener('focusin', () => {
+      userEngaged = true;
+      clearTimeout(hideTimeout);
+    });
+
+    listItem.addEventListener('focusout', () => {
+      userEngaged = false;
+      if (!listItem.matches(':hover')) {
+        setTooltipOpen(false);
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) setTooltipOpen(false);
+    });
+
+    window.addEventListener('beforeunload', () => {
+      clearInterval(intervalId);
+      clearTimeout(initialTimeout);
+      clearTimeout(hideTimeout);
+    });
+  }
+
+  initBlogNav();
+
   // Sticky nav background on scroll
   window.addEventListener('scroll', () => {
     nav.classList.toggle('nav--scrolled', window.scrollY > 40);

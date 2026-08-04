@@ -71,7 +71,7 @@ def html_page(article):
         </div>
 
         <div class="blog-nav">
-          <a href="../">← Back to All Posts</a>
+          <a href="../index.html">← Back to All Posts</a>
         </div>
       </article>
     </div>
