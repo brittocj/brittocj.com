@@ -28,6 +28,10 @@
     return `${slug}/index.html`;
   }
 
+  function isOnBlogPage() {
+    return window.location.pathname.split('/').filter(Boolean).includes('blog');
+  }
+
   function initBlogNav() {
     if (!navLinks) return;
 
@@ -89,7 +93,9 @@
     blogLink.setAttribute('aria-describedby', 'nav-blog-tooltip');
     tooltip.id = 'nav-blog-tooltip';
 
-    initBlogTooltipIntro(listItem);
+    if (!isOnBlogPage()) {
+      initBlogTooltipIntro(listItem);
+    }
   }
 
   function initBlogTooltipIntro(listItem) {
@@ -97,7 +103,7 @@
     const isDesktop = () => window.matchMedia('(min-width: 769px)').matches;
     const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (!isDesktop() || prefersReducedMotion()) return;
+    if (!isDesktop() || prefersReducedMotion() || isOnBlogPage()) return;
 
     let hideTimeout;
     let leaveTimeout;
