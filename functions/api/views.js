@@ -17,7 +17,7 @@ function json(data, status = 200) {
 }
 
 async function readCount(env, slug) {
-  const value = await env.KV.get(slug);
+  const value = await env.VIEWS.get(slug);
   return parseInt(value || '0', 10);
 }
 
@@ -28,7 +28,7 @@ export async function onRequest(context) {
     return new Response(null, { headers: CORS_HEADERS });
   }
 
-  if (!env.KV) {
+  if (!env.VIEWS) {
     return json({ error: 'Views storage is not configured.' }, 503);
   }
 
@@ -74,7 +74,7 @@ export async function onRequest(context) {
     }
 
     const count = (await readCount(env, slug)) + 1;
-    await env.KV.put(slug, String(count));
+    await env.VIEWS.put(slug, String(count));
 
     return json({ slug, count });
   }
