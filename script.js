@@ -266,6 +266,172 @@
 
   initBlogJumpTop();
 
+  const BLOG_VIEWS_API = '/api/views';
+
+  function formatViewCount(count) {
+    if (count >= 1000000) {
+      return `${(count / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+    }
+    if (count >= 1000) {
+      return `${(count / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+    }
+    return String(count);
+  }
+
+  function getBlogPostSlug() {
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    const blogIndex = segments.indexOf('blog');
+
+    if (blogIndex === -1 || segments.length <= blogIndex + 1) {
+      return null;
+    }
+
+    const slug = segments[blogIndex + 1].replace(/\.html$/, '');
+
+    if (!slug || slug === 'index') {
+      return null;
+    }
+
+    return /^[a-z0-9-]+$/.test(slug) ? slug : null;
+  }
+
+  function isBlogIndexPage() {
+    return Boolean(document.getElementById('blogGrid'));
+  }
+
+  async function fetchViewCount(slug) {
+    const response = await fetch(`${BLOG_VIEWS_API}?slug=${encodeURIComponent(slug)}`, {
+      headers: { Accept: 'application/json' },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch view count.');
+    }
+
+    const data = await response.json();
+    return data.count;
+  }
+
+  async function fetchViewCounts(slugs) {
+    if (!slugs.length) {
+      return {};
+    }
+
+    const response = await fetch(`${BLOG_VIEWS_API}?slugs=${encodeURIComponent(slugs.join(','))}`, {
+      headers: { Accept: 'application/json' },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch view counts.');
+    }
+
+    const data = await response.json();
+    return data.counts || {};
+  }
+
+  async function recordView(slug) {
+    const response = await fetch(BLOG_VIEWS_API, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ slug }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to record view.');
+    }
+
+    const data = await response.json();
+    return data.count;
+  }
+
+  function setViewCountText(element, count) {
+    const target = element.querySelector('[data-view-count]') || element;
+    target.textContent = formatViewCount(count);
+  }
+
+  async function initBlogPostViews(slug) {
+    const meta = document.querySelector('.blog-meta');
+    if (!meta) return;
+
+    const viewsItem = document.createElement('div');
+    viewsItem.className = 'blog-meta-item blog-meta-views';
+    viewsItem.innerHTML = '👁 <span class="blog-view-count" data-view-count>—</span> views';
+    meta.appendChild(viewsItem);
+
+    const sessionKey = `blog-viewed-${slug}`;
+
+    try {
+      const count = sessionStorage.getItem(sessionKey)
+        ? await fetchViewCount(slug)
+        : await recordView(slug);
+
+      setViewCountText(viewsItem, count);
+      sessionStorage.setItem(sessionKey, '1');
+    } catch {
+      viewsItem.remove();
+    }
+  }
+
+  async function initBlogIndexViews() {
+    const cards = document.querySelectorAll('#blogGrid .blog-card');
+    const slugMap = new Map();
+
+    cards.forEach((card) => {
+      const href = card.getAttribute('href') || '';
+      const match = href.match(/^([a-z0-9-]+)\/index\.html$/);
+
+      if (!match) return;
+
+      const slug = match[1];
+      slugMap.set(slug, card);
+    });
+
+    if (!slugMap.size) return;
+
+    try {
+      const counts = await fetchViewCounts([...slugMap.keys()]);
+
+      slugMap.forEach((card, slug) => {
+        const meta = card.querySelector('.blog-card-meta');
+        const readtime = card.querySelector('.blog-card-readtime');
+
+        if (!meta || !readtime || counts[slug] === undefined) return;
+
+        const endGroup = document.createElement('div');
+        endGroup.className = 'blog-card-meta-end';
+
+        const views = document.createElement('span');
+        views.className = 'blog-card-views';
+        views.innerHTML = `👁 <span data-view-count>${formatViewCount(counts[slug])}</span>`;
+
+        readtime.remove();
+        endGroup.appendChild(views);
+        endGroup.appendChild(readtime);
+        meta.appendChild(endGroup);
+      });
+    } catch {
+      // Views API unavailable — leave cards unchanged.
+    }
+  }
+
+  async function initBlogViews() {
+    const slug = getBlogPostSlug();
+
+    if (slug) {
+      await initBlogPostViews(slug);
+      return;
+    }
+
+    if (isBlogIndexPage()) {
+      await initBlogIndexViews();
+    }
+  }
+
+  initBlogViews();
+
   // Sticky nav background on scroll
   window.addEventListener('scroll', () => {
     nav.classList.toggle('nav--scrolled', window.scrollY > 40);

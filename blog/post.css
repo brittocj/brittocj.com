@@ -32,6 +32,15 @@
   gap: 8px;
 }
 
+.blog-meta-views {
+  color: var(--text-muted);
+}
+
+.blog-meta-views .blog-view-count {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
 .blog-content {
   max-width: 800px;
   margin: 0 auto;
