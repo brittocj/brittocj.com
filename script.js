@@ -7,10 +7,10 @@
   const contactForm = document.getElementById('contactForm');
 
   const BLOG_PREVIEW = [
+    { slug: 'entropy-eternal-energy', title: 'Entropy and Eternal Energy: A Thermodynamic Necessity for One Transcendent God' },
     { slug: 'devops-ready-reckoner', title: 'DevOps Ready Reckoner: Essential Cheat Sheets' },
     { slug: 'owning-google-us', title: 'The Day I Legally Owned google.us for a Short Time' },
     { slug: 'agentic-ai-in-india', title: 'My Vision for the Future of Agentic AI in India' },
-    { slug: 'microservices-on-azure-aks', title: 'Microservices Architecture on Azure Kubernetes Service' },
   ];
 
   function getBlogArticleHref(slug) {
@@ -81,7 +81,10 @@
       const item = document.createElement('li');
       const articleLink = document.createElement('a');
       articleLink.href = getBlogArticleHref(article.slug);
-      articleLink.textContent = article.title;
+      articleLink.innerHTML = article.title.replace(
+        /google\.us/g,
+        '<span class="google-us-gradient">google.us</span>'
+      );
       item.appendChild(articleLink);
       tooltipList.appendChild(item);
     });
@@ -364,7 +367,7 @@
 
     const viewsItem = document.createElement('div');
     viewsItem.className = 'blog-meta-item blog-meta-views';
-    viewsItem.innerHTML = '👁 <span class="blog-view-count" data-view-count>—</span> views';
+    viewsItem.innerHTML = '👁 <span class="blog-view-count" data-view-count>-</span> views';
     meta.appendChild(viewsItem);
 
     const sessionKey = `blog-viewed-${slug}`;
@@ -419,7 +422,7 @@
         meta.appendChild(endGroup);
       });
     } catch {
-      // Views API unavailable — leave cards unchanged.
+      // Views API unavailable - leave cards unchanged.
     }
   }
 
@@ -498,7 +501,7 @@
 
   fadeElements.forEach(el => fadeObserver.observe(el));
 
-  // Contact form — sends message to brits@brittocj.com via FormSubmit
+  // Contact form - sends message to brits@brittocj.com via FormSubmit
   if (contactForm) {
     const formStatus = document.getElementById('formStatus');
     const formSubmit = document.getElementById('formSubmit');

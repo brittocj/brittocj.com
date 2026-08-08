@@ -1,5 +1,5 @@
 /* ============================================
-   Antony Britto C J — Professional Portfolio
+   Antony Britto C J - Professional Portfolio
    ============================================ */
 
 :root {
@@ -54,6 +54,13 @@ a {
 
 a:hover {
   color: var(--accent);
+}
+
+.google-us-gradient {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 img {
@@ -149,7 +156,7 @@ ul {
   box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
 }
 
-/* Blog nav — hanging sign, tooltip */
+/* Blog nav - hanging sign, tooltip */
 .nav__blog-item {
   position: relative;
   align-self: flex-start;

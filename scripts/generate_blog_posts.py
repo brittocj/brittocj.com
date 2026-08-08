@@ -659,7 +659,7 @@ def update_blog_index():
 
     # Fix linux fundamentals excerpt em dash
     content = content.replace(
-        "Every Kubernetes node, every EC2 instance, every containerized workload — underneath it all, Linux is running the show.",
+        "Every Kubernetes node, every EC2 instance, every containerized workload - underneath it all, Linux is running the show.",
         "Every Kubernetes node, every EC2 instance, every containerized workload. Underneath it all, Linux is running the show.",
     )
 
@@ -674,7 +674,7 @@ def main():
         os.makedirs(out_dir, exist_ok=True)
         out_path = os.path.join(out_dir, "index.html")
         html = html_page(article)
-        if "—" in html:
+        if "\u2014" in html:
             raise ValueError(f"Em dash found in {slug}")
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(html)
