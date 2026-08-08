@@ -7,10 +7,10 @@
   const contactForm = document.getElementById('contactForm');
 
   const BLOG_PREVIEW = [
+    { slug: 'mahabharata-human-body', title: 'The Mahabharata as the Human Body: A Biomedical Allegory of Jaya' },
     { slug: 'entropy-eternal-energy', title: 'Entropy and Eternal Energy: A Thermodynamic Necessity for One Transcendent God' },
     { slug: 'devops-ready-reckoner', title: 'DevOps Ready Reckoner: Essential Cheat Sheets' },
     { slug: 'owning-google-us', title: 'The Day I Legally Owned google.us for a Short Time' },
-    { slug: 'agentic-ai-in-india', title: 'My Vision for the Future of Agentic AI in India' },
   ];
 
   function getBlogArticleHref(slug) {

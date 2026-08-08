@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="How the Mahabharata, originally called Jaya (Victory), serves as a cosmic allegory for the human body - mapping immunology, oncology, and cellular biology onto the Kurukshetra war.">
+  <meta name="author" content="Britto Chakkalakkal">
+  <title>The Mahabharata as the Human Body: A Biomedical Allegory of Jaya | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+  <style>
+    .blog-zoomable {
+      cursor: zoom-in;
+      position: relative;
+    }
+
+    .blog-zoomable::after {
+      content: '🔍 Click to zoom';
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.75);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(4px);
+      z-index: 2;
+    }
+
+    .blog-zoomable:hover::after {
+      opacity: 1;
+    }
+
+    .blog-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2, 6, 23, 0.92);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      cursor: zoom-out;
+      padding: 24px;
+    }
+
+    .blog-lightbox.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .blog-lightbox__img-wrapper {
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow: auto;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+      cursor: default;
+      position: relative;
+    }
+
+    .blog-lightbox img {
+      display: block;
+      width: auto;
+      max-width: none;
+      height: auto;
+      min-width: 300px;
+      transition: transform 0.2s ease;
+    }
+
+    .blog-lightbox__controls {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      gap: 8px;
+      z-index: 10001;
+    }
+
+    .blog-lightbox__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.6);
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .blog-lightbox__btn:hover {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .blog-lightbox__btn--close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+    }
+
+    .blog-lightbox__footer {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 8px 16px;
+      border-radius: 20px;
+      backdrop-filter: blur(4px);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .blog-lightbox {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">The Mahabharata as the Human Body: A Biomedical Allegory of Jaya</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 September 4, 2024</div>
+            <div class="blog-meta-item">⏱️ 8 min read</div>
+            <div class="blog-meta-item">✍️ Britto Chakkalakkal</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">The Mahabharata, originally called Jaya (Victory), is not merely an epic of dynastic war but also a cosmic allegory. When read through the lens of immunology, oncology, and cellular biology, the Kurukshetra war appears as a grand metaphor of health, disease, and the eternal struggle for homeostasis.</p>
+
+        <figure class="blog-architecture blog-zoomable" id="blogZoomableFigure">
+          <img src="../../assets/blog/mahabharata-human-body.png" alt="The Mahabharata as the Human Body - a biomedical allegory mapping epic characters to biological and pathological roles" loading="lazy">
+          <figcaption>Click the image to zoom — The Mahabharata as the Human Body: mapping epic characters to their biological and pathological counterparts</figcaption>
+        </figure>
+
+        <div class="blog-lightbox" id="blogLightbox" role="dialog" aria-modal="true" aria-label="Image zoom viewer" hidden>
+          <div class="blog-lightbox__controls">
+            <button type="button" class="blog-lightbox__btn blog-lightbox__btn--zoom-in" id="blogLightboxZoomIn" aria-label="Zoom in">➕</button>
+            <button type="button" class="blog-lightbox__btn blog-lightbox__btn--zoom-out" id="blogLightboxZoomOut" aria-label="Zoom out">➖</button>
+            <button type="button" class="blog-lightbox__btn blog-lightbox__btn--reset" id="blogLightboxReset" aria-label="Reset zoom">⟲</button>
+            <button type="button" class="blog-lightbox__btn blog-lightbox__btn--close" id="blogLightboxClose" aria-label="Close viewer">✕</button>
+          </div>
+          <div class="blog-lightbox__img-wrapper" id="blogLightboxImgWrapper">
+            <img src="../../assets/blog/mahabharata-human-body.png" alt="The Mahabharata as the Human Body - zoomed view" id="blogLightboxImg">
+          </div>
+          <div class="blog-lightbox__footer" id="blogLightboxFooter">Scroll or drag to pan · Use buttons to zoom</div>
+        </div>
+
+        <h2>Introduction</h2>
+        <p>The Mahabharata, originally called <strong>Jaya</strong> (Victory), is not merely an epic of dynastic war but also a cosmic allegory. Having studied Sanskrit with <em>anvaya</em> (syntactical connection - contextual translation) and later attempting to translate portions of the Jaya (8,800 verses of Vyasa's core text), I discovered a striking resonance between its narrative structure and the physiology and pathology of the human body. The Kurukshetra war, when read through the lens of immunology, oncology, and cellular biology, appears as a grand metaphor of health, disease, and the eternal struggle for homeostasis.</p>
+        <p>The word <strong>Kuru</strong> itself derives from Sanskrit meaning <em>boiled rice</em>, the staple food sustaining the body. The Kuru lineage thus symbolises the very metabolic foundation upon which all life and disease processes rest.</p>
+
+        <h2>Gandhari and the Pathology of Abnormal Birth</h2>
+        <p>Gandhari, wife of Dhritarashtra, voluntarily blindfolded herself to share her husband's blindness, an act of renunciation that also signals impaired sensory signalling in pathology. Granted a boon by Vyasa to bear 100 sons, she experienced a two-year delayed pregnancy, producing not living children but a lump of inert flesh. This represents a pathological gestation, akin to tumoural or teratomatous masses rather than normal embryogenesis.</p>
+        <p>Vyasa intervened, instructing that the lump be divided into 100 fragments, incubated in jars of ghee. After two years, 100 sons and one daughter emerged, the Kauravas. This "jar-incubation" is a vivid metaphor for clonal tumour propagation and metastasis, where abnormal cellular material replicates into many malignant lineages.</p>
+        <p>The birth of Duryodhana, amid jackals howling and ill omens, mirrors the emergence of an aggressive cancerous clone whose presence is recognised by the body's sentinels (wise men), yet ignored by its leadership (Dhritarashtra).</p>
+
+        <h2>Bhishma as Bone Marrow: The Source of Lineages</h2>
+        <p>Bhishma, the grandsire, is the bone marrow of the epic-body. Just as the bone marrow generates both healthy and malignant bloodlines, Bhishma sustains both Pandavas (immune protectors) and Kauravas (tumoural clones). Bound by his terrible vow (<em>bhishma-pratinja</em>), he cannot intervene directly in the proliferation of malignancy, embodying the paradox of marrow that nurtures both immunity and disease.</p>
+        <p>On his deathbed, Bhishma taught Yudhiṣṭhira the dangers of <em>bhojana</em> (food) from the wicked, warning that consuming corrupted sustenance leads to deranged metabolism and obscures dharma. This is a profound allegory for how exposure to carcinogens, toxins, or unhealthy nourishment corrupts cellular conscience and precipitates disease.</p>
+
+        <h2>Krishna's Lineage: The Bhoja Connection</h2>
+        <p>Krishna, the supreme strategist and avatara, was born into the Yadava clan but linked maternally and politically with the <strong>Bhoja</strong> dynasty through his uncle Kamsa of Mathura. The Bhoja etymology recalls <em>bhojana</em> (food), suggesting Krishna's background represents metabolic reorientation. As the divine charioteer, he is the higher regulatory intelligence, the genetic and cosmic editing force, guiding Arjuna, the immune warrior, towards precise targeting of malignancy while preventing autoimmune destruction.</p>
+
+        <h2>The Epic-Body Mapping</h2>
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th>Epic Character / Group</th>
+                <th>Human Body Mapping</th>
+                <th>Biological / Pathological Role</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Bhishma</th>
+                <td>Bone marrow</td>
+                <td>Source of both immune cells and malignant clones</td>
+                <td>Bound by vow, cannot suppress disease</td>
+              </tr>
+              <tr>
+                <th>Dhritarashtra (blind king)</th>
+                <td>Central Nervous System (but blind)</td>
+                <td>Represents impaired perception of pathology</td>
+                <td>Governance without sight</td>
+              </tr>
+              <tr>
+                <th>Gandhari</th>
+                <td>Uterus / Gestational system</td>
+                <td>Produces abnormal lump (proto-tumour), clonal fragmentation into metastasis</td>
+                <td>Blindfold = voluntary sensory shutdown</td>
+              </tr>
+              <tr>
+                <th>Kauravas (100 sons)</th>
+                <td>Malignant metastatic clones</td>
+                <td>Tumoural proliferation from abnormal origin</td>
+                <td>Duryodhana = aggressive clone</td>
+              </tr>
+              <tr>
+                <th>Duhsala (only daughter)</th>
+                <td>Latent benign tumour / hormonal imbalance</td>
+                <td>Non-malignant lineage of same pathology</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <th>Duryodhana</th>
+                <td>Aggressive carcinoma</td>
+                <td>Highly invasive, resistant to elimination</td>
+                <td>Birth accompanied by ominous signals</td>
+              </tr>
+              <tr>
+                <th>Duhsasana</th>
+                <td>Inflammatory metastasis</td>
+                <td>Supports tumour aggression</td>
+                <td>Notorious cruelty = inflammatory pathology</td>
+              </tr>
+              <tr>
+                <th>Pandavas (5 brothers)</th>
+                <td>Adaptive Immune Cells (5 major effector arms)</td>
+                <td>Represent protective responses</td>
+                <td>Balanced immunity</td>
+              </tr>
+              <tr>
+                <th>Yudhiṣṭhira</th>
+                <td>Regulatory T-cell (moral governor)</td>
+                <td>Maintains dharma, avoids overreaction</td>
+                <td>Seeks balance but risks tolerance of tumour</td>
+              </tr>
+              <tr>
+                <th>Bhima</th>
+                <td>Natural Killer (NK) cells</td>
+                <td>Raw destructive force against abnormal cells</td>
+                <td>Massive cytotoxicity</td>
+              </tr>
+              <tr>
+                <th>Arjuna</th>
+                <td>Cytotoxic T-cell</td>
+                <td>Precise targeted immunity</td>
+                <td>Guided by Krishna (higher intelligence)</td>
+              </tr>
+              <tr>
+                <th>Nakula & Sahadeva</th>
+                <td>Helper T-cells, B-cell pathways</td>
+                <td>Coordination and antibody production</td>
+                <td>Secondary but essential</td>
+              </tr>
+              <tr>
+                <th>Krishna</th>
+                <td>Higher signalling / genome editor</td>
+                <td>Guides immune response, prevents autoimmune failure</td>
+                <td>Supreme regulator</td>
+              </tr>
+              <tr>
+                <th>Dronacharya</th>
+                <td>Antigen-presenting cell (teacher)</td>
+                <td>Presents both dharmic and adharmic signals</td>
+                <td>Ambiguous role in immune training</td>
+              </tr>
+              <tr>
+                <th>Karna</th>
+                <td>Immune cell with defective receptor (born with armour but rejected)</td>
+                <td>Potent yet misaligned effector</td>
+                <td>Represents autoimmunity tendency</td>
+              </tr>
+              <tr>
+                <th>Sakuni</th>
+                <td>Oncogenic signalling molecule</td>
+                <td>Master of deceitful dice rolls = mutational errors</td>
+                <td>Drives malignancy</td>
+              </tr>
+              <tr>
+                <th>Kurukshetra battlefield</th>
+                <td>Human body (terrain of pathology)</td>
+                <td>The site of immune-oncological war</td>
+                <td>Life vs death struggle</td>
+              </tr>
+              <tr>
+                <th>Bhagavad Gita</th>
+                <td>Molecular signalling dialogue</td>
+                <td>Instruction manual of immunity and dharma</td>
+                <td>Guides balance between apoptosis and survival</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Disease Mapping</h2>
+        <ul>
+          <li><strong>Kauravas</strong> = Metastatic carcinoma clones.</li>
+          <li><strong>Pandavas</strong> = Adaptive immunity effectors.</li>
+          <li><strong>Dhritarashtra's blindness</strong> = Loss of surveillance.</li>
+          <li><strong>Gandhari's pregnancy</strong> = Dysregulated embryogenesis → tumour initiation.</li>
+          <li><strong>Bhishma</strong> = Bone marrow paradox (source of both immunity and disease).</li>
+          <li><strong>Sakuni's dice</strong> = Mutational randomness driving oncogenesis.</li>
+          <li><strong>Kurukshetra war</strong> = Tumour–immune conflict.</li>
+          <li><strong>Krishna's guidance</strong> = Immune checkpoint regulation, preventing both immunosuppression and autoimmunity.</li>
+        </ul>
+
+        <h2>Conclusion</h2>
+        <p>The Mahabharata as <strong>Jaya</strong> is more than mythology, it is a physiology of the cosmos. When read through the Sanskrit roots (<em>Kuru</em> as boiled rice, <em>Bhoja</em> as food, <em>Jaya</em> as victory), its verses foreshadow the eternal contest between health and disease within the human body. Gandhari's abnormal gestation, Bhishma's marrow paradox, Duryodhana's malignant emergence, and Krishna's supreme regulation all mirror biological truths.</p>
+        <p>Thus, Vyasa's <strong>Jaya</strong> may be seen as the earliest allegorical textbook of systems biology, immunology, and oncology, couched in the language of cosmic law and order.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics & Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Mahabharata</span>
+            <span class="blog-tag">Immunology</span>
+            <span class="blog-tag">Oncology</span>
+            <span class="blog-tag">Systems Biology</span>
+            <span class="blog-tag">Sanskrit</span>
+            <span class="blog-tag">Allegory</span>
+            <span class="blog-tag">Philosophy</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const figure = document.getElementById('blogZoomableFigure');
+      const lightbox = document.getElementById('blogLightbox');
+      const lightboxImg = document.getElementById('blogLightboxImg');
+      const imgWrapper = document.getElementById('blogLightboxImgWrapper');
+      const zoomInBtn = document.getElementById('blogLightboxZoomIn');
+      const zoomOutBtn = document.getElementById('blogLightboxZoomOut');
+      const resetBtn = document.getElementById('blogLightboxReset');
+      const closeBtn = document.getElementById('blogLightboxClose');
+      const footer = document.getElementById('blogLightboxFooter');
+
+      if (!figure || !lightbox || !lightboxImg || !imgWrapper) return;
+
+      let scale = 1;
+      const MIN_SCALE = 1;
+      const MAX_SCALE = 4;
+      const STEP = 0.4;
+
+      function applyZoom() {
+        lightboxImg.style.transform = 'scale(' + scale + ')';
+        lightboxImg.style.transformOrigin = '0 0';
+        imgWrapper.scrollLeft = (imgWrapper.scrollWidth - imgWrapper.clientWidth) / 2;
+        imgWrapper.scrollTop = (imgWrapper.scrollHeight - imgWrapper.clientHeight) / 2;
+        footer.textContent = 'Zoom: ' + Math.round(scale * 100) + '% · Scroll or drag to pan';
+      }
+
+      function openLightbox() {
+        scale = 1;
+        applyZoom();
+        lightbox.hidden = false;
+        requestAnimationFrame(function () {
+          lightbox.classList.add('open');
+        });
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('open');
+        document.body.style.overflow = '';
+        setTimeout(function () {
+          lightbox.hidden = true;
+        }, 300);
+      }
+
+      figure.addEventListener('click', function (e) {
+        if (e.target.closest('a, button')) return;
+        openLightbox();
+      });
+
+      lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox || e.target === lightboxImg) {
+          closeLightbox();
+        }
+      });
+
+      closeBtn.addEventListener('click', closeLightbox);
+
+      document.addEventListener('keydown', function (e) {
+        if (lightbox.hidden) return;
+        if (e.key === 'Escape') {
+          closeLightbox();
+        } else if (e.key === '+' || e.key === '=') {
+          zoomInBtn.click();
+        } else if (e.key === '-') {
+          zoomOutBtn.click();
+        } else if (e.key === '0') {
+          resetBtn.click();
+        }
+      });
+
+      zoomInBtn.addEventListener('click', function () {
+        scale = Math.min(scale + STEP, MAX_SCALE);
+        applyZoom();
+      });
+
+      zoomOutBtn.addEventListener('click', function () {
+        scale = Math.max(scale - STEP, MIN_SCALE);
+        applyZoom();
+      });
+
+      resetBtn.addEventListener('click', function () {
+        scale = 1;
+        applyZoom();
+      });
+
+      imgWrapper.addEventListener('wheel', function (e) {
+        e.preventDefault();
+        if (e.deltaY < 0) {
+          scale = Math.min(scale + STEP * 0.5, MAX_SCALE);
+        } else {
+          scale = Math.max(scale - STEP * 0.5, MIN_SCALE);
+        }
+        applyZoom();
+      }, { passive: false });
+
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let scrollLeft = 0;
+      let scrollTop = 0;
+
+      imgWrapper.addEventListener('mousedown', function (e) {
+        isDragging = true;
+        startX = e.pageX - imgWrapper.offsetLeft;
+        startY = e.pageY - imgWrapper.offsetTop;
+        scrollLeft = imgWrapper.scrollLeft;
+        scrollTop = imgWrapper.scrollTop;
+        imgWrapper.style.cursor = 'grabbing';
+      });
+
+      document.addEventListener('mousemove', function (e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - imgWrapper.offsetLeft;
+        const y = e.pageY - imgWrapper.offsetTop;
+        const walkX = (x - startX);
+        const walkY = (y - startY);
+        imgWrapper.scrollLeft = scrollLeft - walkX;
+        imgWrapper.scrollTop = scrollTop - walkY;
+      });
+
+      document.addEventListener('mouseup', function () {
+        isDragging = false;
+        imgWrapper.style.cursor = 'default';
+      });
+    })();
+  </script>
+  <script src="../../script.js"></script>
+</body>
+</html>
