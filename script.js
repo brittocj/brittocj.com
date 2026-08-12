@@ -72,7 +72,7 @@
 
     const tooltipTitle = document.createElement('p');
     tooltipTitle.className = 'nav__blog-tooltip-title';
-    tooltipTitle.textContent = 'Latest articles';
+    tooltipTitle.textContent = 'Featured articles';
 
     const tooltipList = document.createElement('ul');
     tooltipList.className = 'nav__blog-tooltip-list';
@@ -81,10 +81,9 @@
       const item = document.createElement('li');
       const articleLink = document.createElement('a');
       articleLink.href = getBlogArticleHref(article.slug);
-      articleLink.innerHTML = article.title.replace(
-        /google\.us/g,
-        '<span class="google-us-gradient">google.us</span>'
-      );
+      articleLink.innerHTML = article.title
+        .replace(/google\.us/g, '<span class="google-us-gradient">google.us</span>')
+        .replace(/Mahabharata/g, '<span class="google-us-gradient">Mahabharata</span>');
       item.appendChild(articleLink);
       tooltipList.appendChild(item);
     });
