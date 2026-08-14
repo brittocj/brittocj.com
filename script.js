@@ -83,6 +83,7 @@
       articleLink.href = getBlogArticleHref(article.slug);
       articleLink.innerHTML = article.title
         .replace(/google\.us/g, '<span class="google-us-gradient">google.us</span>')
+        .replace(/One Transcendent God/g, '<span class="google-us-gradient">One Transcendent God</span>')
         .replace(/Mahabharata/g, '<span class="google-us-gradient">Mahabharata</span>');
       item.appendChild(articleLink);
       tooltipList.appendChild(item);
