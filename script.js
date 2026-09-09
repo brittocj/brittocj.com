@@ -7,7 +7,7 @@
   const contactForm = document.getElementById('contactForm');
 
   const BLOG_PREVIEW = [
-    { slug: 'mahabharata-human-body', title: 'The Mahabharata as the Human Body: A Biomedical Allegory of Jaya' },
+    { slug: 'microservices-on-azure-aks', title: 'Microservices Architecture on Azure Kubernetes Service' },
     { slug: 'entropy-eternal-energy', title: 'Entropy and Eternal Energy: A Thermodynamic Necessity for One Transcendent God' },
     { slug: 'devops-ready-reckoner', title: 'DevOps Ready Reckoner: Essential Cheat Sheets' },
     { slug: 'owning-google-us', title: 'The Day I Legally Owned google.us for a Short Time' },
@@ -21,7 +21,9 @@
       return `blog/${slug}/index.html`;
     }
 
-    if (segments.length > blogIndex + 1) {
+    const isOnBlogIndex = segments.length === blogIndex + 1 || segments[blogIndex + 1] === 'index.html';
+
+    if (!isOnBlogIndex) {
       return `../${slug}/index.html`;
     }
 
@@ -84,7 +86,9 @@
       articleLink.innerHTML = article.title
         .replace(/google\.us/g, '<span class="google-us-gradient">google.us</span>')
         .replace(/One Transcendent God/g, '<span class="google-us-gradient">One Transcendent God</span>')
-        .replace(/Mahabharata/g, '<span class="google-us-gradient">Mahabharata</span>');
+        .replace(/Mahabharata/g, '<span class="google-us-gradient">Mahabharata</span>')
+        .replace(/Architecture on Azure/g, '<span class="google-us-gradient">Architecture on Azure</span>')
+        .replace(/DevOps Ready Reckoner/g, '<span class="google-us-gradient">DevOps Ready Reckoner</span>');
       item.appendChild(articleLink);
       tooltipList.appendChild(item);
     });
