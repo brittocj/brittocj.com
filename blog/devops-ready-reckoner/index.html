@@ -510,6 +510,17 @@ docker run -d -p 8080:8080 --name myapp myapp:1.0.0
 docker exec -it myapp sh
 docker logs -f myapp</code></pre>
 
+        <h3>Container pause/unpause</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>docker pause <container_name_or_id></code></td><td>Suspend all processes in a container (freezes cgroup)</td></tr>
+            <tr><td><code>docker unpause <container_name_or_id></code></td><td>Resume all processes in a paused container</td></tr>
+          </tbody>
+        </table>
+
         <h2 id="docker-compose">Docker Compose YAML Structure</h2>
         <p>Compose defines multi-container applications in a single YAML file. Compose Specification v2 is the current standard (use <code>docker compose</code>, not legacy <code>docker-compose</code>).</p>
 
