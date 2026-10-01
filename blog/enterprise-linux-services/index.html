@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Essential enterprise Linux services including SSH, SFTP, NFS, SMB, HTTP, DNS, LDAP, rsync, chrony, logging, and firewall management for Linux administrators.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Enterprise Linux Services: Essential Services Every Administrator Should Know | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Enterprise Linux <span class="google-us-gradient">Services</span>: Essential Services Every Administrator Should Know</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 October 1, 2026</div>
+            <div class="blog-meta-item">⏱️ 16 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">A Linux server in an enterprise environment rarely exists just to run an application. It often provides authentication, file sharing, remote administration, name resolution, monitoring, web services, databases, automation endpoints, and infrastructure services to hundreds or thousands of users and systems. For a Linux administrator, knowing how to install a package is not enough. You need to understand which service does what, which protocol it uses, where it stores its configuration, how it is secured, and how to troubleshoot it.</p>
+
+        <h2>SSH: The Foundation of Linux Administration</h2>
+        <p><strong>SSH, or Secure Shell, is arguably the most important service for a Linux administrator.</strong></p>
+        <p>It provides encrypted remote access to Linux servers and is commonly used for:</p>
+        <ul>
+          <li>Remote administration.</li>
+          <li>Command execution.</li>
+          <li>File transfers.</li>
+          <li>Automation.</li>
+          <li>Port forwarding.</li>
+          <li>Secure tunnelling.</li>
+          <li>Git operations.</li>
+          <li>Infrastructure automation.</li>
+        </ul>
+
+        <p>The server normally listens on:</p>
+
+        <pre><code>TCP/22</code></pre>
+
+        <p>Check the service:</p>
+
+        <pre><code>systemctl status sshd</code></pre>
+
+        <p>On some distributions, the service may be named <code>ssh</code>:</p>
+
+        <pre><code>systemctl status ssh</code></pre>
+
+        <p>Connect to a server:</p>
+
+        <pre><code>ssh admin@192.168.10.50</code></pre>
+
+        <p>Using a specific private key:</p>
+
+        <pre><code>ssh -i ~/.ssh/id_ed25519 admin@192.168.10.50</code></pre>
+
+        <p>Copy a file:</p>
+
+        <pre><code>scp application.conf admin@192.168.10.50:/tmp/</code></pre>
+
+        <p>For enterprise environments, administrators should generally prefer <strong>SSH keys over password authentication</strong>, disable direct root login where appropriate, restrict access using firewall and identity controls, and maintain appropriate logging.</p>
+        <p>Configuration is commonly found at:</p>
+
+        <pre><code>/etc/ssh/sshd_config
+/etc/ssh/sshd_config.d/</code></pre>
+
+        <p>Always validate the configuration before restarting SSH:</p>
+
+        <pre><code>sshd -t</code></pre>
+
+        <p>This is particularly important when administering a remote production server. A configuration error followed by an SSH restart can lock you out.</p>
+
+        <h2>SFTP: Secure File Transfer over SSH</h2>
+        <p>SFTP is frequently confused with FTP.</p>
+        <p>They are fundamentally different.</p>
+        <p><strong>SFTP is an SSH-based file transfer protocol.</strong></p>
+        <p>It normally operates through the SSH service:</p>
+
+        <pre><code>Client
+   |
+   | TCP/22
+   |
+   v
+sshd
+   |
+   +---- SFTP subsystem</code></pre>
+
+        <p>Connect using:</p>
+
+        <pre><code>sftp admin@192.168.10.50</code></pre>
+
+        <p>Upload:</p>
+
+        <pre><code>put application.zip</code></pre>
+
+        <p>Download:</p>
+
+        <pre><code>get application.log</code></pre>
+
+        <p>List remote files:</p>
+
+        <pre><code>ls</code></pre>
+
+        <p>SFTP is often the preferred choice when an organisation simply needs secure file transfer rather than legacy FTP compatibility.</p>
+        <p>It also has an important enterprise feature: <strong>chroot-based restricted SFTP environments</strong>.</p>
+        <p>For example, an organisation can provide a user with SFTP access without giving that user an interactive shell.</p>
+        <p>This is useful for:</p>
+        <ul>
+          <li>Application integrations.</li>
+          <li>Vendor file exchange.</li>
+          <li>Financial file processing.</li>
+          <li>Data ingestion.</li>
+          <li>Managed file transfer workflows.</li>
+        </ul>
+
+        <h2>FTP and vsftpd</h2>
+        <p>FTP is one of the oldest file transfer protocols still encountered in enterprise environments.</p>
+        <p>The traditional FTP architecture uses separate control and data connections.</p>
+
+        <pre><code>FTP Client
+    |
+    | Control connection
+    | TCP/21
+    |
+    v
+FTP Server
+    |
+    | Data connection
+    |
+    +------------------&gt;</code></pre>
+
+        <p>The problem is that traditional FTP does not provide encryption by default.</p>
+        <p>Credentials and data can therefore be exposed on an untrusted network.</p>
+        <p>This is why modern environments generally prefer:</p>
+
+        <pre><code>SFTP
+FTPS
+Managed File Transfer</code></pre>
+
+        <p>rather than plain FTP.</p>
+
+        <h3>vsftpd</h3>
+        <p><strong>vsftpd</strong>, or Very Secure FTP Daemon, is a commonly encountered Linux FTP server.</p>
+        <p>Configuration is commonly located at:</p>
+
+        <pre><code>/etc/vsftpd.conf</code></pre>
+
+        <p>Service management:</p>
+
+        <pre><code>systemctl status vsftpd
+systemctl enable --now vsftpd</code></pre>
+
+        <p>Check listening ports:</p>
+
+        <pre><code>ss -lntp | grep vsftpd</code></pre>
+
+        <p>If FTP is required for legacy integration, administrators should carefully configure encryption, authentication, user restrictions, passive-mode ports, firewall rules, logging, and SELinux/AppArmor policies.</p>
+
+        <div class="cheat-callout">
+          <p><strong>Important lesson:</strong> Do not deploy plain FTP simply because an old application or vendor document says "FTP". Determine whether the requirement actually means FTP, FTPS, or SFTP.</p>
+        </div>
+
+        <h2>NFS: Native Linux and UNIX File Sharing</h2>
+        <p><strong>NFS, or Network File System, is one of the most important file-sharing technologies in Linux environments.</strong></p>
+        <p>It allows a client to mount a remote filesystem as if it were a local directory.</p>
+
+        <pre><code>             NFS Server
+          /data/projects
+                 |
+                 |
+             Network
+                 |
+                 v
+             NFS Client
+          /mnt/projects</code></pre>
+
+        <p>The client can then access:</p>
+
+        <pre><code>ls /mnt/projects</code></pre>
+
+        <p>as if the files were locally mounted.</p>
+        <p>Common enterprise use cases include:</p>
+        <ul>
+          <li>Shared application data.</li>
+          <li>Virtualisation infrastructure.</li>
+          <li>Linux home directories.</li>
+          <li>Backup repositories.</li>
+          <li>Container storage.</li>
+          <li>Shared development environments.</li>
+        </ul>
+
+        <p>View exports on an NFS server:</p>
+
+        <pre><code>exportfs -v</code></pre>
+
+        <p>Typical export configuration:</p>
+
+        <pre><code>/etc/exports</code></pre>
+
+        <p>Example:</p>
+
+        <pre><code>/data/projects 10.10.20.0/24(rw,sync)</code></pre>
+
+        <p>Apply exports:</p>
+
+        <pre><code>exportfs -ra</code></pre>
+
+        <p>On the client:</p>
+
+        <pre><code>showmount -e 10.10.20.10</code></pre>
+
+        <p>Mount:</p>
+
+        <pre><code>mount -t nfs 10.10.20.10:/data/projects /mnt/projects</code></pre>
+
+        <p>For persistent mounting, configure <code>/etc/fstab</code>.</p>
+        <p>NFS permissions require careful understanding of Linux UID/GID mapping. A user being able to access a directory locally does not automatically mean that the same user will have access through NFS.</p>
+        <p>Enterprise NFS administration therefore involves more than simply mounting a directory. Administrators need to understand:</p>
+        <ul>
+          <li>UID/GID consistency.</li>
+          <li>Root squashing.</li>
+          <li>Export restrictions.</li>
+          <li>NFS versions.</li>
+          <li>Network security.</li>
+          <li>File locking.</li>
+          <li>Performance.</li>
+          <li>High availability.</li>
+        </ul>
+
+        <h2>SMB/CIFS and Samba</h2>
+        <p>If NFS is commonly associated with Linux and UNIX environments, <strong>SMB is heavily associated with Windows environments.</strong></p>
+        <p>Linux can access SMB file shares using the CIFS client.</p>
+        <p>A typical architecture looks like:</p>
+
+        <pre><code>Windows Client
+       |
+       | SMB
+       |
+       v
+   Samba Server
+       |
+       v
+Linux Filesystem</code></pre>
+
+        <p><strong>Samba</strong> allows Linux systems to provide SMB services.</p>
+        <p>Check Samba:</p>
+
+        <pre><code>systemctl status smb</code></pre>
+
+        <p>On distributions where the service naming differs, check:</p>
+
+        <pre><code>systemctl list-unit-files | grep -E 'smb|samba'</code></pre>
+
+        <p>Configuration is commonly stored in:</p>
+
+        <pre><code>/etc/samba/smb.conf</code></pre>
+
+        <p>Validate the configuration:</p>
+
+        <pre><code>testparm</code></pre>
+
+        <p>List shares:</p>
+
+        <pre><code>smbclient -L //server.example.com -U username</code></pre>
+
+        <p>Mount an SMB share:</p>
+
+        <pre><code>mount -t cifs //server/share /mnt/share \
+    -o username=myuser</code></pre>
+
+        <p>Enterprise Samba environments can integrate with <strong>Microsoft Active Directory</strong>, allowing Linux servers to participate in Windows-centric identity and file-sharing environments.</p>
+        <p>This makes Samba particularly important for Linux administrators working in mixed Windows and Linux infrastructure.</p>
+
+        <h2>HTTP and HTTPS</h2>
+        <p>Almost every enterprise Linux server administrator will eventually work with HTTP.</p>
+        <p>Linux commonly hosts:</p>
+        <ul>
+          <li>Web applications.</li>
+          <li>REST APIs.</li>
+          <li>Reverse proxies.</li>
+          <li>Load balancers.</li>
+          <li>Internal portals.</li>
+          <li>Monitoring systems.</li>
+          <li>Package repositories.</li>
+        </ul>
+
+        <p>Common web servers include:</p>
+
+        <pre><code>Apache HTTP Server
+Nginx</code></pre>
+
+        <p>Check listening services:</p>
+
+        <pre><code>ss -lntp | grep -E ':80|:443'</code></pre>
+
+        <p>Test a web endpoint:</p>
+
+        <pre><code>curl -I https://example.com</code></pre>
+
+        <p>For local troubleshooting:</p>
+
+        <pre><code>curl -v http://localhost:8080/</code></pre>
+
+        <p>In modern architectures, Nginx or Apache may not actually serve application content. They may instead act as a <strong>reverse proxy</strong>:</p>
+
+        <pre><code>Internet
+    |
+    v
+Nginx / Apache
+    |
+    +----> Application Server
+    |
+    +----> API Server
+    |
+    +----> Static Content</code></pre>
+
+        <p>Understanding reverse proxying, TLS certificates, HTTP headers, connection handling, and logs is therefore increasingly important for Linux administrators.</p>
+
+        <h2>DNS: The Service Behind Almost Everything</h2>
+        <p>DNS is frequently blamed when an application cannot connect to another system.</p>
+        <p>Sometimes DNS really is the problem.</p>
+        <p>Sometimes it is not.</p>
+        <p>Linux administrators should understand:</p>
+
+        <pre><code>/etc/hosts
+/etc/resolv.conf
+systemd-resolved
+DNS servers
+Forward lookup
+Reverse lookup
+Search domains</code></pre>
+
+        <p>Test resolution:</p>
+
+        <pre><code>getent hosts server.example.com</code></pre>
+
+        <p>Using DNS utilities:</p>
+
+        <pre><code>dig server.example.com</code></pre>
+
+        <p>Reverse lookup:</p>
+
+        <pre><code>dig -x 192.168.10.50</code></pre>
+
+        <p>Check resolver configuration:</p>
+
+        <pre><code>resolvectl status</code></pre>
+
+        <div class="cheat-callout">
+          <p><strong>Troubleshooting principle:</strong> Test the IP address first, then test DNS. For example, <code>ping 10.10.10.50</code> — if that works, then try <code>ping server.example.com</code>. If the first succeeds and the second fails, DNS becomes a strong candidate for investigation.</p>
+        </div>
+
+        <h2>LDAP and Enterprise Identity</h2>
+        <p>Enterprise Linux servers frequently depend on centralised identity services.</p>
+        <p>LDAP is commonly used to provide directory services, while environments based on Microsoft Active Directory often expose LDAP-compatible interfaces.</p>
+        <p>Linux systems may use components such as:</p>
+
+        <pre><code>SSSD
+LDAP
+Kerberos
+PAM
+NSS</code></pre>
+
+        <p>The architecture can look like:</p>
+
+        <pre><code>Linux Server
+     |
+     v
+    SSSD
+     |
+     +--------> LDAP / Active Directory
+     |
+     +--------> Kerberos</code></pre>
+
+        <p>SSSD is particularly important because it provides a common integration layer for identity and authentication.</p>
+        <p>Useful troubleshooting commands include:</p>
+
+        <pre><code>systemctl status sssd
+sssctl domain-list
+sssctl domain-status</code></pre>
+
+        <p>Administrators working with enterprise Linux should understand the difference between:</p>
+        <ul>
+          <li>Local users.</li>
+          <li>Directory users.</li>
+          <li>Authentication.</li>
+          <li>Authorisation.</li>
+          <li>Identity lookup.</li>
+          <li>Kerberos tickets.</li>
+          <li>Sudo policies.</li>
+        </ul>
+
+        <p>This becomes especially important when hundreds or thousands of servers use centralised identity.</p>
+
+        <h2>rsync: Efficient Data Synchronisation</h2>
+        <p><code>rsync</code> is not simply another file-copy command.</p>
+        <p>It is an efficient file synchronisation utility that can minimise data transferred between systems.</p>
+        <p>Basic example:</p>
+
+        <pre><code>rsync -av /data/ admin@server:/backup/data/</code></pre>
+
+        <p>Synchronise a remote directory:</p>
+
+        <pre><code>rsync -av admin@server:/data/ /backup/data/</code></pre>
+
+        <p>For large datasets, rsync can be significantly more efficient than repeatedly copying everything.</p>
+        <p>Common use cases include:</p>
+        <ul>
+          <li>Backup.</li>
+          <li>Migration.</li>
+          <li>Server synchronisation.</li>
+          <li>Website deployment.</li>
+          <li>Data replication.</li>
+          <li>Disaster recovery workflows.</li>
+        </ul>
+
+        <p>Be careful with:</p>
+
+        <pre><code>--delete</code></pre>
+
+        <p>For example:</p>
+
+        <pre><code>rsync -av --delete source/ destination/</code></pre>
+
+        <p><code>--delete</code> can remove files from the destination that do not exist in the source.</p>
+        <p>Always understand the source and destination paths before executing destructive synchronisation commands.</p>
+
+        <h2>Chrony: Enterprise Time Synchronisation</h2>
+        <p>Time synchronisation is often underestimated.</p>
+        <p>Incorrect server time can cause problems with:</p>
+        <ul>
+          <li>Kerberos.</li>
+          <li>TLS certificates.</li>
+          <li>Distributed applications.</li>
+          <li>Databases.</li>
+          <li>Log correlation.</li>
+          <li>Cluster operations.</li>
+          <li>Authentication.</li>
+        </ul>
+
+        <p>Modern enterprise Linux systems commonly use <strong>chrony</strong>.</p>
+        <p>Check:</p>
+
+        <pre><code>systemctl status chronyd</code></pre>
+
+        <p>Check synchronisation:</p>
+
+        <pre><code>chronyc tracking</code></pre>
+
+        <p>View configured sources:</p>
+
+        <pre><code>chronyc sources -v</code></pre>
+
+        <p>A healthy enterprise environment normally has a consistent time hierarchy:</p>
+
+        <pre><code>Enterprise NTP Sources
+        |
+        v
+  Infrastructure
+     Servers
+        |
+        v
+ Application Servers
+        |
+        v
+ Clients / Workloads</code></pre>
+
+        <p>Time synchronisation should be treated as infrastructure, not merely an optional system setting.</p>
+
+        <h2>Logging: journald and rsyslog</h2>
+        <p>When something breaks on a Linux server, logs are usually the first place to investigate.</p>
+        <p>Modern Linux systems commonly use:</p>
+
+        <pre><code>systemd-journald</code></pre>
+
+        <p>Query logs:</p>
+
+        <pre><code>journalctl</code></pre>
+
+        <p>Show logs for a service:</p>
+
+        <pre><code>journalctl -u sshd</code></pre>
+
+        <p>Show recent entries:</p>
+
+        <pre><code>journalctl --since "30 minutes ago"</code></pre>
+
+        <p>Follow logs in real time:</p>
+
+        <pre><code>journalctl -f</code></pre>
+
+        <p>Traditional syslog infrastructure may also use:</p>
+
+        <pre><code>rsyslog</code></pre>
+
+        <p>Configuration is commonly found under:</p>
+
+        <pre><code>/etc/rsyslog.conf
+/etc/rsyslog.d/</code></pre>
+
+        <p>Enterprise environments often forward logs to a central platform:</p>
+
+        <pre><code>Linux Servers
+     |
+     +----> journald
+     |
+     +----> rsyslog
+              |
+              v
+       Central Log Platform
+              |
+       +------+------+
+       |             |
+     Search        Alerts</code></pre>
+
+        <p>Centralised logging is critical for troubleshooting, security monitoring, auditing, and incident response.</p>
+
+        <h2>Firewall: The Invisible Gatekeeper</h2>
+        <p>A service can be running perfectly and still be unreachable because the firewall blocks its port.</p>
+        <p>Common enterprise Linux firewall technologies include:</p>
+
+        <pre><code>firewalld
+nftables
+iptables</code></pre>
+
+        <p>On modern RHEL-based environments, <code>firewalld</code> is commonly used as a management layer.</p>
+        <p>Check:</p>
+
+        <pre><code>systemctl status firewalld</code></pre>
+
+        <p>List active configuration:</p>
+
+        <pre><code>firewall-cmd --list-all</code></pre>
+
+        <p>Check listening ports independently:</p>
+
+        <pre><code>ss -lntup</code></pre>
+
+        <p>This distinction is important.</p>
+        <p>If <code>ss</code> shows that an application is listening on TCP/443, but clients cannot connect, investigate the network path and firewall.</p>
+
+        <p>The troubleshooting chain should be:</p>
+
+        <pre><code>Application
+     |
+Port listening?
+     |
+Firewall?
+     |
+Server interface?
+     |
+Routing?
+     |
+Network ACL?
+     |
+Remote firewall?
+     |
+Destination?</code></pre>
+
+        <h2>The Enterprise Linux Administrator's Service Map</h2>
+        <p>A useful mental model is to group services by function.</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Services / Technologies</th>
+              <th>Primary Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Remote administration</td><td>SSH</td><td>Secure server administration</td></tr>
+            <tr><td>Secure file transfer</td><td>SFTP</td><td>File transfer over SSH</td></tr>
+            <tr><td>Legacy file transfer</td><td>FTP / vsftpd</td><td>FTP-based integration</td></tr>
+            <tr><td>Linux file sharing</td><td>NFS</td><td>UNIX/Linux shared filesystem</td></tr>
+            <tr><td>Windows file sharing</td><td>SMB / Samba</td><td>Windows-compatible file sharing</td></tr>
+            <tr><td>Web</td><td>Apache / Nginx</td><td>HTTP/HTTPS services</td></tr>
+            <tr><td>Name resolution</td><td>DNS</td><td>Hostname and service discovery</td></tr>
+            <tr><td>Identity</td><td>LDAP / SSSD / Kerberos</td><td>Centralised authentication</td></tr>
+            <tr><td>Synchronisation</td><td>rsync</td><td>Efficient file synchronisation</td></tr>
+            <tr><td>Time</td><td>chrony</td><td>NTP time synchronisation</td></tr>
+            <tr><td>Logging</td><td>journald / rsyslog</td><td>System and application logging</td></tr>
+            <tr><td>Firewall</td><td>firewalld / nftables</td><td>Network traffic control</td></tr>
+          </tbody>
+        </table>
+
+        <h2>What an Administrator Should Check First</h2>
+        <p>When handed an unfamiliar Linux server, a useful initial assessment is:</p>
+
+        <pre><code>hostnamectl
+uname -r
+ip addr
+ip route
+ss -lntup
+systemctl --failed
+df -h
+free -h
+systemctl list-units --type=service --state=running</code></pre>
+
+        <p>Then investigate the services relevant to the server's role.</p>
+
+        <h3>A file server might require:</h3>
+
+        <pre><code>NFS
+SMB
+SSH
+DNS
+chrony
+logging
+firewall</code></pre>
+
+        <h3>A web server might require:</h3>
+
+        <pre><code>SSH
+Nginx/Apache
+DNS
+TLS
+chrony
+logging
+firewall</code></pre>
+
+        <h3>An enterprise application server might require:</h3>
+
+        <pre><code>SSH
+HTTP/HTTPS
+DNS
+LDAP/SSSD
+chrony
+logging
+firewall
+database connectivity</code></pre>
+
+        <p>The exact combination depends on the workload.</p>
+
+        <h2>Security Should Be Part of Every Service Configuration</h2>
+        <p>A Linux administrator should never treat "the service is running" as the definition of success.</p>
+        <p>For every network service, ask:</p>
+
+        <pre><code>Who can connect?
+Which IP addresses can connect?
+Which port is exposed?
+Is encryption enabled?
+How are users authenticated?
+What permissions do they have?
+Where are logs stored?
+Are failed attempts logged?
+Is the service patched?
+Is the firewall restricting access?</code></pre>
+
+        <p>For example, exposing SSH to an entire network when only an administration subnet needs access is unnecessary attack surface.</p>
+        <p>Similarly, exposing an NFS export to an entire corporate network when only a small application subnet requires access is poor access control.</p>
+
+        <div class="cheat-callout">
+          <p><strong>Enterprise administration is therefore a combination of:</strong> Availability + Security + Performance + Observability + Recoverability.</p>
+        </div>
+
+        <h2>Conclusion</h2>
+        <p>An enterprise Linux administrator does not need to memorise every Linux service or every configuration parameter.</p>
+        <p>What matters is understanding the role of the major services and being able to troubleshoot them systematically.</p>
+        <p>At a minimum, an administrator should be comfortable with:</p>
+
+        <pre><code>SSH       Remote administration
+SFTP      Secure file transfer
+FTP       Legacy file transfer
+vsftpd    FTP server
+NFS       Linux/UNIX file sharing
+SMB       Windows-compatible file sharing
+Samba     SMB server on Linux
+HTTP      Web services
+DNS       Name resolution
+LDAP      Directory services
+SSSD      Linux identity integration
+rsync     Data synchronisation
+chrony    Time synchronisation
+journald  System logging
+rsyslog   Centralised/legacy syslog
+firewalld Firewall management
+nftables  Linux packet filtering</code></pre>
+
+        <p>More importantly, learn how these services interact.</p>
+        <p>A typical enterprise server is not a collection of isolated services. It is part of a larger infrastructure:</p>
+
+        <pre><code>                  Enterprise Network
+                         |
+          +--------------+--------------+
+          |              |              |
+         DNS          Identity       NTP
+          |              |              |
+          +--------------+--------------+
+                         |
+                    Linux Server
+                         |
+       +-----------------+-----------------+
+       |                 |                 |
+      SSH             Web/API           File Services
+       |                 |                 |
+      SFTP          Nginx/Apache       NFS / SMB
+       |                 |                 |
+       +-----------------+-----------------+
+                         |
+                    Application
+                         |
+                    Logs / SIEM</code></pre>
+
+        <p>Once an administrator understands this service map, Linux server administration becomes much more structured.</p>
+        <p>You stop asking, <strong>"Which command should I run?"</strong></p>
+        <p>Instead, you start asking the more useful questions:</p>
+        <ul>
+          <li><strong>Which service provides this capability?</strong></li>
+          <li><strong>Which process is listening?</strong></li>
+          <li><strong>Which port is involved?</strong></li>
+          <li><strong>How is the user authenticated?</strong></li>
+          <li><strong>Which network path does the traffic follow?</strong></li>
+          <li><strong>Which firewall controls it?</strong></li>
+          <li><strong>Where are the logs?</strong></li>
+          <li><strong>What happens if the service fails?</strong></li>
+        </ul>
+
+        <p>That mindset is what turns Linux administration from command execution into enterprise infrastructure engineering.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics & Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Linux</span>
+            <span class="blog-tag">System Administration</span>
+            <span class="blog-tag">Enterprise</span>
+            <span class="blog-tag">SSH</span>
+            <span class="blog-tag">SFTP</span>
+            <span class="blog-tag">NFS</span>
+            <span class="blog-tag">Samba</span>
+            <span class="blog-tag">DNS</span>
+            <span class="blog-tag">LDAP</span>
+            <span class="blog-tag">rsync</span>
+            <span class="blog-tag">chrony</span>
+            <span class="blog-tag">Logging</span>
+            <span class="blog-tag">Firewall</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Cloud Engineering</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

@@ -25,6 +25,9 @@ NAV_INDEX_NEW = """        <li><a href="../index.html#certifications">Certificat
 
 # Career-aligned dates (newest first on index). sort_key = YYYYMMDD
 ARTICLES = [
+    {"slug": "enterprise-linux-services", "tag": "Linux", "title": "Enterprise Linux Services: Essential Services Every Administrator Should Know",
+     "excerpt": "A comprehensive guide to the key enterprise Linux services: SSH, SFTP, NFS, SMB, HTTP, DNS, LDAP, rsync, chrony, logging, and firewall management.",
+     "date_short": "Oct 1, 2026", "date_full": "October 1, 2026", "read_time": "16 min", "sort_key": 20261001},
     {"slug": "linux-networking-2026", "tag": "Networking", "title": "Linux Networking in 2026: RHEL, SUSE, Ubuntu and CIDR",
      "excerpt": "Enterprise Linux networking configuration across distributions, CIDR notation, and a practical troubleshooting workflow for cloud administrators.",
      "date_short": "Oct 1, 2026", "date_full": "October 1, 2026", "read_time": "10 min", "sort_key": 20261001},
