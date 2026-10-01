@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Practical Linux security hardening guide for enterprise administrators: assessment, patching, SSH hardening, sudo, firewalls, SELinux/AppArmor, auditing, logging, CIS benchmarks and file integrity monitoring.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Linux Security Hardening: A Practical Enterprise Guide for Linux Administrators | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Linux <span class="google-us-gradient">Security Hardening</span>: A Practical Enterprise Guide for Linux Administrators</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 October 1, 2026</div>
+            <div class="blog-meta-item">⏱️ 22 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Linux is widely used for enterprise servers, cloud infrastructure, databases, web applications, containers, and critical workloads. But installing Linux and applying updates is only the beginning. A production Linux server should be <strong>hardened</strong> before it is exposed to users, applications, or the Internet. Linux security hardening is the process of reducing the server's attack surface, restricting unnecessary access, protecting privileged operations, securing network services, enforcing mandatory access controls, monitoring activity, and maintaining a secure configuration over time.</p>
+
+        <p>This article provides a practical security-hardening checklist for enterprise Linux administrators, with examples applicable to <strong>Red Hat Enterprise Linux, SUSE Linux Enterprise Server, Ubuntu Server, and other major Linux distributions</strong>. For the underlying service behaviour discussed here, see <a href="../enterprise-linux-services/index.html">Enterprise Linux Services</a>.</p>
+
+        <h2 id="architecture">Linux Security Hardening Architecture</h2>
+
+        <p>A hardened Linux server should not depend on a single security mechanism. Think of security as multiple layers:</p>
+
+        <pre><code>                    Internet / Corporate Network
+                              |
+                              v
+                    +--------------------+
+                    | Network Firewall   |
+                    | Security Groups    |
+                    | ACLs / Routing     |
+                    +--------------------+
+                              |
+                              v
+                    +--------------------+
+                    | Host Firewall      |
+                    | firewalld / UFW    |
+                    | nftables           |
+                    +--------------------+
+                              |
+                              v
+              +----------------------------------+
+              | Linux Server                     |
+              |                                  |
+              | SSH Hardening                    |
+              | User / Group Controls            |
+              | sudo / Privilege Management      |
+              | SELinux / AppArmor               |
+              | Filesystem Permissions           |
+              | Service Hardening                 |
+              | Kernel Hardening                  |
+              | Patch Management                  |
+              | Logging / Auditing                |
+              +----------------------------------+
+                              |
+                              v
+                    Applications / Data</code></pre>
+
+        <p>The objective is <strong>defence in depth</strong>.</p>
+        <p>If one layer fails, another layer should still provide protection.</p>
+
+        <h2 id="assessment">Start With an Asset and Exposure Assessment</h2>
+
+        <p>Before changing configuration, determine what the server actually does. Start with:</p>
+
+        <pre><code>hostnamectl
+uname -a
+cat /etc/os-release</code></pre>
+
+        <p>Check the IP configuration:</p>
+
+        <pre><code>ip addr
+ip route</code></pre>
+
+        <p>Identify listening services:</p>
+
+        <pre><code>sudo ss -lntup</code></pre>
+
+        <p>For example:</p>
+
+        <pre><code>Netid  Local Address:Port
+tcp    0.0.0.0:22
+tcp    0.0.0.0:80
+tcp    0.0.0.0:443
+tcp    127.0.0.1:5432</code></pre>
+
+        <p>This immediately tells you something important.</p>
+        <p>If PostgreSQL is listening on <code>127.0.0.1:5432</code> it is locally accessible. If it is listening on <code>0.0.0.0:5432</code> it may be accessible from the network, depending on firewall and database configuration.</p>
+
+        <h3>Security principle</h3>
+
+        <p><strong>You cannot secure what you have not identified.</strong></p>
+
+        <p>Create an inventory of:</p>
+
+        <ul>
+          <li>Network interfaces and IP addresses</li>
+          <li>Open ports and running services</li>
+          <li>Local users and privileged users</li>
+          <li>Scheduled jobs and installed packages</li>
+          <li>Mounted filesystems and SSH keys</li>
+          <li>Firewall rules and security policies</li>
+          <li>Log sources</li>
+        </ul>
+
+        <h2 id="patching">Keep the Operating System Updated</h2>
+
+        <p>Unpatched software is one of the most common sources of security exposure.</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Distribution</th><th>Check updates</th><th>Apply updates</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>RHEL / Fedora</td><td><code>sudo dnf check-update</code></td><td><code>sudo dnf update</code></td></tr>
+            <tr><td>SLES / openSUSE</td><td><code>sudo zypper refresh</code></td><td><code>sudo zypper update</code></td></tr>
+            <tr><td>Ubuntu / Debian</td><td><code>sudo apt update</code></td><td><code>sudo apt upgrade</code></td></tr>
+          </tbody>
+        </table>
+
+        <p>Check for security-related updates according to the distribution's package management and enterprise patching process.</p>
+        <p>For production environments, patching should normally be integrated with:</p>
+
+        <pre><code>Vendor Security Advisories
+        |
+        v
+Vulnerability Scanner
+        |
+        v
+Patch Repository
+        |
+        v
+Test / Non-Production
+        |
+        v
+Production Deployment
+        |
+        v
+Verification</code></pre>
+
+        <p>Do not treat patching as a one-time activity. Security hardening is a <strong>continuous lifecycle</strong>.</p>
+
+        <h2 id="software">Remove Unnecessary Software</h2>
+
+        <p>Every installed service potentially increases the attack surface. List installed packages according to the distribution.</p>
+
+        <pre><code># RPM-based systems
+rpm -qa
+
+# Debian / Ubuntu
+dpkg -l</code></pre>
+
+        <p>Identify running services:</p>
+
+        <pre><code>systemctl list-units --type=service --state=running</code></pre>
+
+        <p>Disable services that are not required:</p>
+
+        <pre><code>sudo systemctl disable --now &lt;service&gt;
+
+# Example, if Telnet is not required
+sudo systemctl disable --now telnet.socket</code></pre>
+
+        <p>The general rule is:</p>
+
+        <pre><code>Required service       -> Keep + secure
+Required but exposed   -> Keep + restrict
+Not required           -> Disable/remove
+Unknown                -> Investigate</code></pre>
+
+        <h2 id="ssh">Secure SSH</h2>
+
+        <p>SSH is often the primary remote administration interface, so SSH hardening deserves special attention. Configuration is typically:</p>
+
+        <pre><code>/etc/ssh/sshd_config</code></pre>
+
+        <p>Before making changes:</p>
+
+        <pre><code>sudo cp /etc/ssh/sshd_config \
+        /etc/ssh/sshd_config.backup</code></pre>
+
+        <p>Validate the configuration, then reload only after validation:</p>
+
+        <pre><code>sudo sshd -t
+sudo systemctl reload sshd
+
+# On Ubuntu the service may be named ssh
+sudo systemctl reload ssh</code></pre>
+
+        <h3>Disable Direct Root Login</h3>
+
+        <p>A common hardening configuration is:</p>
+
+        <pre><code>PermitRootLogin no</code></pre>
+
+        <p>Administrators should authenticate using an individual account and then use controlled privilege escalation.</p>
+
+        <h3>Disable Password Authentication Where Appropriate</h3>
+
+        <p>For SSH key-based administration:</p>
+
+        <pre><code>PasswordAuthentication no
+PubkeyAuthentication yes</code></pre>
+
+        <p>However, do not blindly disable password authentication on a production server. First verify that key-based access works from a separate session, otherwise you can lock yourself out.</p>
+
+        <h3>Restrict SSH Users</h3>
+
+        <p>For example:</p>
+
+        <pre><code>AllowGroups linux-admins</code></pre>
+
+        <p>Create the group and add an administrator:</p>
+
+        <pre><code>sudo groupadd linux-admins
+sudo usermod -aG linux-admins brits
+sudo sshd -t
+sudo systemctl reload sshd</code></pre>
+
+        <div class="cheat-callout"><strong>Practical rule:</strong> Always keep a second, already-open SSH session while changing <code>sshd_config</code>. Configuration mistakes are one of the most common causes of self-inflicted outages on production servers.</div>
+
+        <h2 id="ssh-keys">Use SSH Keys Properly</h2>
+
+        <p>Generate a modern SSH key on the administrator's workstation:</p>
+
+        <pre><code>ssh-keygen -t ed25519
+ssh-copy-id user@server
+ssh user@server</code></pre>
+
+        <p>Protect private keys:</p>
+
+        <pre><code>chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_ed25519
+chmod 644 ~/.ssh/id_ed25519.pub</code></pre>
+
+        <p>The private key should never be copied to the server unnecessarily.</p>
+
+        <h2 id="sudo">Control Privileged Access With sudo</h2>
+
+        <p>Avoid giving administrators the root password for routine administration. Instead:</p>
+
+        <pre><code>Administrator
+      |
+      v
+Individual Linux Account
+      |
+      v
+sudo
+      |
+      v
+Privileged Operation</code></pre>
+
+        <p>Check sudo configuration:</p>
+
+        <pre><code>sudo visudo</code></pre>
+
+        <p>A controlled configuration could look like:</p>
+
+        <pre><code>%linux-admins ALL=(ALL) ALL</code></pre>
+
+        <p>For application administrators, use more restrictive rules where practical:</p>
+
+        <pre><code>%web-admins ALL=(root) /bin/systemctl restart nginx</code></pre>
+
+        <p>This follows the <strong>principle of least privilege</strong>.</p>
+
+        <h2 id="users">Review Linux Users</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Task</th><th>Command</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>List users</td><td><code>cut -d: -f1 /etc/passwd</code></td></tr>
+            <tr><td>Accounts with login shells</td><td><code>awk -F: '$7 !~ /(nologin|false)$/ {print $1, $7}' /etc/passwd</code></td></tr>
+            <tr><td>Privileged (UID 0) accounts</td><td><code>awk -F: '$3 == 0 {print $1}' /etc/passwd</code></td></tr>
+            <tr><td>Password aging</td><td><code>sudo chage -l username</code></td></tr>
+            <tr><td>Lock an account</td><td><code>sudo usermod -L username</code></td></tr>
+            <tr><td>Remove an account</td><td><code>sudo userdel username</code></td></tr>
+          </tbody>
+        </table>
+
+        <p>Normally, UID 0 accounts deserve immediate review. Use care with service accounts because applications may depend on them.</p>
+
+        <h2 id="authentication">Enforce Strong Authentication</h2>
+
+        <p>Enterprise environments should consider centralised authentication instead of maintaining independent local accounts on every server.</p>
+
+        <pre><code>LDAP
+Active Directory
+Kerberos
+SSSD
+FreeIPA / Identity Management
+MFA
+SSH certificates</code></pre>
+
+        <p>A typical enterprise architecture looks like:</p>
+
+        <pre><code>                  Active Directory
+                         |
+                         v
+                      Kerberos
+                         |
+                         v
+                        SSSD
+                         |
+                         v
+                  Linux Server
+                         |
+                         v
+                    sudo policy</code></pre>
+
+        <p>Centralised identity provides better control over:</p>
+
+        <ul>
+          <li>User lifecycle and group membership</li>
+          <li>Authentication and access revocation</li>
+          <li>Auditing and privileged access</li>
+        </ul>
+
+        <h2 id="firewall">Configure the Host Firewall</h2>
+
+        <p>A Linux server should expose only the ports that are actually required. Two common administration approaches are:</p>
+
+        <pre><code>RHEL / many RPM environments
+        -> firewalld / nftables
+
+Ubuntu
+        -> UFW / nftables</code></pre>
+
+        <h3>UFW Example</h3>
+
+        <pre><code>sudo ufw status verbose
+sudo ufw allow 22/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow from 10.10.10.0/24 \
+    to any port 22 proto tcp
+sudo ufw enable</code></pre>
+
+        <p><strong>Important:</strong> on a remote server, allow your administration path before enabling the firewall.</p>
+
+        <pre><code>SSH session
+    |
+    v
+Enable firewall
+    |
+    v
+SSH blocked
+    |
+    v
+Administrator locked out</code></pre>
+
+        <h3>firewalld Example</h3>
+
+        <pre><code>sudo firewall-cmd --state
+sudo firewall-cmd --get-active-zones
+sudo firewall-cmd --list-services
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --reload</code></pre>
+
+        <p>The firewall should be designed around the application's actual requirements:</p>
+
+        <pre><code>Web Server
+   |
+   +-- TCP 443 -> Internet / users
+   |
+   +-- TCP 22  -> Management network only
+   |
+   +-- Database -> Application subnet only</code></pre>
+
+        <h2 id="mac">Use SELinux or AppArmor</h2>
+
+        <p>A firewall controls network access. It does not fully control what a compromised process can do after it has been allowed to run. This is where mandatory access control becomes important.</p>
+
+        <pre><code>RHEL / Fedora / related
+        -> SELinux
+
+Ubuntu / Debian
+        -> AppArmor
+
+SUSE
+        -> AppArmor</code></pre>
+
+        <h3>SELinux</h3>
+
+        <pre><code>getenforce
+ls -Z
+sudo ausearch -m AVC -ts recent</code></pre>
+
+        <p>Typical states are <code>Enforcing</code>, <code>Permissive</code>, and <code>Disabled</code>. For production systems, <code>Enforcing</code> is generally the desired operating mode when SELinux policies are properly configured.</p>
+        <p>Do not solve SELinux problems by simply disabling SELinux. A better approach is:</p>
+
+        <pre><code>Application
+     |
+     v
+SELinux denial
+     |
+     v
+Identify actual access requirement
+     |
+     v
+Correct label / policy / configuration
+     |
+     v
+Retest</code></pre>
+
+        <h3>AppArmor</h3>
+
+        <pre><code>sudo aa-status</code></pre>
+
+        <p>AppArmor profiles restrict what applications are allowed to access, providing an additional security boundary around supported applications.</p>
+
+        <h2 id="permissions">Secure File Permissions</h2>
+
+        <p>Linux permissions are one of the fundamental security controls.</p>
+
+        <pre><code>ls -l /etc/passwd
+ls -l /etc/shadow</code></pre>
+
+        <p><code>/etc/shadow</code> should not be readable by ordinary users.</p>
+        <p>Find world-writable files and directories:</p>
+
+        <pre><code>sudo find / -xdev -type f -perm -0002 -ls
+sudo find / -xdev -type d -perm -0002 -ls</code></pre>
+
+        <p>Be careful when interpreting these results because some applications legitimately require specific permissions.</p>
+
+        <h2 id="sensitive-files">Protect Sensitive Files</h2>
+
+        <pre><code>/etc/passwd
+/etc/shadow
+/etc/group
+/etc/sudoers
+/etc/ssh/sshd_config
+/etc/ssh/ssh_host_*</code></pre>
+
+        <p>For example:</p>
+
+        <pre><code>sudo stat /etc/shadow
+sudo stat /etc/sudoers
+sudo stat /etc/ssh/sshd_config</code></pre>
+
+        <p>Do not make configuration files writable by ordinary users.</p>
+
+        <h2 id="tmp">Secure Temporary Directories</h2>
+
+        <p>Temporary directories can sometimes become useful to attackers when applications create insecure files. Check mount configuration:</p>
+
+        <pre><code>findmnt /tmp
+findmnt /var/tmp</code></pre>
+
+        <p>Where appropriate for the workload, administrators can consider mount options such as <code>nodev</code>, <code>nosuid</code>, and <code>noexec</code>.</p>
+        <p>However, <strong>do not blindly apply <code>noexec</code></strong>. Some applications legitimately execute binaries or scripts from temporary locations, and hardening must be tested against the workload.</p>
+
+        <h2 id="filesystem">Protect the Filesystem</h2>
+
+        <p>For enterprise systems, separate filesystems can make security and operational management easier:</p>
+
+        <pre><code>/
+├── /boot
+├── /var
+├── /var/log
+├── /var/log/audit
+├── /home
+├── /tmp
+└── /opt</code></pre>
+
+        <p>This can prevent a single filesystem from consuming all available space. For example, an application that generates excessive logs should not necessarily be able to consume the entire root filesystem.</p>
+
+        <h2 id="kernel-modules">Disable Unnecessary Kernel Modules</h2>
+
+        <pre><code>lsmod
+modinfo &lt;module&gt;</code></pre>
+
+        <p>If a module is genuinely unnecessary, it may be possible to prevent loading it using distribution-supported configuration.</p>
+        <p>However, kernel-module hardening should be performed carefully. Removing or blocking a module without understanding dependencies can break:</p>
+
+        <ul>
+          <li>Network interfaces</li>
+          <li>Storage</li>
+          <li>Virtualisation</li>
+          <li>Containers</li>
+          <li>Hardware drivers</li>
+        </ul>
+
+        <h2 id="network-params">Harden Network Parameters</h2>
+
+        <p>Linux exposes network-related kernel parameters through <code>sysctl</code>.</p>
+
+        <pre><code>sysctl -a
+sysctl net.ipv4.ip_forward</code></pre>
+
+        <p>Common security-related settings include controls around IP forwarding, ICMP behaviour, reverse path filtering, source routing, redirect handling, and IPv6 behaviour.</p>
+        <p>Do not blindly copy a generic "secure sysctl.conf" from the Internet. A server acting as a router, Kubernetes node, VPN gateway, load balancer, or container host may legitimately require settings that would be inappropriate on a normal application server.</p>
+
+        <h2 id="dns-time">Secure DNS and Time Synchronisation</h2>
+
+        <p>Check resolver configuration:</p>
+
+        <pre><code>resolvectl status
+cat /etc/resolv.conf</code></pre>
+
+        <p>DNS security matters because compromised or manipulated DNS resolution can redirect applications to malicious infrastructure:</p>
+
+        <pre><code>Linux Server
+     |
+     v
+Corporate DNS
+     |
+     +-- Internal records
+     |
+     +-- Forwarders
+     |
+     v
+External DNS</code></pre>
+
+        <p>Accurate time is equally critical for authentication, Kerberos, TLS certificates, logs, incident investigation, and distributed systems. Modern Linux systems commonly use <code>chrony</code>:</p>
+
+        <pre><code>chronyc tracking
+chronyc sources -v</code></pre>
+
+        <pre><code>Enterprise Time Sources
+          |
+          v
+       chronyd
+          |
+          v
+    Linux Server</code></pre>
+
+        <h2 id="auditing">Enable Security Auditing</h2>
+
+        <pre><code>sudo systemctl status auditd
+sudo ausearch -m USER_LOGIN
+sudo ausearch -m USER_AUTH</code></pre>
+
+        <p>Audit logs can help answer:</p>
+
+        <pre><code>Who logged in?
+When?
+From where?
+What privileged operation occurred?
+Which file was accessed?
+Which security policy generated a denial?</code></pre>
+
+        <h2 id="logging">Centralise Logs</h2>
+
+        <p>Local logs are useful, but they should not be your only source of evidence. A production architecture should consider forwarding logs to a central platform:</p>
+
+        <pre><code>             Linux Server
+                  |
+       +----------+----------+
+       |                     |
+   journald                auditd
+       |                     |
+       +----------+----------+
+                  |
+                  v
+           Log Forwarder
+                  |
+                  v
+       Central Logging / SIEM
+                  |
+          +-------+-------+
+          |               |
+       Alerting       Investigation</code></pre>
+
+        <p>Common enterprise technologies include:</p>
+
+        <pre><code>rsyslog
+journald
+syslog-ng
+Elastic Stack
+Splunk
+Microsoft Sentinel
+Cloud-native logging platforms</code></pre>
+
+        <h2 id="auth-monitoring">Monitor Authentication Activity</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Source</th><th>Command / path</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>SSH service logs (RHEL/SLES)</td><td><code>sudo journalctl -u sshd</code></td></tr>
+            <tr><td>SSH service logs (Ubuntu)</td><td><code>sudo journalctl -u ssh</code></td></tr>
+            <tr><td>Auth log (Debian/Ubuntu)</td><td><code>/var/log/auth.log</code></td></tr>
+            <tr><td>Auth log (RHEL/SLES)</td><td><code>/var/log/secure</code></td></tr>
+          </tbody>
+        </table>
+
+        <p>Look for:</p>
+
+        <pre><code>Repeated authentication failures
+Unknown users
+Unexpected source IPs
+Successful login after multiple failures
+Unexpected privileged activity</code></pre>
+
+        <h2 id="brute-force">Protect Against Brute-Force Attacks</h2>
+
+        <p>A layered approach is preferable:</p>
+
+        <pre><code>Internet
+   |
+   v
+Network Firewall / Security Group
+   |
+   v
+Host Firewall
+   |
+   v
+SSH
+   |
+   +-- Key authentication
+   +-- Restricted users
+   +-- MFA where supported
+   +-- Rate limiting / intrusion prevention
+   +-- Logging</code></pre>
+
+        <p>Tools such as Fail2ban can dynamically react to repeated authentication failures. However, Fail2ban should complement, not replace:</p>
+
+        <ul>
+          <li>Strong authentication</li>
+          <li>Firewall restrictions</li>
+          <li>Network segmentation</li>
+          <li>Centralised monitoring</li>
+        </ul>
+
+        <h2 id="file-transfer">Secure File Transfer and File Sharing</h2>
+
+        <p>Avoid legacy plaintext FTP where it is not required. Remember:</p>
+
+        <pre><code>FTP
+    -> File Transfer Protocol
+
+FTPS
+    -> FTP protected by TLS
+
+SFTP
+    -> SSH File Transfer Protocol</code></pre>
+
+        <p>These are different technologies. For example, SFTP normally operates through SSH:</p>
+
+        <pre><code>sftp user@server</code></pre>
+
+        <p>If an organisation still requires an FTP service such as <code>vsftpd</code>, harden it carefully and consider encrypted transport.</p>
+        <p>File-sharing services should never be exposed unnecessarily:</p>
+
+        <pre><code># NFS
+cat /etc/exports
+
+# SMB / Samba
+testparm</code></pre>
+
+        <pre><code>Application subnet
+       |
+       v
+NFS Server
+       |
+       +-- Restricted exports
+       +-- Network ACLs
+       +-- Appropriate authentication</code></pre>
+
+        <p>Do not expose administrative file-sharing protocols directly to the public Internet.</p>
+
+        <h2 id="legacy">Disable Legacy and Insecure Protocols</h2>
+
+        <p>Review whether the environment still requires:</p>
+
+        <pre><code>Telnet
+rlogin
+rsh
+FTP
+HTTP for sensitive applications
+SMBv1
+Unencrypted administrative protocols</code></pre>
+
+        <p>If a legacy protocol is genuinely required, isolate it and document the exception. Security hardening is not about blindly disabling everything. It is about reducing unnecessary exposure while preserving required functionality.</p>
+
+        <h2 id="secrets">Protect Secrets</h2>
+
+        <p>Never store credentials casually in:</p>
+
+        <pre><code>Shell scripts
+Git repositories
+Plain-text configuration files
+Command history
+World-readable files
+Shared documentation</code></pre>
+
+        <p>Instead consider:</p>
+
+        <pre><code>Enterprise Secrets Manager
+Vault
+Cloud Secrets Manager
+Kubernetes Secrets with appropriate controls
+Protected configuration files
+SSH keys / certificates</code></pre>
+
+        <p>Check shell history when investigating accidental credential exposure:</p>
+
+        <pre><code>history</code></pre>
+
+        <p>Avoid commands such as:</p>
+
+        <pre><code>mysql -u admin -pMyPassword</code></pre>
+
+        <p>because credentials can become visible through shell history or process inspection.</p>
+
+        <h2 id="scheduled-tasks">Secure Cron and Systemd Timers</h2>
+
+        <pre><code>crontab -l
+ls -la /etc/cron.*
+systemctl list-timers</code></pre>
+
+        <p>Unexpected scheduled tasks can indicate:</p>
+
+        <ul>
+          <li>Malware persistence</li>
+          <li>Unauthorised administration</li>
+          <li>Misconfigured applications</li>
+          <li>Forgotten automation</li>
+        </ul>
+
+        <p>Every scheduled task should have a known owner and purpose.</p>
+
+        <h2 id="systemd">Harden Systemd Services</h2>
+
+        <p>Systemd provides several mechanisms that can reduce the privileges and capabilities available to services:</p>
+
+        <pre><code>User=
+Group=
+NoNewPrivileges=
+PrivateTmp=
+ProtectSystem=
+ProtectHome=
+ReadOnlyPaths=
+InaccessiblePaths=
+RestrictAddressFamilies=
+CapabilityBoundingSet=</code></pre>
+
+        <p>An application should ideally not run as root if it does not need root privileges:</p>
+
+        <pre><code>Application
+     |
+     v
+Dedicated service account
+     |
+     +-- Minimum filesystem permissions
+     +-- Minimum network access
+     +-- Minimum Linux capabilities</code></pre>
+
+        <p>This significantly reduces the impact of application compromise.</p>
+
+        <h2 id="containers">Container Host Security</h2>
+
+        <p>If the Linux server runs Docker, Podman, or Kubernetes, hardening becomes even more important. A container is not automatically a security boundary equivalent to a virtual machine.</p>
+
+        <p>Review:</p>
+
+        <pre><code>Privileged containers
+Host networking
+Host filesystem mounts
+Docker socket access
+Linux capabilities
+Seccomp
+AppArmor / SELinux
+Container images
+Image vulnerabilities
+Root containers
+Secrets
+Network policies</code></pre>
+
+        <p>Avoid <code>--privileged</code> unless there is a clearly documented requirement. Also avoid unnecessary host mounts such as <code>/</code>, <code>/etc</code>, or <code>/var/run</code> unless required and carefully controlled.</p>
+
+        <h2 id="scanning">Scan for Vulnerabilities</h2>
+
+        <p>Security hardening should be validated continuously. Common categories of tools include:</p>
+
+        <pre><code>Vulnerability scanners
+Configuration scanners
+CIS benchmark scanners
+Container scanners
+Dependency scanners
+File integrity monitoring
+SIEM
+EDR</code></pre>
+
+        <p>Examples include OpenSCAP, Lynis, Nessus, Qualys, Rapid7, OpenVAS / Greenbone, Trivy, and cloud security services.</p>
+
+        <pre><code>sudo lynis audit system</code></pre>
+
+        <p>The output should be treated as an assessment aid rather than an instruction to blindly apply every recommendation.</p>
+
+        <h2 id="cis">Use CIS Benchmarks Carefully</h2>
+
+        <p>The Center for Internet Security publishes security benchmarks for many operating systems and technologies. A typical hardening workflow is:</p>
+
+        <pre><code>Baseline
+   |
+   v
+CIS / Internal Standard
+   |
+   v
+Gap Assessment
+   |
+   v
+Remediation
+   |
+   v
+Testing
+   |
+   v
+Exception Management
+   |
+   v
+Continuous Compliance</code></pre>
+
+        <p>Do not assume that 100% compliance with a benchmark automatically means that a server is secure. Business requirements and application dependencies must also be considered.</p>
+
+        <h2 id="fim">File Integrity Monitoring</h2>
+
+        <p>For critical servers, monitor important system files:</p>
+
+        <pre><code>/etc/passwd
+/etc/shadow
+/etc/sudoers
+/etc/ssh/
+/etc/systemd/
+/etc/cron.*
+Application configuration</code></pre>
+
+        <p>Tools such as AIDE can be used for file-integrity monitoring:</p>
+
+        <pre><code>Known-good baseline
+        |
+        v
+File integrity database
+        |
+        v
+Periodic comparison
+        |
+        v
+Unexpected modification
+        |
+        v
+Security alert</code></pre>
+
+        <h2 id="backups">Secure Backups</h2>
+
+        <p>Backups are also part of security. A backup strategy should consider confidentiality, integrity, availability, and recovery.</p>
+
+        <pre><code>Production
+    |
+    v
+Backup
+    |
+    +-- Separate credentials
+    +-- Restricted access
+    +-- Encryption
+    +-- Immutable copies
+    +-- Offline / isolated copy
+    +-- Regular restore testing</code></pre>
+
+        <p>At minimum, protect backups from the same compromise that affects the production server. A backup that has never been successfully restored is not a fully validated recovery strategy.</p>
+
+        <h2 id="boot">Protect the Boot Process</h2>
+
+        <p>Physical and console access can bypass many logical controls if the system is poorly protected. Consider:</p>
+
+        <pre><code>BIOS / UEFI password
+Secure Boot
+Bootloader protection
+Disk encryption
+Restricted physical access
+Console access controls</code></pre>
+
+        <p>For sensitive systems, full-disk encryption may be appropriate, although unattended server environments require careful consideration of how keys are managed and how systems recover after reboot.</p>
+
+        <h2 id="checklist">Security Hardening Checklist</h2>
+
+        <p>A practical Linux server baseline can look like this:</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Area</th><th>Security Control</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>OS</td><td>Current supported release</td></tr>
+            <tr><td>Patching</td><td>Regular security updates</td></tr>
+            <tr><td>Packages</td><td>Remove unnecessary software</td></tr>
+            <tr><td>Services</td><td>Disable unused services</td></tr>
+            <tr><td>SSH</td><td>Key authentication</td></tr>
+            <tr><td>SSH</td><td>Disable direct root login</td></tr>
+            <tr><td>SSH</td><td>Restrict administrative access</td></tr>
+            <tr><td>Identity</td><td>Individual administrator accounts</td></tr>
+            <tr><td>sudo</td><td>Least privilege</td></tr>
+            <tr><td>Firewall</td><td>Default-deny where appropriate</td></tr>
+            <tr><td>Network</td><td>Restrict unnecessary ports</td></tr>
+            <tr><td>SELinux/AppArmor</td><td>Enforced</td></tr>
+            <tr><td>Permissions</td><td>No unnecessary world-writable files</td></tr>
+            <tr><td>Secrets</td><td>Centralised/protected secret storage</td></tr>
+            <tr><td>Logging</td><td>Centralised logging</td></tr>
+            <tr><td>Audit</td><td>auditd or equivalent</td></tr>
+            <tr><td>Time</td><td>chrony/NTP</td></tr>
+            <tr><td>File integrity</td><td>AIDE or equivalent</td></tr>
+            <tr><td>Vulnerability</td><td>Regular scanning</td></tr>
+            <tr><td>Backup</td><td>Protected and tested</td></tr>
+            <tr><td>Monitoring</td><td>Security and availability monitoring</td></tr>
+            <tr><td>Containers</td><td>Least privilege</td></tr>
+            <tr><td>Compliance</td><td>CIS/internal baseline</td></tr>
+            <tr><td>Documentation</td><td>Exceptions documented</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="workflow">A Practical Hardening Workflow</h2>
+
+        <p>For a newly provisioned enterprise Linux server, I would use the following sequence:</p>
+
+        <pre><code>1.  Identify OS and workload
+2.  Patch the operating system
+3.  Inventory packages and services
+4.  Remove unnecessary components
+5.  Create individual administrator accounts
+6.  Configure sudo
+7.  Harden SSH
+8.  Configure firewall
+9.  Enable SELinux / AppArmor
+10. Review filesystem permissions
+11. Secure application services
+12. Configure logging and auditing
+13. Configure time synchronisation
+14. Scan for vulnerabilities
+15. Validate against security baseline
+16. Document exceptions
+17. Monitor continuously</code></pre>
+
+        <div class="cheat-callout"><strong>Automation note:</strong> steps 1-13 belong in your image pipeline or configuration management tool (Ansible, Puppet, cloud-init), not in a runbook someone types on each server. Hardening that only exists on one machine is not a control, it is an anecdote.</div>
+
+        <h2 id="principle">The Most Important Security Principle</h2>
+
+        <p>Linux hardening is not about running a huge collection of commands. It is about controlling <strong>who can access the server, what they can access, what services are exposed, what processes are allowed to do, and how activity is detected</strong>.</p>
+
+        <p>A useful mental model is:</p>
+
+        <pre><code>                Linux Security
+
+             +----------------+
+             |   Identity     |
+             +----------------+
+                     |
+             +----------------+
+             |   Privileges   |
+             +----------------+
+                     |
+             +----------------+
+             |    Network     |
+             +----------------+
+                     |
+             +----------------+
+             |    Services    |
+             +----------------+
+                     |
+             +----------------+
+             | MAC: SELinux   |
+             |     AppArmor   |
+             +----------------+
+                     |
+             +----------------+
+             | Filesystem     |
+             +----------------+
+                     |
+             +----------------+
+             | Audit / Logs   |
+             +----------------+
+                     |
+             +----------------+
+             | Monitoring     |
+             +----------------+</code></pre>
+
+        <p>Each layer addresses a different part of the threat surface.</p>
+
+        <h2 id="conclusion">Conclusion</h2>
+
+        <p>A production Linux server should be treated as a security-controlled system rather than simply an operating system with applications installed on top.</p>
+
+        <p>The most important areas for a Linux administrator to understand are:</p>
+
+        <p><strong>SSH + identity + sudo + firewall + SELinux/AppArmor + filesystem permissions + patching + auditing + logging + vulnerability management + backups.</strong></p>
+
+        <p>The strongest hardening strategy is also the simplest to maintain:</p>
+
+        <p><strong>Minimise what is installed, minimise what is exposed, minimise privileges, enforce security policies, monitor everything important, and continuously validate the configuration.</strong></p>
+
+        <p>Linux security hardening is therefore not a single configuration task. It is an ongoing operational process that must evolve with the operating system, applications, vulnerabilities, infrastructure, and business requirements.</p>
+
+        <p>This can also be extended into a <strong><a href="../linux-security-hardening-cheat-sheet/index.html">Part 2: Linux Security Hardening Commands Cheat Sheet</a></strong>, with distro-specific commands for RHEL, SLES, and Ubuntu, including SSH, UFW/firewalld, SELinux/AppArmor, auditd, permissions, sysctl, and CIS-style checks.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Linux</span>
+            <span class="blog-tag">Security Hardening</span>
+            <span class="blog-tag">System Administration</span>
+            <span class="blog-tag">Enterprise</span>
+            <span class="blog-tag">SSH</span>
+            <span class="blog-tag">sudo</span>
+            <span class="blog-tag">Firewall</span>
+            <span class="blog-tag">UFW</span>
+            <span class="blog-tag">firewalld</span>
+            <span class="blog-tag">nftables</span>
+            <span class="blog-tag">SELinux</span>
+            <span class="blog-tag">AppArmor</span>
+            <span class="blog-tag">auditd</span>
+            <span class="blog-tag">CIS Benchmarks</span>
+            <span class="blog-tag">Patching</span>
+            <span class="blog-tag">Containers</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Cloud Engineering</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

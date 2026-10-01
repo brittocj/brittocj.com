@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Linux security hardening commands cheat sheet for RHEL, SLES and Ubuntu: inventory, patching, SSH, UFW/firewalld, SELinux/AppArmor, permissions, auditd, AIDE, Lynis and CIS-style baseline checks.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Linux Security Hardening Commands Cheat Sheet: RHEL, SLES and Ubuntu | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Linux Security Hardening <span class="google-us-gradient">Commands Cheat Sheet</span>: RHEL, SLES and Ubuntu</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 October 1, 2026</div>
+            <div class="blog-meta-item">⏱️ 14 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">A Linux security baseline is not created by running a single hardening script. Enterprise security is achieved through a combination of secure configuration, least privilege, patch management, access control, monitoring, and continuous validation. This cheat sheet provides practical commands that Linux administrators can use while hardening enterprise servers running <strong>Red Hat Enterprise Linux (RHEL)</strong>, <strong>SUSE Linux Enterprise Server (SLES)</strong>, and <strong>Ubuntu Server</strong>.</p>
+
+        <p>The examples focus on common enterprise security tasks:</p>
+
+        <ul>
+          <li>System inventory</li>
+          <li>User and privilege management</li>
+          <li>SSH hardening</li>
+          <li>Firewall configuration</li>
+          <li>SELinux/AppArmor</li>
+          <li>File permissions</li>
+          <li>Service management</li>
+          <li>Kernel hardening</li>
+          <li>Auditing and logging</li>
+          <li>Vulnerability checks</li>
+        </ul>
+
+        <p>For the reasoning behind each control, see <a href="../linux-security-hardening/index.html">Linux Security Hardening: A Practical Enterprise Guide</a>.</p>
+
+        <h2 id="os-version">Identify Linux Distribution and Version</h2>
+
+        <p>Before applying security changes, identify the operating system.</p>
+
+        <pre><code>cat /etc/os-release</code></pre>
+
+        <p>Example output:</p>
+
+        <pre><code>NAME="Ubuntu"
+VERSION="26.04 LTS"</code></pre>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Information</th><th>Command</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Kernel release</td><td><code>uname -r</code></td></tr>
+            <tr><td>System summary</td><td><code>hostnamectl</code></td></tr>
+            <tr><td>Architecture</td><td><code>uname -m</code></td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="inventory">System Inventory Commands</h2>
+
+        <h3>Running Services</h3>
+
+        <pre><code>systemctl list-units --type=service --state=running
+systemctl --failed
+systemctl list-unit-files --state=enabled</code></pre>
+
+        <h3>Listening Network Ports</h3>
+
+        <p>Always identify exposed services.</p>
+
+        <pre><code>ss -lntup</code></pre>
+
+        <p>Example:</p>
+
+        <pre><code>tcp LISTEN 0 128 0.0.0.0:22
+tcp LISTEN 0 128 0.0.0.0:443</code></pre>
+
+        <p>Identify which process owns a port:</p>
+
+        <pre><code>sudo ss -lntup | grep :443
+sudo lsof -i :443</code></pre>
+
+        <h3>Installed Packages</h3>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Task</th><th>RHEL / SLES</th><th>Ubuntu</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>List all packages</td><td><code>rpm -qa</code></td><td><code>dpkg -l</code></td></tr>
+            <tr><td>Search package</td><td><code>rpm -qa | grep nginx</code></td><td><code>dpkg -l | grep nginx</code></td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="patching">Patch Management</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Task</th><th>RHEL</th><th>SLES</th><th>Ubuntu</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Refresh repositories</td><td><code>sudo dnf check-update</code></td><td><code>sudo zypper refresh</code></td><td><code>sudo apt update</code></td></tr>
+            <tr><td>Apply updates</td><td><code>sudo dnf update -y</code></td><td><code>sudo zypper update</code></td><td><code>sudo apt upgrade -y</code></td></tr>
+            <tr><td>Security updates</td><td><code>sudo dnf update --security</code></td><td><code>sudo zypper list-patches</code></td><td><code>sudo unattended-upgrade</code></td></tr>
+            <tr><td>Automation status</td><td><code>dnf-automatic</code></td><td><code>zypper-timer.service</code></td><td><code>systemctl status unattended-upgrades</code></td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="users">User Account Hardening</h2>
+
+        <h3>List Users</h3>
+
+        <pre><code>cat /etc/passwd
+awk -F: '$7 !~ /(nologin|false)$/ {print $1,$7}' /etc/passwd</code></pre>
+
+        <h3>Check UID 0 Accounts</h3>
+
+        <p>Only trusted accounts should have UID 0.</p>
+
+        <pre><code>awk -F: '$3 == 0 {print $1}' /etc/passwd</code></pre>
+
+        <p>Expected:</p>
+
+        <pre><code>root</code></pre>
+
+        <h3>Create, Lock and Age Accounts</h3>
+
+        <pre><code>sudo useradd -m adminuser
+sudo passwd adminuser
+sudo usermod -L username
+sudo usermod -U username
+sudo chage -l username
+sudo chage -M 90 username</code></pre>
+
+        <p>Example output:</p>
+
+        <pre><code>Maximum password age: 90 days</code></pre>
+
+        <h2 id="sudo">sudo Privilege Management</h2>
+
+        <pre><code>sudo visudo
+visudo -c
+sudo -l</code></pre>
+
+        <p>Example group access:</p>
+
+        <pre><code>%linux-admins ALL=(ALL) ALL</code></pre>
+
+        <p>Create the admin group and add the user:</p>
+
+        <pre><code>sudo groupadd linux-admins
+sudo usermod -aG linux-admins adminuser</code></pre>
+
+        <div class="cheat-callout"><strong>Always validate:</strong> <code>visudo -c</code> before saving. A syntax error in <code>/etc/sudoers</code> locks out every administrator on the box.</div>
+
+        <h2 id="ssh">SSH Security Hardening</h2>
+
+        <p>SSH configuration lives at <code>/etc/ssh/sshd_config</code>.</p>
+
+        <pre><code>sudo cp /etc/ssh/sshd_config \
+/etc/ssh/sshd_config.backup
+sudo sshd -t</code></pre>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Control</th><th>Setting</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Disable root login</td><td><code>PermitRootLogin no</code></td></tr>
+            <tr><td>Key-only authentication</td><td><code>PasswordAuthentication no</code></td></tr>
+            <tr><td>Enable public keys</td><td><code>PubkeyAuthentication yes</code></td></tr>
+            <tr><td>Restrict to a group</td><td><code>AllowGroups linux-admins</code></td></tr>
+          </tbody>
+        </table>
+
+        <p>Restart SSH per distribution:</p>
+
+        <pre><code># RHEL / SLES
+sudo systemctl restart sshd
+
+# Ubuntu
+sudo systemctl restart ssh</code></pre>
+
+        <p>Generate and distribute keys, and secure the SSH directory:</p>
+
+        <pre><code>ssh-keygen -t ed25519
+ssh-copy-id user@server
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/*</code></pre>
+
+        <h2 id="firewall">Firewall Hardening</h2>
+
+        <h3>Ubuntu UFW</h3>
+
+        <pre><code>sudo ufw status verbose
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 22/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow from 10.10.10.0/24 \
+to any port 22
+sudo ufw delete allow 443/tcp
+sudo ufw enable</code></pre>
+
+        <p>Allow your administration path before enabling the firewall, otherwise you risk locking yourself out.</p>
+
+        <h3>RHEL / SLES firewalld</h3>
+
+        <pre><code>sudo firewall-cmd --state
+sudo firewall-cmd --list-all
+sudo firewall-cmd \
+--permanent \
+--add-service=https
+sudo firewall-cmd \
+--permanent \
+--add-service=ssh
+sudo firewall-cmd --reload</code></pre>
+
+        <h3>nftables</h3>
+
+        <pre><code>sudo nft list ruleset
+systemctl status nftables</code></pre>
+
+        <h2 id="selinux">SELinux Hardening (RHEL)</h2>
+
+        <pre><code>getenforce
+sestatus
+ls -Z
+ausearch -m AVC -ts recent
+getsebool -a
+setsebool -P httpd_can_network_connect on</code></pre>
+
+        <p>Expected state on a production RHEL system:</p>
+
+        <pre><code>Enforcing</code></pre>
+
+        <p>Never disable SELinux as a troubleshooting shortcut.</p>
+
+        <h2 id="apparmor">AppArmor Hardening (Ubuntu/SLES)</h2>
+
+        <pre><code>sudo aa-status
+sudo aa-status --profiles
+sudo aa-enforce /etc/apparmor.d/profile
+sudo aa-disable profile</code></pre>
+
+        <h2 id="permissions">File Permission Auditing</h2>
+
+        <h3>Check Sensitive Files</h3>
+
+        <pre><code>ls -l /etc/passwd
+ls -l /etc/shadow
+ls -l /etc/sudoers</code></pre>
+
+        <p>Expected:</p>
+
+        <pre><code>-rw-r-----  1 root root /etc/shadow</code></pre>
+
+        <h3>Find World Writable Files and Directories</h3>
+
+        <pre><code>sudo find / \
+-xdev \
+-type f \
+-perm -0002
+
+sudo find / \
+-xdev \
+-type d \
+-perm -0002</code></pre>
+
+        <h3>Find SUID Files</h3>
+
+        <p>SUID binaries execute with owner privileges. Review carefully:</p>
+
+        <pre><code>sudo find / \
+-perm /4000 \
+-type f</code></pre>
+
+        <h2 id="tmp">Secure Temporary Directories</h2>
+
+        <pre><code>findmnt /tmp
+findmnt /var/tmp</code></pre>
+
+        <p>Possible hardening options:</p>
+
+        <pre><code>nodev
+nosuid
+noexec</code></pre>
+
+        <p>Example <code>/etc/fstab</code> entry:</p>
+
+        <pre><code>tmpfs /tmp tmpfs defaults,nodev,nosuid 0 0</code></pre>
+
+        <p>Test carefully before production deployment, and validate against the workload before adding <code>noexec</code>.</p>
+
+        <h2 id="kernel">Kernel Security Parameters</h2>
+
+        <pre><code>sysctl -a
+sysctl net.ipv4.ip_forward
+sudo sysctl -w net.ipv4.ip_forward=0</code></pre>
+
+        <p>Persistent configuration:</p>
+
+        <pre><code>/etc/sysctl.conf
+/etc/sysctl.d/</code></pre>
+
+        <p>Apply:</p>
+
+        <pre><code>sudo sysctl --system</code></pre>
+
+        <div class="cheat-callout"><strong>Careful:</strong> a router, VPN gateway, load balancer, or Kubernetes node legitimately needs <code>net.ipv4.ip_forward=1</code>. Never apply a copied <code>sysctl.conf</code> without confirming the server's role.</div>
+
+        <h2 id="services">Disable Unnecessary Services</h2>
+
+        <pre><code>systemctl list-unit-files
+sudo systemctl disable --now service_name
+sudo systemctl disable --now telnet.socket</code></pre>
+
+        <h2 id="audit">Audit and Logging</h2>
+
+        <h3>journald</h3>
+
+        <pre><code>journalctl
+journalctl --since "1 hour ago"
+journalctl -u sshd
+journalctl -f</code></pre>
+
+        <h3>auditd</h3>
+
+        <pre><code>systemctl status auditd
+ausearch -m USER_LOGIN
+ausearch -m USER_AUTH</code></pre>
+
+        <h2 id="time">Time Synchronisation</h2>
+
+        <pre><code>systemctl status chronyd
+chronyc tracking
+chronyc sources -v</code></pre>
+
+        <h2 id="dns">DNS Security Checks</h2>
+
+        <pre><code>resolvectl status
+getent hosts example.com
+dig example.com
+dig -x 192.168.10.10</code></pre>
+
+        <h2 id="fim">File Integrity Monitoring</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Task</th><th>Command</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Install AIDE (RHEL)</td><td><code>sudo dnf install aide</code></td></tr>
+            <tr><td>Install AIDE (Ubuntu)</td><td><code>sudo apt install aide</code></td></tr>
+            <tr><td>Initialise database</td><td><code>sudo aide --init</code></td></tr>
+            <tr><td>Check for changes</td><td><code>sudo aide --check</code></td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="scanning">Vulnerability Scanning</h2>
+
+        <pre><code># Ubuntu
+sudo apt install lynis
+
+# Run audit
+sudo lynis audit system</code></pre>
+
+        <p>Review:</p>
+
+        <pre><code>Warnings
+Suggestions
+Hardening index</code></pre>
+
+        <p>Other enterprise tools:</p>
+
+        <pre><code>OpenSCAP
+Tenable Nessus
+Qualys
+Rapid7
+Greenbone
+Trivy</code></pre>
+
+        <h2 id="backups">Backup Security Checks</h2>
+
+        <pre><code>systemctl list-timers
+crontab -l</code></pre>
+
+        <p>Test restore procedures. A backup that has never been restored is not a verified backup.</p>
+
+        <h2 id="containers">Container Host Hardening</h2>
+
+        <pre><code>docker ps
+docker inspect container_id</code></pre>
+
+        <p>Avoid <code>--privileged</code> and review:</p>
+
+        <pre><code>Container images
+Secrets
+Capabilities
+Network policies
+Host mounts
+Root containers</code></pre>
+
+        <h2 id="baseline">Enterprise Linux Security Baseline Checklist</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Security Area</th><th>Validation Command</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>OS Version</td><td><code>cat /etc/os-release</code></td></tr>
+            <tr><td>Kernel</td><td><code>uname -r</code></td></tr>
+            <tr><td>Updates</td><td><code>dnf/apt/zypper update</code></td></tr>
+            <tr><td>Services</td><td><code>systemctl list-units</code></td></tr>
+            <tr><td>Ports</td><td><code>ss -lntup</code></td></tr>
+            <tr><td>Users</td><td><code>cat /etc/passwd</code></td></tr>
+            <tr><td>UID 0</td><td><code>awk -F: '$3==0' /etc/passwd</code></td></tr>
+            <tr><td>sudo</td><td><code>visudo -c</code></td></tr>
+            <tr><td>SSH</td><td><code>sshd -t</code></td></tr>
+            <tr><td>Firewall</td><td><code>ufw status verbose</code> / <code>firewall-cmd --list-all</code></td></tr>
+            <tr><td>SELinux</td><td><code>getenforce</code></td></tr>
+            <tr><td>AppArmor</td><td><code>aa-status</code></td></tr>
+            <tr><td>Permissions</td><td><code>find / -perm -0002</code></td></tr>
+            <tr><td>Audit</td><td><code>ausearch -m USER_LOGIN</code></td></tr>
+            <tr><td>Logs</td><td><code>journalctl -u sshd</code></td></tr>
+            <tr><td>Time</td><td><code>chronyc tracking</code></td></tr>
+            <tr><td>DNS</td><td><code>dig example.com</code> / <code>getent hosts</code></td></tr>
+            <tr><td>Integrity</td><td><code>aide --check</code></td></tr>
+            <tr><td>Vulnerability</td><td><code>lynis audit system</code></td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="final-thoughts">Final Thoughts</h2>
+
+        <p>Linux security hardening is not about applying hundreds of commands blindly. A secure enterprise Linux server follows a few fundamental principles:</p>
+
+        <ul>
+          <li><strong>Install only required software.</strong></li>
+          <li><strong>Expose only required network services.</strong></li>
+          <li><strong>Use individual accounts and least privilege.</strong></li>
+          <li><strong>Protect privileged access.</strong></li>
+          <li><strong>Keep mandatory access controls enabled.</strong></li>
+          <li><strong>Monitor and audit important activity.</strong></li>
+          <li><strong>Patch continuously.</strong></li>
+          <li><strong>Validate security posture regularly.</strong></li>
+        </ul>
+
+        <p>The strongest Linux administrators are not the ones who know the most commands. They are the ones who understand <strong>why a security control exists, what risk it reduces, and how to operate it safely in production.</strong></p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Linux</span>
+            <span class="blog-tag">Security Hardening</span>
+            <span class="blog-tag">Cheat Sheet</span>
+            <span class="blog-tag">System Administration</span>
+            <span class="blog-tag">Enterprise</span>
+            <span class="blog-tag">RHEL</span>
+            <span class="blog-tag">SLES</span>
+            <span class="blog-tag">Ubuntu</span>
+            <span class="blog-tag">SSH</span>
+            <span class="blog-tag">sudo</span>
+            <span class="blog-tag">Firewall</span>
+            <span class="blog-tag">UFW</span>
+            <span class="blog-tag">firewalld</span>
+            <span class="blog-tag">nftables</span>
+            <span class="blog-tag">SELinux</span>
+            <span class="blog-tag">AppArmor</span>
+            <span class="blog-tag">auditd</span>
+            <span class="blog-tag">CIS Benchmarks</span>
+            <span class="blog-tag">Patching</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Cloud Engineering</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
