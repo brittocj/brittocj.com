@@ -25,6 +25,9 @@ NAV_INDEX_NEW = """        <li><a href="../index.html#certifications">Certificat
 
 # Career-aligned dates (newest first on index). sort_key = YYYYMMDD
 ARTICLES = [
+    {"slug": "linux-networking-2026", "tag": "Networking", "title": "Linux Networking in 2026: RHEL, SUSE, Ubuntu and CIDR",
+     "excerpt": "Enterprise Linux networking configuration across distributions, CIDR notation, and a practical troubleshooting workflow for cloud administrators.",
+     "date_short": "Oct 1, 2026", "date_full": "October 1, 2026", "read_time": "10 min", "sort_key": 20261001},
     {"slug": "agentic-ai-in-india", "tag": "Featured", "title": "My Vision for the Future of Agentic AI in India",
      "excerpt": "Exploring how Agentic AI can transform healthcare, education, governance, and agriculture across India with inclusive innovation.",
      "date_short": "Jul 17, 2026", "date_full": "July 17, 2026", "read_time": "8 min", "sort_key": 20260717},

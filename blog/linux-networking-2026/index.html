@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Linux networking configuration across RHEL, SUSE, Ubuntu, plus CIDR notation and real-world troubleshooting workflows for enterprise administrators.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Linux Networking in 2026: RHEL vs SUSE vs Ubuntu, CIDR and Real-World Troubleshooting | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Linux Networking Configuration in the Enterprise: <span class="google-us-gradient">RHEL, SUSE, Ubuntu</span> and CIDR</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 October 1, 2026</div>
+            <div class="blog-meta-item">⏱️ 10 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Linux networking is one of those areas where the underlying concepts remain remarkably stable while the administration tools continue to evolve. Whether you are working with Red Hat Enterprise Linux, SUSE Linux Enterprise Server, Ubuntu Server, or a cloud-focused distribution, the fundamentals are the same: Interface → IP address → subnet → routing → gateway → DNS → applications. What changes between distributions is how these settings are declared, stored, activated, and automated.</p>
+
+        <h2>The Linux Networking Stack</h2>
+        <p>A simplified Linux networking architecture looks like this:</p>
+
+        <pre><code>                    Application
+                         |
+                  TCP / UDP / HTTP
+                         |
+                    Socket API
+                         |
+                  Linux Network Stack
+                         |
+              +----------+----------+
+              |                     |
+           Routing              Netfilter
+           Tables              / Firewall
+              |                     |
+              +----------+----------+
+                         |
+                    Network Device
+                         |
+              +----------+----------+
+              |                     |
+          Physical NIC          Virtual NIC
+              |                     |
+           Ethernet          Bridge / VLAN / Bond
+              |
+            Switch
+              |
+          Router / Gateway
+              |
+        Other Networks / Internet</code></pre>
+
+        <p>At the lowest level, the Linux kernel manages interfaces, addresses, routes and packet processing.</p>
+        <p>The primary command-line interface for inspecting this state is <code>ip</code>, provided by the <code>iproute2</code> package.</p>
+
+        <pre><code>ip link
+ip addr
+ip route</code></pre>
+
+        <p>These commands work across virtually all modern enterprise Linux distributions.</p>
+
+        <pre><code>ip addr show enp1s0
+ip route show
+ip route get 8.8.8.8</code></pre>
+
+        <p>The distinction between <strong>runtime state</strong> and <strong>persistent configuration</strong> is important.</p>
+        <p>Running:</p>
+
+        <pre><code>sudo ip addr add 192.168.10.50/24 dev enp1s0</code></pre>
+
+        <p>changes the current kernel networking state.</p>
+        <p>It does not necessarily create the persistent configuration that will survive a reboot.</p>
+        <p>That persistent layer is where distributions differ.</p>
+
+        <h2 id="rhel">RHEL: NetworkManager and nmcli</h2>
+        <p>Modern Red Hat Enterprise Linux uses <strong>NetworkManager</strong> as its primary networking framework.</p>
+        <p>RHEL 10 stores NetworkManager connection profiles in keyfile format. The old <code>ifcfg-*</code> format is no longer supported in RHEL 10. Red Hat recommends tools such as <code>nmcli</code>, <code>nmtui</code>, <code>nmstate</code>, and RHEL system roles for network configuration and automation.</p>
+
+        <h3>Inspect the current configuration</h3>
+
+        <pre><code>nmcli device status
+nmcli connection show
+nmcli connection show "Wired connection 1"</code></pre>
+
+        <p>Typical output:</p>
+
+        <pre><code>DEVICE   TYPE      STATE      CONNECTION
+enp1s0   ethernet  connected  Internal-LAN
+lo       loopback  unmanaged  --</code></pre>
+
+        <h3>Configure a static IPv4 address</h3>
+
+        <pre><code>sudo nmcli connection add \
+    type ethernet \
+    con-name Internal-LAN \
+    ifname enp1s0 \
+    ipv4.method manual \
+    ipv4.addresses 192.168.10.50/24 \
+    ipv4.gateway 192.168.10.1 \
+    ipv4.dns "192.168.10.10 1.1.1.1"</code></pre>
+
+        <p>Activate it:</p>
+
+        <pre><code>sudo nmcli connection up Internal-LAN</code></pre>
+
+        <p>Verify:</p>
+
+        <pre><code>ip addr show enp1s0
+ip route
+nmcli connection show Internal-LAN</code></pre>
+
+        <p>The important conceptual point is that <code>nmcli</code> modifies a <strong>connection profile</strong>, while <code>ip</code> shows the resulting kernel networking state.</p>
+
+        <h3>Add a static route</h3>
+
+        <pre><code>sudo nmcli connection modify Internal-LAN \
+    +ipv4.routes "10.20.0.0/16 192.168.10.1"</code></pre>
+
+        <p>Then reactivate the connection if required:</p>
+
+        <pre><code>sudo nmcli connection up Internal-LAN</code></pre>
+
+        <p>RHEL also supports more advanced configurations such as bonding, VLANs, bridges, routing rules and policy-based routing.</p>
+        <p>For automation, <code>nmstate</code> and RHEL system roles are particularly useful.</p>
+
+        <h2 id="suse">SUSE: NetworkManager in SLES 16</h2>
+        <p>SUSE Linux Enterprise Server has historically used the <code>wicked</code> networking service extensively. However, current SLES 16 documentation uses <strong>NetworkManager</strong> as the networking management framework and provides <code>nmcli</code> and <code>nmtui</code> for administration.</p>
+
+        <p>Check the service:</p>
+
+        <pre><code>systemctl status NetworkManager</code></pre>
+
+        <p>Check devices:</p>
+
+        <pre><code>nmcli device status</code></pre>
+
+        <p>Check connection profiles:</p>
+
+        <pre><code>nmcli connection show</code></pre>
+
+        <h3>Configure a static address</h3>
+
+        <pre><code>sudo nmcli connection modify eth0 \
+    ipv4.method manual \
+    ipv4.addresses 192.168.20.50/24 \
+    ipv4.gateway 192.168.20.1 \
+    ipv4.dns "192.168.20.10 1.1.1.1"</code></pre>
+
+        <p>Bring the connection online:</p>
+
+        <pre><code>sudo nmcli connection up eth0</code></pre>
+
+        <p>Verify:</p>
+
+        <pre><code>ip addr show eth0
+ip route
+nmcli networking connectivity</code></pre>
+
+        <p>SLES therefore looks increasingly familiar to administrators coming from RHEL.</p>
+        <p>However, when troubleshooting an existing SLES installation, do not assume which networking service is active. Always check first.</p>
+
+        <pre><code>systemctl is-active NetworkManager
+systemctl is-active wicked</code></pre>
+
+        <div class="cheat-callout">
+          <p><strong>Rule:</strong> One interface should have one authoritative network configuration path. Avoid configuring the same interface simultaneously through competing network management frameworks.</p>
+        </div>
+
+        <h2 id="ubuntu">Ubuntu Server: Netplan as the Declarative Layer</h2>
+        <p>Ubuntu Server takes a different approach.</p>
+        <p>Modern Ubuntu uses <strong>Netplan</strong> as the high-level declarative networking layer. Netplan generates configuration for a backend such as <code>systemd-networkd</code> or NetworkManager.</p>
+        <p>This gives administrators a YAML-based configuration model.</p>
+
+        <pre><code>network:
+  version: 2
+
+  ethernets:
+    enp1s0:
+      addresses:
+        - 192.168.30.50/24
+
+      routes:
+        - to: default
+          via: 192.168.30.1
+
+      nameservers:
+        addresses:
+          - 192.168.30.10
+          - 1.1.1.1</code></pre>
+
+        <p>Save the configuration under:</p>
+
+        <pre><code>/etc/netplan/</code></pre>
+
+        <p>For example:</p>
+
+        <pre><code>/etc/netplan/01-network.yaml</code></pre>
+
+        <p>Apply the configuration:</p>
+
+        <pre><code>sudo netplan apply</code></pre>
+
+        <p>For safer remote administration, especially over SSH, <code>netplan try</code> can be useful because it provides a rollback mechanism if the new configuration is not confirmed.</p>
+
+        <pre><code>sudo netplan try</code></pre>
+
+        <p>Verify:</p>
+
+        <pre><code>netplan status
+ip addr
+ip route</code></pre>
+
+        <p>Ubuntu 26.04 LTS includes Netplan 1.2, continuing the declarative networking model. Netplan can work with both <code>systemd-networkd</code> and NetworkManager as renderers.</p>
+
+        <h2>RHEL vs SUSE vs Ubuntu: Administrator Cheat Sheet</h2>
+
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>RHEL 10</th>
+                <th>SLES 16</th>
+                <th>Ubuntu 26.04 LTS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Primary configuration</td>
+                <td>NetworkManager</td>
+                <td>NetworkManager</td>
+                <td>Netplan</td>
+              </tr>
+              <tr>
+                <td>CLI</td>
+                <td><code>nmcli</code></td>
+                <td><code>nmcli</code></td>
+                <td><code>netplan</code></td>
+              </tr>
+              <tr>
+                <td>Low-level inspection</td>
+                <td><code>ip</code></td>
+                <td><code>ip</code></td>
+                <td><code>ip</code></td>
+              </tr>
+              <tr>
+                <td>Text UI</td>
+                <td><code>nmtui</code></td>
+                <td><code>nmtui</code></td>
+                <td>Depends on renderer</td>
+              </tr>
+              <tr>
+                <td>Main persistent model</td>
+                <td>NetworkManager keyfiles</td>
+                <td>NetworkManager profiles</td>
+                <td>YAML</td>
+              </tr>
+              <tr>
+                <td>Typical backend</td>
+                <td>NetworkManager</td>
+                <td>NetworkManager</td>
+                <td>networkd or NetworkManager</td>
+              </tr>
+              <tr>
+                <td>Legacy model</td>
+                <td><code>ifcfg</code> not supported in RHEL 10</td>
+                <td>Environment dependent</td>
+                <td>Netplan replaces legacy models</td>
+              </tr>
+              <tr>
+                <td>Show interfaces</td>
+                <td><code>nmcli device status</code></td>
+                <td><code>nmcli device status</code></td>
+                <td><code>ip link</code></td>
+              </tr>
+              <tr>
+                <td>Show addresses</td>
+                <td><code>ip addr</code></td>
+                <td><code>ip addr</code></td>
+                <td><code>ip addr</code></td>
+              </tr>
+              <tr>
+                <td>Show routes</td>
+                <td><code>ip route</code></td>
+                <td><code>ip route</code></td>
+                <td><code>ip route</code></td>
+              </tr>
+              <tr>
+                <td>Configure static IP</td>
+                <td><code>nmcli</code></td>
+                <td><code>nmcli</code></td>
+                <td>Netplan YAML</td>
+              </tr>
+              <tr>
+                <td>Apply configuration</td>
+                <td><code>nmcli connection up</code></td>
+                <td><code>nmcli connection up</code></td>
+                <td><code>netplan apply</code></td>
+              </tr>
+              <tr>
+                <td>Automation</td>
+                <td>nmstate / RHEL system roles</td>
+                <td>NetworkManager / automation tooling</td>
+                <td>Netplan / cloud-init / automation</td>
+              </tr>
+              <tr>
+                <td>Primary configuration style</td>
+                <td>Imperative API/CLI</td>
+                <td>Imperative API/CLI</td>
+                <td>Declarative YAML</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>The key takeaway is that the <strong>kernel-level commands are largely common</strong>, while the persistent configuration layer differs.</p>
+
+        <h2>CIDR: The Most Important Networking Notation</h2>
+        <p>CIDR stands for <strong>Classless Inter-Domain Routing</strong>.</p>
+        <p>Instead of representing a network using a traditional subnet mask:</p>
+
+        <pre><code>192.168.10.50
+255.255.255.0</code></pre>
+
+        <p>CIDR expresses the same information as:</p>
+
+        <pre><code>192.168.10.50/24</code></pre>
+
+        <p>The <code>/24</code> represents the number of bits used for the network prefix.</p>
+
+        <p>For IPv4:</p>
+
+        <pre><code>IPv4 address = 32 bits
+
+192.168.10.50/24
+
+Network bits = 24
+Host bits    = 8</code></pre>
+
+        <p>Therefore:</p>
+
+        <pre><code>Network:      192.168.10.0
+First host:   192.168.10.1
+Last host:    192.168.10.254
+Broadcast:    192.168.10.255</code></pre>
+
+        <p>For a traditional IPv4 subnet, the number of addresses is:</p>
+
+        <pre><code>2^(32 - prefix)</code></pre>
+
+        <p>For <code>/24</code>:</p>
+
+        <pre><code>2^(32-24) = 256 addresses</code></pre>
+
+        <p>For <code>/26</code>:</p>
+
+        <pre><code>2^(32-26) = 64 addresses</code></pre>
+
+        <p>For <code>/30</code>:</p>
+
+        <pre><code>2^(32-30) = 4 addresses</code></pre>
+
+        <p>The usable host count for a conventional IPv4 subnet is normally two fewer than the total because the network and broadcast addresses are reserved.</p>
+
+        <h2>CIDR Cheat Sheet</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr>
+              <th>CIDR</th>
+              <th>Subnet Mask</th>
+              <th>Total IPv4 Addresses</th>
+              <th>Typical Context</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>/32</code></td><td>255.255.255.255</td><td>1</td><td>Single host or route</td></tr>
+            <tr><td><code>/30</code></td><td>255.255.255.252</td><td>4</td><td>Small point-to-point network</td></tr>
+            <tr><td><code>/29</code></td><td>255.255.255.248</td><td>8</td><td>Very small subnet</td></tr>
+            <tr><td><code>/28</code></td><td>255.255.255.240</td><td>16</td><td>Small infrastructure subnet</td></tr>
+            <tr><td><code>/27</code></td><td>255.255.255.224</td><td>32</td><td>Small server segment</td></tr>
+            <tr><td><code>/26</code></td><td>255.255.255.192</td><td>64</td><td>Medium subnet</td></tr>
+            <tr><td><code>/24</code></td><td>255.255.255.0</td><td>256</td><td>Common LAN</td></tr>
+            <tr><td><code>/20</code></td><td>255.255.240.0</td><td>4,096</td><td>Large application network</td></tr>
+            <tr><td><code>/16</code></td><td>255.255.0.0</td><td>65,536</td><td>Large enterprise network</td></tr>
+            <tr><td><code>/8</code></td><td>255.0.0.0</td><td>16,777,216</td><td>Very large address space</td></tr>
+          </tbody>
+        </table>
+
+        <p>CIDR is not limited to host configuration.</p>
+        <p>It appears everywhere in modern infrastructure:</p>
+
+        <pre><code>Linux routes
+AWS VPCs
+Azure VNets
+Kubernetes networks
+Docker networks
+Firewalls
+Load balancers
+VPNs
+BGP
+Cloud security groups</code></pre>
+
+        <p>Understanding CIDR therefore becomes a foundational skill for both Linux administration and cloud engineering.</p>
+
+        <h2>A Practical Enterprise Network Example</h2>
+        <p>Consider a server with the following configuration:</p>
+
+        <pre><code>Server IP:       10.10.20.50/24
+Gateway:         10.10.20.1
+DNS:             10.10.10.10
+Application:     TCP/443</code></pre>
+
+        <p>The network architecture might look like this:</p>
+
+        <pre><code>                         Internet
+                            |
+                       Edge Firewall
+                            |
+                     10.10.10.1/24
+                            |
+                    Core Router / L3
+                            |
+              +-------------+-------------+
+              |                           |
+        10.10.10.0/24              10.10.20.0/24
+              |                           |
+          DNS Server                  Linux Server
+       10.10.10.10                 10.10.20.50
+                                          |
+                                     TCP/443
+                                          |
+                                      Application</code></pre>
+
+        <p>When the application server sends traffic to <code>10.10.10.10</code>, Linux examines its routing table.</p>
+
+        <pre><code>ip route get 10.10.10.10</code></pre>
+
+        <p>If the destination is outside the local <code>10.10.20.0/24</code> network, Linux forwards the packet towards the configured gateway.</p>
+        <p>This is the fundamental relationship between CIDR and routing.</p>
+
+        <h2>Linux Networking Troubleshooting Workflow</h2>
+        <p>When a server cannot communicate with another host, do not immediately start modifying configuration files.</p>
+        <p>Work from the bottom up.</p>
+
+        <h3>Step 1: Is the interface up?</h3>
+
+        <pre><code>ip link show</code></pre>
+
+        <p>Look for:</p>
+
+        <pre><code>state UP</code></pre>
+
+        <h3>Step 2: Does the interface have the expected IP?</h3>
+
+        <pre><code>ip addr show enp1s0</code></pre>
+
+        <p>Check:</p>
+
+        <pre><code>192.168.20.50/24</code></pre>
+
+        <h3>Step 3: Is the route present?</h3>
+
+        <pre><code>ip route</code></pre>
+
+        <p>You should see something similar to:</p>
+
+        <pre><code>default via 192.168.20.1 dev enp1s0
+192.168.20.0/24 dev enp1s0 proto kernel scope link</code></pre>
+
+        <h3>Step 4: Can the server reach the gateway?</h3>
+
+        <pre><code>ping 192.168.20.1</code></pre>
+
+        <h3>Step 5: Can it reach the destination?</h3>
+
+        <pre><code>ping 10.10.10.10</code></pre>
+
+        <h3>Step 6: Which route will Linux actually use?</h3>
+
+        <pre><code>ip route get 10.10.10.10</code></pre>
+
+        <p>This command is particularly useful on multi-interface servers.</p>
+
+        <h3>Step 7: Is DNS working?</h3>
+
+        <pre><code>resolvectl status
+getent hosts example.com</code></pre>
+
+        <h3>Step 8: Is the application listening?</h3>
+
+        <pre><code>ss -lntup</code></pre>
+
+        <p>For HTTPS:</p>
+
+        <pre><code>ss -lntp | grep ':443'</code></pre>
+
+        <h3>Step 9: Check packet flow</h3>
+        <p>When required:</p>
+
+        <pre><code>sudo tcpdump -ni enp1s0 host 10.10.10.10</code></pre>
+
+        <p>This lets you determine whether packets are actually entering or leaving the interface.</p>
+
+        <h2>The Troubleshooting Decision Tree</h2>
+        <p>A practical troubleshooting sequence can be visualised as:</p>
+
+        <pre><code>                 Application unavailable
+                          |
+                          v
+                  Is service running?
+                    /           \
+                  No             Yes
+                  |               |
+             Fix service          v
+                              Is port listening?
+                               /          \
+                             No            Yes
+                             |              |
+                        Fix application     v
+                                      Check firewall
+                                           |
+                                           v
+                                     Check DNS
+                                           |
+                                           v
+                                     Check routing
+                                           |
+                                           v
+                                   Check gateway
+                                           |
+                                           v
+                                   Check interface
+                                           |
+                                           v
+                                   Check physical/
+                                  virtual connectivity</code></pre>
+
+        <p>This approach avoids changing five configuration layers when only one is broken.</p>
+
+        <h2>Static Routes: Where CIDR Meets Real Networking</h2>
+        <p>Suppose the server has:</p>
+
+        <pre><code>Interface:  enp1s0
+Address:    10.10.20.50/24
+Gateway:    10.10.20.1</code></pre>
+
+        <p>But an internal application network exists at:</p>
+
+        <pre><code>10.50.0.0/16</code></pre>
+
+        <p>The administrator can add a route.</p>
+
+        <h3>On RHEL or SLES using NetworkManager:</h3>
+
+        <pre><code>sudo nmcli connection modify Internal-LAN \
+    +ipv4.routes "10.50.0.0/16 10.10.20.1"</code></pre>
+
+        <p>The resulting routing table might contain:</p>
+
+        <pre><code>10.10.20.0/24 dev enp1s0
+10.50.0.0/16 via 10.10.20.1 dev enp1s0
+default via 10.10.20.1 dev enp1s0</code></pre>
+
+        <p>Linux now knows that traffic destined for <code>10.50.0.0/16</code> should use the specified next hop.</p>
+
+        <h2>Why Engineers Should Understand the <code>ip</code> Command</h2>
+        <p>Distribution-specific tools change.</p>
+        <p>The <code>ip</code> command has remained a common interface to Linux networking.</p>
+        <p>These commands are worth memorising:</p>
+
+        <pre><code>ip link
+ip addr
+ip route
+ip neigh
+ip route get <destination>
+ip -4 addr
+ip -6 addr
+ip -4 route
+ip -6 route</code></pre>
+
+        <p>For example:</p>
+
+        <pre><code>ip route get 10.50.20.25</code></pre>
+
+        <p>can immediately answer:</p>
+
+        <pre><code>Which interface?
+Which gateway?
+Which source IP?
+Which route?</code></pre>
+
+        <p>That makes it one of the most useful commands for troubleshooting multi-homed Linux servers.</p>
+
+        <h2>Enterprise Networking Is Moving Beyond Simple IP Configuration</h2>
+        <p>Modern Linux servers increasingly participate in more complex network architectures:</p>
+
+        <pre><code>                Cloud / Data Centre
+                        |
+              +---------+---------+
+              |                   |
+           VLANs               VXLAN
+              |                   |
+          Bonding              Bridges
+              |                   |
+          Linux NICs          Containers
+              |                   |
+              +---------+---------+
+                        |
+                    Linux Kernel
+                        |
+              +---------+---------+
+              |                   |
+           Routing            Netfilter
+              |                   |
+          Applications       Firewall</code></pre>
+
+        <p>The same fundamentals continue to apply.</p>
+        <p>An interface still has an address.</p>
+        <p>An address still belongs to a CIDR prefix.</p>
+        <p>Packets still follow routes.</p>
+        <p>A gateway is still a next-hop device.</p>
+        <p>DNS still translates names into addresses.</p>
+        <p>The complexity is primarily in how these components are combined.</p>
+
+        <h2>Final Takeaway</h2>
+        <p>Linux networking administration is becoming less about memorising distribution-specific configuration files and more about understanding the networking model.</p>
+
+        <p>For RHEL administrators, learn:</p>
+
+        <pre><code>NetworkManager
+nmcli
+nmstate
+RHEL system roles</code></pre>
+
+        <p>For SLES administrators:</p>
+
+        <pre><code>NetworkManager
+nmcli
+nmtui
+SUSE networking architecture</code></pre>
+
+        <p>For Ubuntu administrators:</p>
+
+        <pre><code>Netplan
+YAML
+systemd-networkd
+NetworkManager
+cloud-init</code></pre>
+
+        <p>For everyone:</p>
+
+        <pre><code>ip
+ss
+ping
+ip route
+ip neigh
+tcpdump
+CIDR
+DNS
+routing</code></pre>
+
+        <p>The most valuable skill is not knowing where an IP address is stored on a particular distribution.</p>
+        <p>It is being able to answer these questions quickly:</p>
+        <ul>
+          <li><strong>What interface am I using?</strong></li>
+          <li><strong>What IP address and CIDR prefix does it have?</strong></li>
+          <li><strong>Which route will Linux select?</strong></li>
+          <li><strong>What is the next hop?</strong></li>
+          <li><strong>Can I reach the gateway?</strong></li>
+          <li><strong>Can I resolve the destination name?</strong></li>
+          <li><strong>Is the application actually listening?</strong></li>
+        </ul>
+
+        <p>Once those questions become second nature, moving between RHEL, SLES, Ubuntu, cloud platforms, virtual machines and containers becomes much easier.</p>
+        <p>Linux networking changes at the tooling layer.</p>
+        <p>The fundamentals do not.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics & Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Linux</span>
+            <span class="blog-tag">RHEL</span>
+            <span class="blog-tag">SUSE</span>
+            <span class="blog-tag">Ubuntu</span>
+            <span class="blog-tag">Networking</span>
+            <span class="blog-tag">CIDR</span>
+            <span class="blog-tag">NetworkManager</span>
+            <span class="blog-tag">Netplan</span>
+            <span class="blog-tag">System Administration</span>
+            <span class="blog-tag">Troubleshooting</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Cloud Engineering</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
