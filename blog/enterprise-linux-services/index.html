@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Essential enterprise Linux services including SSH, SFTP, NFS, SMB, HTTP, DNS, LDAP, rsync, chrony, logging, and firewall management for Linux administrators.">
+  <meta name="description" content="Essential enterprise Linux services including SSH, SFTP, NFS, SMB, HTTP, DNS, LDAP, rsync, chrony, logging, and firewall management (UFW, firewalld, nftables) for Linux administrators.">
   <meta name="author" content="Antony Britto C J">
   <title>Enterprise Linux Services: Essential Services Every Administrator Should Know | Antony Britto C J</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -546,7 +546,8 @@ sssctl domain-status</code></pre>
 
         <pre><code>firewalld
 nftables
-iptables</code></pre>
+iptables
+ufw</code></pre>
 
         <p>On modern RHEL-based environments, <code>firewalld</code> is commonly used as a management layer.</p>
         <p>Check:</p>
@@ -560,6 +561,60 @@ iptables</code></pre>
         <p>Check listening ports independently:</p>
 
         <pre><code>ss -lntup</code></pre>
+
+        <h3>UFW: Ubuntu's Practical Host Firewall</h3>
+        <p>For Ubuntu administrators, <strong>UFW (Uncomplicated Firewall)</strong> is an important tool to know.</p>
+        <p>UFW provides a simpler command-line interface for configuring host firewall policies without requiring administrators to write complex low-level firewall rules directly.</p>
+        <p>Check its status:</p>
+
+        <pre><code>sudo ufw status verbose</code></pre>
+
+        <p>A typical server might start with:</p>
+
+        <pre><code>sudo ufw default deny incoming
+sudo ufw default allow outgoing</code></pre>
+
+        <p>Then explicitly allow the services the server requires:</p>
+
+        <pre><code>sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp</code></pre>
+
+        <p>For better SSH access control, restrict SSH to an administration network:</p>
+
+        <pre><code>sudo ufw allow from 10.10.10.0/24 to any port 22 proto tcp</code></pre>
+
+        <p>Review the resulting policy:</p>
+
+        <pre><code>sudo ufw status numbered</code></pre>
+
+        <p><strong>Common operational mistake:</strong> enabling the firewall before allowing SSH on a remotely administered server.</p>
+        <p>For example, this sequence can lock an administrator out:</p>
+
+        <pre><code>sudo ufw enable</code></pre>
+
+        <p>if SSH access has not already been permitted.</p>
+        <p>A safer sequence is:</p>
+
+        <pre><code>sudo ufw allow 22/tcp
+sudo ufw enable
+sudo ufw status verbose</code></pre>
+
+        <p>For production environments, administrators should also consider whether firewall restrictions should be applied at multiple layers:</p>
+
+        <pre><code>Internet
+   |
+Cloud Firewall / Security Group
+   |
+Network Firewall
+   |
+Linux Host Firewall
+   |
+Application</code></pre>
+
+        <p>UFW is therefore particularly useful for <strong>host-level access control on Ubuntu</strong>, while enterprise environments may additionally enforce controls through cloud security groups, network firewalls, Kubernetes network policies, or central security platforms.</p>
+        <p>The important principle is the same regardless of the tool:</p>
+        <p><strong>Only expose the ports and source networks that a server actually requires.</strong></p>
 
         <p>This distinction is important.</p>
         <p>If <code>ss</code> shows that an application is listening on TCP/443, but clients cannot connect, investigate the network path and firewall.</p>
@@ -605,7 +660,7 @@ Destination?</code></pre>
             <tr><td>Synchronisation</td><td>rsync</td><td>Efficient file synchronisation</td></tr>
             <tr><td>Time</td><td>chrony</td><td>NTP time synchronisation</td></tr>
             <tr><td>Logging</td><td>journald / rsyslog</td><td>System and application logging</td></tr>
-            <tr><td>Firewall</td><td>firewalld / nftables</td><td>Network traffic control</td></tr>
+            <tr><td>Firewall</td><td>UFW / firewalld / nftables</td><td>Host-level network access control</td></tr>
           </tbody>
         </table>
 
@@ -700,6 +755,7 @@ chrony    Time synchronisation
 journald  System logging
 rsyslog   Centralised/legacy syslog
 firewalld Firewall management
+ufw       Ubuntu host firewall
 nftables  Linux packet filtering</code></pre>
 
         <p>More importantly, learn how these services interact.</p>
@@ -759,6 +815,9 @@ nftables  Linux packet filtering</code></pre>
             <span class="blog-tag">chrony</span>
             <span class="blog-tag">Logging</span>
             <span class="blog-tag">Firewall</span>
+            <span class="blog-tag">UFW</span>
+            <span class="blog-tag">firewalld</span>
+            <span class="blog-tag">nftables</span>
             <span class="blog-tag">DevOps</span>
             <span class="blog-tag">Cloud Engineering</span>
           </div>
