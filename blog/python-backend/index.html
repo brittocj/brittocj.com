@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Python backend web development: Django, Django REST Framework, FastAPI, and Flask. Architecture, patterns, async/sync tradeoffs, authentication, deployment, cheatsheet, and framework comparison.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Python Backend Cheatsheet: Django, DRF, FastAPI, and Flask | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content blog-content--wide">
+        <div class="blog-header">
+          <h1 class="blog-title">Python Backend <span class="google-us-gradient">Cheatsheet</span>: Django, Django REST Framework, FastAPI, and Flask</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 December 4, 2025</div>
+            <div class="blog-meta-item">⏱️ 20 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Python powers some of the busiest web backends in the world. The ecosystem offers four dominant choices &mdash; Django, Django REST Framework, FastAPI, and Flask &mdash; each with a distinct philosophy. This article covers architecture, core patterns, async/sync tradeoffs, authentication, and deployment, then distils the essentials into a practical cheatsheet and a side-by-side comparison to help you pick the right tool.</p>
+
+        <p>For the surrounding infrastructure &mdash; reverse proxies, process managers, and containerisation &mdash; see the <a href="../devops-ready-reckoner/index.html">DevOps Ready Reckoner</a>.</p>
+
+        <nav class="reckoner-toc" aria-label="Python backend article sections">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#choosing">Choosing a Python Web Framework</a></li>
+            <li><a href="#architecture">Architecture: Sync, Async, ASGI/WSGI</a></li>
+            <li><a href="#django">Django</a></li>
+            <li><a href="#drf">Django REST Framework</a></li>
+            <li><a href="#fastapi">FastAPI</a></li>
+            <li><a href="#flask">Flask</a></li>
+            <li><a href="#auth">Authentication and Authorization</a></li>
+            <li><a href="#patterns">Common Patterns</a></li>
+            <li><a href="#validation">Validation and Serialisation</a></li>
+            <li><a href="#testing">Testing</a></li>
+            <li><a href="#deployment">Deployment</a></li>
+            <li><a href="#cheatsheet">Cheatsheet</a></li>
+            <li><a href="#comparison">Framework Comparison</a></li>
+            <li><a href="#decision">When to Choose Which</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="choosing">Choosing a Python Web Framework</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Framework</th><th>Batteries-included?</th><th>Built-in admin</th><th>Async</th><th>API-first</th><th>Typical use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Django</td><td>Yes</td><td>Yes</td><td>Partial</td><td>No (adds DRF)</td><td>Monoliths, CMS, admin panels</td></tr>
+            <tr><td>Django REST Framework</td><td>On top of Django</td><td>Yes</td><td>Partial</td><td>Yes</td><td>REST APIs on Django</td></tr>
+            <tr><td>FastAPI</td><td>No</td><td>No</td><td>Yes</td><td>Yes</td><td>Modern APIs, microservices, ML services</td></tr>
+            <tr><td>Flask</td><td>No</td><td>No</td><td>Limited</td><td>No (extensions)</td><td>Small APIs, prototypes, glue</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Short version:</strong> Django for full-featured web apps with an admin. Django REST Framework for REST APIs backed by Django. FastAPI for performance-sensitive or async-heavy APIs. Flask for small services where you want to pick your own libraries.</div>
+
+        <h2 id="architecture">Architecture: Sync, Async, and ASGI/WSGI</h2>
+        <p>All four frameworks can be served over WSGI. FastAPI and modern Django also support ASGI, which enables async handlers and WebSocket endpoints.</p>
+
+        <pre><code>WSGI  -> requests processed synchronously (one thread per request)
+ASGI  -> requests can run asynchronously (event loop)
+           also supports WebSockets and background tasks</code></pre>
+
+        <p>The request flow is conceptually:</p>
+
+        <pre><code>Client
+  |
+HTTP request
+  |
+Server (gunicorn / uvicorn / daphne)
+  |
+Router -> View/Handler -> Business logic -> Model -> Database
+  |
+Response body
+  |
+Client</code></pre>
+
+        <h2 id="django">Django</h2>
+
+        <div class="cheat-callout"><strong>Django convention:</strong> one <code>app</code> per bounded context, each with its own <code>models.py</code>, <code>views.py</code>, <code>urls.py</code>, and <code>tests.py</code>. The <code>manage.py</code> CLI drives almost everything.</div>
+
+        <h3>Project layout</h3>
+
+        <pre><code>myblog/
+  manage.py
+  myblog/
+    __init__.py
+    settings.py
+    urls.py
+    wsgi.py
+    asgi.py
+  blog/
+    __init__.py
+    admin.py
+    apps.py
+    models.py
+    tests.py
+    views.py</code></pre>
+
+        <h3>Settings excerpt</h3>
+
+        <pre><code>INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    ...
+    'blog',
+]
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',
+        'USER': 'myuser',
+        'PASSWORD': '***',
+        'HOST': 'db',
+        'PORT': '5432',
+    }
+}</code></pre>
+
+        <h3>Models and migrations</h3>
+
+        <pre><code>from django.db import models
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    body = models.TextField()
+    published_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title</code></pre>
+
+        <pre><code>python manage.py makemigrations
+python manage.py migrate</code></pre>
+
+        <h3>Views, templates, and URLs</h3>
+
+        <pre><code>from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from .models import Post
+
+def post_list(request):
+    posts = Post.objects.all()
+    return render(request, 'blog/post_list.html', {'posts': posts})
+
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return render(request, 'blog/post_detail.html', {'post': post})</code></pre>
+
+        <pre><code># blog/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.post_list, name='post_list'),
+    path('post/<int:pk>/', views.post_detail, name='post_detail'),
+]</code></pre>
+
+        <pre><code># blog/templates/blog/post_list.html
+{% extends 'base.html' %}
+{% block content %}
+  {% for post in posts %}
+    <article>
+      <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
+      <p>{{ post.body }}</p>
+    </article>
+  {% endfor %}
+{% endblock %}</code></pre>
+
+        <h2 id="drf">Django REST Framework</h2>
+
+        <p>DRF layers a RESTful API and automatic OpenAPI schema generation on top of a Django project.</p>
+
+        <pre><code># serializers.py
+from rest_framework import serializers
+from .models import Post
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = '__all__'</code></pre>
+
+        <pre><code># views.py
+from rest_framework import viewsets
+from rest_framework.response import Response
+from .models import Post
+from .serializers import PostSerializer
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer</code></pre>
+
+        <div class="cheat-callout"><strong>DRF convention:</strong> <code>ModelViewSet</code> gives you list, create, retrieve, update, and destroy for free. Override individual actions when business rules diverge.</div>
+
+        <h2 id="fastapi">FastAPI</h2>
+
+        <p>FastAPI uses Python type hints to define routes, validate requests, and generate documentation automatically.</p>
+
+        <pre><code>from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
+
+app = FastAPI(title="My API")
+
+class PostIn(BaseModel):
+    title: str
+    body: str
+
+class Post(PostIn):
+    id: int
+
+DB: List[Post] = []
+
+@app.get("/posts", response_model=List[Post])
+def list_posts():
+    return DB
+
+@app.get("/posts/{post_id}", response_model=Post)
+def read_post(post_id: int):
+    for post in DB:
+        if post.id == post_id:
+            return post
+    raise HTTPException(status_code=404, detail="Not found")
+
+@app.post("/posts", response_model=Post, status_code=201)
+def create_post(payload: PostIn):
+    post = Post(id=len(DB) + 1, **payload.dict())
+    DB.append(post)
+    return post</code></pre>
+
+        <h2 id="flask">Flask</h2>
+
+        <p>Flask is a micro-framework: a routing layer, Jinja2 templating, and a development server. Everything else is an extension.</p>
+
+        <pre><code>from flask import Flask, jsonify, request, abort
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+db = SQLAlchemy(app)
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200))
+    body = db.Column(db.Text)
+
+@app.route("/posts")
+def list_posts():
+    posts = Post.query.all()
+    return jsonify([{"id": p.id, "title": p.title, "body": p.body} for p in posts])
+
+if __name__ == "__main__":
+    app.run(debug=True)</code></pre>
+
+        <p>Flask keeps you close to the metal. That gives you freedom &mdash; and responsibility.</p>
+
+        <h2 id="auth">Authentication and Authorization</h2>
+        <p>Authentication answers "who is this?", authorization answers "what may they do?".</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Framework</th><th>Auth mechanism</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Django</td><td>django.contrib.auth</td><td>Users, groups, permissions built in</td></tr>
+            <tr><td>DRF</td><td>DRF tokens, JWT, Session</td><td><code>IsAuthenticated</code>, <code>DjangoModelPermissions</code></td></tr>
+            <tr><td>FastAPI</td><td>fastapi-users, JWT, OAuth2</td><td>Depends-based security utilities</td></tr>
+            <tr><td>Flask</td><td>Flask-Login, Flask-JWT</td><td>Extensions</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="patterns">Common Patterns</h2>
+
+        <h3>Dependency injection (FastAPI)</h3>
+
+        <pre><code>from fastapi import Depends
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.get("/posts")
+def list_posts(db: Session = Depends(get_db)):
+    return db.query(Post).all()</code></pre>
+
+        <h3>Middleware and request hooks</h3>
+
+        <pre><code># FastAPI middleware
+@app.middleware("http")
+async def add_process_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Process-Time"] = "0.42s"
+    return response</code></pre>
+
+        <h2 id="validation">Validation and Serialisation</h2>
+        <p>All four frameworks can validate data. Pydantic (FastAPI, and usable standalone) and DRF serializers are the dominant approaches.</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Approach</th><th>Validation</th><th>Serialisation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Django forms</td><td>Yes</td><td>Form rendering</td></tr>
+            <tr><td>DRF serializers</td><td>Yes</td><td>To/from model</td></tr>
+            <tr><td>Pydantic (FastAPI)</td><td>Type-driven</td><td>Model -> dict</td></tr>
+            <tr><td>Flask-WTF</td><td>Yes</td><td>Form rendering</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="testing">Testing</h2>
+
+        <pre><code># Django
+from django.test import TestCase, Client
+from .models import Post
+
+class PostTests(TestCase):
+    def test_list(self):
+        client = Client()
+        response = client.get("/")
+        self.assertEqual(response.status_code, 200)
+
+# FastAPI / Flask (pytest + httpx / flask testing)
+from fastapi.testclient import TestClient
+client = TestClient(app)
+
+def test_list_posts():
+    response = client.get("/posts")
+    assert response.status_code == 200</code></pre>
+
+        <h2 id="deployment">Deployment</h2>
+        <p>Run behind a production WSGI/ASGI server and a reverse proxy (nginx) for TLS termination and static assets.</p>
+
+        <pre><code>Python app
+  |
+WSGI/ASGI server (gunicorn, uvicorn, daphne)
+  |
+Reverse proxy (nginx)
+  |
+Load balancer / Internet</code></pre>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Combination</th><th>Server</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Django / Flask</td><td>gunicorn</td><td>WSGI workers</td></tr>
+            <tr><td>Django async</td><td>daphne + gunicorn</td><td>ASGI</td></tr>
+            <tr><td>FastAPI</td><td>uvicorn + gunicorn</td><td>workers=uvicorn.workers.UvicornWorker</td></tr>
+            <tr><td>Django (modern)</td><td>uvicorn + asgiref</td><td>ASGI path</td></tr>
+          </tbody>
+        </table>
+
+        <pre><code># gunicorn for Django/Flask
+gunicorn myproject.wsgi:application \
+  --workers 4 --bind 0.0.0.0:8000
+
+# uvicorn for FastAPI
+gunicorn myapp.main:app \
+  -k uvicorn.workers.UvicornWorker \
+  --workers 4 --bind 0.0.0.0:8000</code></pre>
+
+        <h2 id="cheatsheet">Python Backend Cheatsheet</h2>
+
+        <h3>Bootstrapping a project</h3>
+
+        <pre><code># Django
+django-admin startproject mysite
+cd mysite
+python manage.py startapp blog
+python manage.py migrate
+python manage.py runserver
+
+# Flask
+pip install flask
+flask --app app run
+
+# FastAPI
+pip install "fastapi[all]"
+uvicorn app:app --reload</code></pre>
+
+        <h3>Adding a record</h3>
+
+        <pre><code># Django ORM
+Post.objects.create(title="Hi", body="World")
+
+# DRF: validated through serializer
+PostSerializer(data={...}).save()
+
+# SQLAlchemy (Flask/FastAPI pattern)
+db.add(Post(title="Hi")); db.commit()</code></pre>
+
+        <h3>Running the development server</h3>
+
+        <pre><code># Django
+python manage.py runserver
+
+# Flask
+flask --app app run --debug
+
+# FastAPI
+uvicorn app:app --reload</code></pre>
+
+        <h3>Migrations and schema</h3>
+
+        <pre><code># Django
+python manage.py makemigrations
+python manage.py migrate
+
+# Flask-Migrate
+flask db migrate
+flask db upgrade</code></pre>
+
+        <div class="cheat-callout"><strong>Production rule:</strong> never run <code>manage.py runserver</code>, <code>flask run</code>, or <code>uvicorn --reload</code> in production. Use a production server (gunicorn/uvicorn/daphne) behind nginx.</div>
+
+        <h2 id="comparison">Framework Comparison</h2>
+
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Dimension</th>
+                <th scope="col">Django</th>
+                <th scope="col">DRF</th>
+                <th scope="col">FastAPI</th>
+                <th scope="col">Flask</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Built-in admin</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+              <tr><td>Built-in ORM</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+              <tr><td>Built-in auth</td><td>Yes</td><td>Django auth</td><td>No</td><td>No</td></tr>
+              <tr><td>Async support</td><td>Partial</td><td>Partial</td><td>Yes</td><td>Limited</td></tr>
+              <tr><td>Auto docs (OpenAPI)</td><td>No</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+              <tr><td>Type validation</td><td>Forms</td><td>Serializers</td><td>Pydantic</td><td>Flask-WTF</td></tr>
+              <tr><td>Routing style</td><td>Function/class</td><td>Function/class</td><td>Decorators</td><td>Decorators</td></tr>
+              <tr><td>CLI</td><td>manage.py</td><td>manage.py</td><td>Custom (typer/click)</td><td>flask CLI</td></tr>
+              <tr><td>Learning curve</td><td>Moderate-High</td><td>Moderate</td><td>Moderate</td><td>Low</td></tr>
+              <tr><td>Ecosystem size</td><td>Huge</td><td>Huge</td><td>Growing fast</td><td>Huge</td></tr>
+              <tr><td>Performance (typical)</td><td>Good</td><td>Good</td><td>Very good</td><td>Good</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="decision">When to Choose Which</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Scenario</th><th>Pick</th><th>Why</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Admin panel / CMS</td><td>Django</td><td>Built-in admin and ORM</td></tr>
+            <tr><td>REST API on existing data model</td><td>DRF</td><td>Serializer + permission layer over Django</td></tr>
+            <tr><td>Microservices / async I/O</td><td>FastAPI</td><td>ASGI, type-driven validation, auto docs</td></tr>
+            <tr><td>Small glue service / prototype</td><td>Flask</td><td>Minimal, pick your own stack</td></tr>
+            <tr><td>Machine learning model serving</td><td>FastAPI</td><td>Async, Pydantic, pydantic-settings</td></tr>
+            <tr><td>Heavy legacy DB, no schema control</td><td>Django</td><td>Unmanaged models</td></tr>
+            <tr><td>Performance-critical API</td><td>FastAPI</td><td>uvicorn + type-driven validation</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="conclusion">Conclusion</h2>
+        <p>Python's web ecosystem gives you a tool for almost every job: Django when you want batteries included, Django REST Framework when you are already on Django and need an API layer, FastAPI when performance, async, or type safety matter, and Flask when you want to choose every dependency yourself.</p>
+
+        <p>The most important choice is not which framework has the best benchmark &mdash; it is which framework your team can operate safely, patch, and reason about in production. Whichever you choose, standardise on one WSGI/ASGI server, one reverse proxy pattern, one secrets store, one test strategy, and one deployment pipeline. The framework is the small part; the operations around it are what keep systems secure and reliable.</p>
+
+        <p>This can also be extended into a <strong>Part 2: Python Deployment Cheatsheet</strong>, covering nginx gunicorn configs, systemd unit files, Let's Encrypt, health checks, and container images for Django, DRF, FastAPI, and Flask.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Python</span>
+            <span class="blog-tag">Django</span>
+            <span class="blog-tag">Django REST Framework</span>
+            <span class="blog-tag">FastAPI</span>
+            <span class="blog-tag">Flask</span>
+            <span class="blog-tag">Backend</span>
+            <span class="blog-tag">API</span>
+            <span class="blog-tag">Architecture</span>
+            <span class="blog-tag">Cheat Sheet</span>
+            <span class="blog-tag">Security</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Cloud Engineering</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">&larr; Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
