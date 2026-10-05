@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TypeScript vs JavaScript: core differences, types, tooling, and a practical cheatsheet for developers. Type system, interfaces, generics, modules, async patterns, and a side-by-side comparison.">
+  <meta name="author" content="Antony Britto C J">
+  <title>TypeScript vs JavaScript Cheatsheet: Types, Tooling, and Migration | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content blog-content--wide">
+        <div class="blog-header">
+          <h1 class="blog-title">TypeScript vs JavaScript <span class="google-us-gradient">Cheatsheet</span>: Types, Tooling, and Migration</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 December 4, 2025</div>
+            <div class="blog-meta-item">⏱️ 18 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">JavaScript is the language of the web, and TypeScript adds a static type layer on top of it. This article compares TypeScript and JavaScript, explains why types matter at scale, covers the type system, tooling, and migration, then distils the essentials into a practical cheatsheet. Developers moving between vanilla JavaScript frontends and typed frameworks like React will find a direct reference here.</p>
+
+        <p>For the surrounding build and deployment pipeline, see the <a href="../devops-ready-reckoner/index.html">DevOps Ready Reckoner</a>.</p>
+
+        <nav class="reckoner-toc" aria-label="TypeScript article sections">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#js-vs-ts">JavaScript vs TypeScript</a></li>
+            <li><a href="#type-system">The Type System</a></li>
+            <li><a href="#ts-types">TypeScript Types at a Glance</a></li>
+            <li><a href="#interfaces">Interfaces and Type Aliases</a></li>
+            <li><a href="#generics">Generics</a></li>
+            <li><a href="#functions">Functions and Overloads</a></li>
+            <li><a href="#classes">Classes</a></li>
+            <li><a href="#modules">Modules and Imports</a></li>
+            <li><a href="#async">Async Patterns</a></li>
+            <li><a href="#tooling">Tooling and Configuration</a></li>
+            <li><a href="#migration">Migrating from JavaScript</a></li>
+            <li><a href="#cheatsheet">TypeScript Cheatsheet</a></li>
+            <li><a href="#comparison">Comparison and Decision Matrix</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="js-vs-ts">JavaScript vs TypeScript</h2>
+        <p>JavaScript (JS) is a dynamically-typed, interpreted scripting language executed by browsers and runtimes like Node.js. TypeScript (TS) is a <strong>superset</strong> of JavaScript: valid JavaScript is valid TypeScript, but TypeScript adds an optional static type layer that is erased before execution.</p>
+
+        <pre><code>JavaScript
+  -> runs anywhere (browser, Node, Deno)
+  -> types checked at runtime
+  -> no compile step (by default)
+  -> errors appear late (testing / production)
+
+TypeScript
+  -> compiles to JavaScript
+  -> types checked at compile time (optional)
+  -> tsc / transpilers (esbuild, swc, webpack, vite)
+  -> errors caught before runtime</code></pre>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Aspect</th><th>JavaScript</th><th>TypeScript</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Type checking</td><td>Runtime</td><td>Compile time</td></tr>
+            <tr><td>Compile step</td><td>Optional</td><td>Standard</td></tr>
+            <tr><td>Generics</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Interfaces</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Refactoring safety</td><td>Limited</td><td>Strong</td></tr>
+            <tr><td>Editor support</td><td>JSDoc / inference</td><td>Rich, type-aware</td></tr>
+            <tr><td>Learning curve</td><td>Low</td><td>Moderate</td></tr>
+            <tr><td>File extension</td><td>.js</td><td>.ts / .tsx</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="type-system">The Type System</h2>
+        <p>The TypeScript compiler performs three kinds of checks relevant to security and reliability in production:</p>
+
+        <pre><code>1. Syntactic analysis
+2. Type checking (types, scopes, generics)
+3. Emit (erases types, outputs JavaScript)</code></pre>
+
+        <p>Type annotations are optional. A project can adopt types incrementally &mdash; one file at a time &mdash; which is what makes migration feasible without rewriting an existing codebase.</p>
+
+        <h3>Strict mode matters</h3>
+        <p>With <code>"strict": true</code>, TypeScript enforces:</p>
+
+        <ul>
+          <li><code>noImplicitAny</code> &mdash; no implicit <code>any</code></li>
+          <li><code>strictNullChecks</code> &mdash; <code>null</code> and <code>undefined</code> are not everything</li>
+          <li><code>strictFunctionTypes</code> &mdash; function parameter bivariance is off</li>
+          <li><code>strictBindCallApply</code> &mdash; typed <code>bind</code>/<code>call</code>/<code>apply</code></li>
+        </ul>
+
+        <div class="cheat-callout"><strong>Why types reduce risk:</strong> in JavaScript, a typo like <code>user.nam</code> is <code>undefined</code> until it throws at runtime and only if that code path runs. In TypeScript with strict mode, that is a compile error before the code ever ships.</div>
+
+        <h2 id="ts-types">TypeScript Types at a Glance</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Type</th><th>Example</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>number</td><td><code>let x: number = 5;</code></td><td>integers and floats</td></tr>
+            <tr><td>string</td><td><code>let s: string = "hi";</code></td><td></td></tr>
+            <tr><td>boolean</td><td><code>let b: boolean = true;</code></td><td></td></tr>
+            <tr><td>array</td><td><code>let a: number[] = [1, 2];</code></td><td>or <code>Array&lt;number&gt;</code></td></tr>
+            <tr><td>tuple</td><td><code>let t: [string, number] = ["a", 1];</code></td><td>fixed length</td></tr>
+            <tr><td>enum</td><td><code>enum Color { R, G }</code></td><td>compiled to object</td></tr>
+            <tr><td>any</td><td><code>let a: any;</code></td><td>avoid</td></tr>
+            <tr><td>unknown</td><td><code>let v: unknown;</code></td><td>safe <code>any</code></td></tr>
+            <tr><td>undefined</td><td><code>let u: undefined;</code></td><td>under <code>strictNullChecks</code></td></tr>
+            <tr><td>void</td><td><code>function f(): void {}</code></td><td>no return value</td></tr>
+            <tr><td>never</td><td><code>function fail(): never { throw new Error(); }</code></td><td>never returns</td></tr>
+            <tr><td>object</td><td><code>let o: object;</code></td><td>non-primitive</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="interfaces">Interfaces and Type Aliases</h2>
+
+        <pre><code>// interface (object shape; extensible via declaration merging)
+interface User {
+  id: number;
+  name: string;
+  email?: string;          // optional
+  readonly createdAt: Date;
+}
+
+// type alias (works for unions, primitives, tuples)
+type Id = string | number;
+type Point = { x: number; y: number };
+type Pair = [number, number];
+
+// index signature
+interface Dictionary {
+  [key: string]: string;
+}
+</code></pre>
+
+        <div class="cheat-callout"><strong>interface vs type:</strong> use <code>interface</code> for object shapes that may need to extend or benefit from declaration merging. Use <code>type</code> for unions, tuples, mapped types, or conditional types. Both are erased at runtime.</div>
+
+        <h2 id="generics">Generics</h2>
+        <p>Generics let types depend on other types, enabling reusable, type-safe data structures.</p>
+
+        <pre><code>function identity&lt;T&gt;(arg: T): T {
+  return arg;
+}
+
+const output = identity&lt;string&gt;("hi");
+
+// generic constraint
+function length&lt;T extends { length: number }&gt;(arg: T): number {
+  return arg.length;
+}
+
+// generic in a class
+class Stack&lt;T&gt; {
+  private items: T[] = [];
+  push(item: T) { this.items.push(item); }
+  pop(): T | undefined { return this.items.pop(); }
+}</code></pre>
+
+        <h2 id="functions">Functions and Overloads</h2>
+
+        <pre><code>// typed return
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+// optional parameter
+function greet(name: string, greeting?: string): string {
+  return `${greeting ?? "Hi"}, ${name}`;
+}
+
+// rest parameters
+function sum(...nums: number[]): number {
+  return nums.reduce((a, b) => a + b, 0);
+}
+
+// function overloads
+function reverse(x: string): string;
+function reverse(x: any[]): any[];
+function reverse(x: string | any[]): string | any[] {
+  if (typeof x === "string") return x.split("").reverse().join("");
+  return [...x].reverse();
+}</code></pre>
+
+        <h2 id="classes">Classes</h2>
+
+        <pre><code>class Person {
+  readonly id: number;
+  name: string;
+  private ssn?: string;       // not accessible outside the class
+  protected role: string;    // accessible to subclasses
+  static population: number = 0;
+
+  constructor(name: string, role: "admin" | "user" = "user") {
+    this.name = name;
+    this.role = role;
+    Person.population++;
+  }
+
+  get display(): string {
+    return `${this.name} (${this.role})`;
+  }
+}
+
+const p = new Person("Aria");
+console.log(Person.population);</code></pre>
+
+        <h2 id="modules">Modules and Imports</h2>
+        <p>TypeScript uses standard ES modules. <code>.ts</code> is for logic; <code>.tsx</code> is for files containing JSX (React).</p>
+
+        <pre><code>// utils/math.ts
+export function add(a: number, b: number): number {
+  return a + b;
+}
+export const PI = 3.14159;
+
+// app.ts
+import { add, PI } from "./utils/math";
+console.log(add(2, 3), PI);</code></pre>
+
+        <h2 id="async">Async Patterns</h2>
+
+        <pre><code>// async/await with typed response
+interface Post {
+  id: number;
+  title: string;
+}
+
+async function fetchPosts(): Promise&lt;Post[]&gt; {
+  const res = await fetch("/api/posts");
+  return res.json();
+}
+
+// error handling
+async function load(): Promise&lt;Post[] | null&gt; {
+  try {
+    return await fetchPosts();
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}</code></pre>
+
+        <h2 id="utility">Utility Types</h2>
+
+        <pre><code>Partial&lt;T&gt;      // make all properties optional
+Required&lt;T&gt;     // make all properties required
+Readonly&lt;T&gt;    // make all properties readonly
+Pick&lt;T, K&gt;       // pick subset of properties
+Omit&lt;T, K&gt;       // omit subset of properties
+Record&lt;K, T&gt;     // object with keys K and value type T
+ReturnType&lt;T&gt;   // type of a function's return value</code></pre>
+
+        <h3>Utility types in practice</h3>
+
+        <pre><code>interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description?: string;
+}
+
+// for a PATCH endpoint: only some fields required
+type ProductUpdate = Partial&lt;Product&gt;;
+
+// a read-only view for display
+type ProductView = Readonly&lt;Pick&lt;Product, "id" | "name" | "price"&gt;&gt;;
+
+// a lookup table keyed by product id
+type ProductCatalog = Record&lt;number, Product&gt;
+</code></pre>
+
+        <h2 id="narrowing">Type Narrowing and Guards</h2>
+
+        <pre><code>function format(input: string | number): string {
+  if (typeof input === "number") {
+    return input.toFixed(2);
+  }
+  return input.toUpperCase();
+}
+
+// array narrowing
+function firstEl(arr: unknown[]): string | undefined {
+  if (Array.isArray(arr) && arr.length) {
+    const [first] = arr;
+    if (typeof first === "string") return first;
+  }
+    return undefined;
+}
+</code></pre>
+
+        <h2 id="keyof">keyof, Mapped, and Conditional Types</h2>
+
+        <pre><code>// keyof: keys of a type
+type UserKey = keyof { name: string; age: number };
+// => "name" | "age"
+
+// mapped type: transform each property
+type Readonly&lt;T&gt = {
+  readonly [P in keyof T]: T[P];
+};
+
+// conditional type
+type NonNull&lt;T&gt = T extends null | undefined ? never : T;
+</code></pre>
+
+        <h2 id="typecasts">Type Assertions and JSDoc in JS</h2>
+
+        <pre><code>// type assertion (TS)
+const el = document.getElementById("btn") as HTMLButtonElement;
+
+// equivalent assertion
+const el2 = &lt;HTMLButtonElement&gt;document.getElementById("btn");
+
+// JSDoc provides types in plain JavaScript
+/**
+ * @param {string} name
+ * @param {number} [count=1]
+ * @returns {string}
+ */
+function repeat(name, count = 1) {
+  return Array(count).fill(name).join(" ");
+}
+</code></pre>
+
+        <h2 id="tooling">Tooling and Configuration</h2>
+        <p>TypeScript is compiled (or transpiled) to JavaScript. The canonical compiler is <code>tsc</code>, but most projects use a bundler/transpiler:</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Tool</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>tsc</td><td>Official compiler, type-checking + emit</td></tr>
+            <tr><td>vite</td><td>Fast dev server; esbuild/swc transpile TS</td></tr>
+            <tr><td>webpack</td><td>Bundler with ts-loader</td></tr>
+            <tr><td>esbuild</td><td>Fast transpiler, no type checking</td></tr>
+            <tr><td>swc</td><td>Rust-based, very fast transpile</td></tr>
+            <tr><td>Next.js</td><td>Framework with zero-config TS</td></tr>
+            <tr><td>eslint / prettier</td><td>Lint + format</td></tr>
+          </tbody>
+        </table>
+
+        <h3>tsconfig.json essentials</h3>
+
+        <pre><code>{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"]
+}
+</code></pre>
+
+        <h3>Common scripts</h3>
+
+        <pre><code>npm run build      # tsc -> dist (or vite build)
+npm run type-check   # tsc --noEmit, used in CI
+npm test             # vitest / jest
+npm run lint         # eslint
+npm run format       # prettier</code></pre>
+
+        <div class="cheat-callout"><strong>CI tip:</strong> separate type-checking from building. Run <code>tsc --noEmit</code> (or <code>vite build</code>) in CI so type errors fail the pipeline even when the bundler uses esbuild/swc and skips type checking.</div>
+
+        <h2 id="migration">Migrating from JavaScript</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Step</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Install <code>typescript</code> and a TS-aware lint config</td></tr>
+            <tr><td>2</td><td>Add a permissive <code>tsconfig.json</code> (<code>"allowJs": true</code>)</td></tr>
+            <tr><td>3</td><td>Rename <code>.js</code> to <code>.ts</code>/<code>.tsx</code> module by module</td></tr>
+            <tr><td>4</td><td>Add JSDoc or inline types where inference is weak</td></tr>
+            <tr><td>5</td><td>Enable <code>"strict": true</code> per file or globally</td></tr>
+            <tr><td>6</td><td>Remove <code>"allowJs"</code> when fully converted</td></tr>
+          </tbody>
+        </table>
+
+        <p>JavaScript that works today continues to work tomorrow &mdash; TypeScript is a superset, so migration can be incremental. The payoff grows as more files become typed, because refactors become safe and autocomplete becomes precise.</p>
+
+        <h2 id="cheatsheet">TypeScript Cheatsheet</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Need</th><th>Syntax</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Type annotation</td><td><code>let x: number = 1</code></td></tr>
+            <tr><td>Union type</td><td><code>type Id = string | number</code></td></tr>
+            <tr><td>Optional property</td><td><code>{ name?: string }</code></td></tr>
+            <tr><td>Array type</td><td><code>let a: number[] = []</code></td></tr>
+            <tr><td>Tuple</td><td><code>let pair: [string, number]</code></td></tr>
+            <tr><td>Generic function</td><td><code>function id&lt;T&gt;(x: T): T</code></td></tr>
+            <tr><td>Generic constraint</td><td><code>&lt;T extends string&gt;</code></td></tr>
+            <tr><td>Interface</td><td><code>interface User { name: string }</code></td></tr>
+            <tr><td>Enum</td><td><code>enum Role { Admin, User }</code></td></tr>
+            <tr><td>Type literal</td><td><code>"admin" | "user" as const</code></td></tr>
+            <tr><td>Type query</td><td><code>type T = typeof value</code></td></tr>
+            <tr><td>Indexed access</td><td><code>type Name = User["name"]</code></td></tr>
+            <tr><td>Utility type</td><td><code>Partial&lt;T&gt;, Pick&lt;T, K&gt;</code></td></tr>
+            <tr><td>Type guard</td><td><code>if (typeof x === "string")</code></td></tr>
+            <tr><td>Type assertion</td><td><code>value as string</code></td></tr>
+            <tr><td>Strict null check</td><td><code>string | null | undefined</code></td></tr>
+            <tr><td>Readonly</td><td><code>readonly</code></td></tr>
+            <tr><td>Namespace import</td><td><code>import * as path from "path"</code></td></tr>
+            <tr><td>Default export</td><td><code>export default class {}</code></td></tr>
+            <tr><td>React component</td><td><code>function App(): JSX.Element</code></td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="comparison">TypeScript vs JavaScript Decision Matrix</h2>
+
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Factor</th>
+                <th scope="col">JavaScript</th>
+                <th scope="col">TypeScript</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Setup</td><td>None</td><td>tsc + tsconfig</td></tr>
+              <tr><td>Compilation</td><td>None (bundler only)</td><td>Compile / transpile</td></tr>
+              <tr><td>Errors</td><td>Runtime</td><td>Compile time</td></tr>
+              <tr><td>Tooling</td><td>Inference</td><td>Type-aware IDE</td></tr>
+              <tr><td>Refactoring</td><td>Fragile</td><td>Safe</td></tr>
+              <tr><td>Bundle size</td><td>Smaller</td><td>Same (types erased)</td></tr>
+              <tr><td>Team size</td><td>Small / solo</td><td>Large / long-lived</td></tr>
+              <tr><td>Documentation</td><td>JSDoc needed</td><td>Types as docs</td></tr>
+              <tr><td>Learning curve</td><td>Low</td><td>Moderate</td></tr>
+              <tr><td>Migration</td><td>n/a</td><td>Incremental</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cheat-callout"><strong>When TypeScript pays off most:</strong> large codebases, long maintenance horizon, multiple teams, public libraries, or any codebase where a typo causes real downtime. For throwaway scripts and very small apps, plain JavaScript remains perfectly reasonable.</div>
+
+        <h2 id="conclusion">Conclusion</h2>
+        <p>JavaScript is the runtime; TypeScript is a compile-time safety net. The right choice depends on codebase size, team maturity, and operational cost tolerance. What matters most is consistency: once a project adopts TypeScript, keep <code>strict</code> on, type-check in CI, and treat type errors like build failures. The discipline of naming and constraining data shapes through types is what turns fragile scripts into reliable, maintainable applications.</p>
+
+        <p>TypeScript does not eliminate bugs, it prevents an entire category of them before code runs.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">TypeScript</span>
+            <span class="blog-tag">JavaScript</span>
+            <span class="blog-tag">Frontend</span>
+            <span class="blog-tag">React</span>
+            <span class="blog-tag">Cheat Sheet</span>
+            <span class="blog-tag">Architecture</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Cloud Engineering</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">&larr; Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
