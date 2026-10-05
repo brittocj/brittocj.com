@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="React fundamentals, architecture, component patterns, state management, hooks, routing, data fetching, tooling, a practical cheatsheet, and comparison with Angular, Vue, and Svelte.">
+  <meta name="author" content="Antony Britto C J">
+  <title>React Fundamentals and Cheatsheet: Architecture, Patterns, and Comparison with Angular, Vue, Svelte | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content blog-content--wide">
+        <div class="blog-header">
+          <h1 class="blog-title">React Fundamentals and <span class="google-us-gradient">Cheatsheet</span>: Architecture, Patterns, and Comparison with Angular, Vue, Svelte</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 December 2, 2025</div>
+            <div class="blog-meta-item">⏱️ 19 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">React is a JavaScript library for building user interfaces using a component model and a virtual DOM. This article covers React fundamentals, component architecture, common patterns, state management, routing, data fetching, tooling, and a practical cheatsheet, followed by a comparison with Angular, Vue, and Svelte so architects and developers can choose the right tool for the job.</p>
+
+        <p>For a hands-on reference, also see the <a href="../devops-ready-reckoner/index.html">DevOps Ready Reckoner</a> for the surrounding build and deployment toolchain that packages a React app for production.</p>
+
+        <nav class="reckoner-toc" aria-label="React article sections">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#what-is-react">What is React?</a></li>
+            <li><a href="#architecture">Architecture and the Virtual DOM</a></li>
+            <li><a href="#components">Components, Props, and JSX</a></li>
+            <li><a href="#state">State, Hooks, and Lifecycle</a></li>
+            <li><a href="#patterns">Common Component Patterns</a></li>
+            <li><a href="#ecosystem">The React Ecosystem</a></li>
+            <li><a href="#routing">Routing: React Router</a></li>
+            <li><a href="#data-fetching">Data Fetching</a></li>
+            <li><a href="#tooling">Tooling: Vite, TypeScript, Testing</a></li>
+            <li><a href="#cheatsheet">React Cheatsheet</a></li>
+            <li><a href="#comparison">React vs Angular vs Vue vs Svelte</a></li>
+            <li><a href="#decision">When to Choose React</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="what-is-react">What is React?</h2>
+        <p><strong>React</strong> is a declarative JavaScript library for building component-based user interfaces. It was created by Meta and is maintained by Meta and the open-source community.</p>
+
+        <p>Important distinctions:</p>
+
+        <ul>
+          <li>React is a <strong>library</strong>, not a full framework.</li>
+          <li>It concerns itself primarily with the <strong>view layer</strong>.</li>
+          <li>Routing, state management, and HTTP are handled by separate libraries.</li>
+          <li>React renders to a <strong>virtual DOM</strong> and updates the real DOM efficiently.</li>
+        </ul>
+
+        <p>React can render to the web (<code>react-dom</code>), to native mobile via <code>React Native</code>, and to servers via server components and Node.js rendering.</p>
+
+        <h2 id="architecture">Architecture and the Virtual DOM</h2>
+        <p>The central concept in React is a component tree. When state changes, React:</p>
+
+        <pre><code>1. Builds a new virtual DOM tree
+2. Diffs (reconciles) it against the previous tree
+3. Computes a minimal set of DOM mutations
+4. Applies those mutations in a single batch</code></pre>
+
+        <p>This "render, diff, commit" loop is what makes React predictable and efficient:</p>
+
+        <pre><code>          React Component Tree
+                   |
+      +-----------------------+
+      | Virtual DOM (current) |
+      +-----------------------+
+                   |
+         Reconciliation / diffing
+                   |
+      +-----------------------+
+      | Virtual DOM (new)     |
+      +-----------------------+
+                   |
+            Commit phase
+                   |
+          Real DOM (updated)</code></pre>
+
+        <h2 id="components">Components, Props, and JSX</h2>
+        <p>A component is a reusable, isolated piece of UI. Define one with a function:</p>
+
+        <pre><code>function Welcome(props) {
+  return &lt;h1&gt;Hello, {props.name}&lt;/h1&gt;;
+}
+
+// or arrow form
+const Welcome = (props) =&gt; (
+  &lt;h1&gt;Hello, {props.name}&lt;/h1&gt;
+);</code></pre>
+
+        <p>JSX lets you write HTML-like syntax in JavaScript:</p>
+
+        <pre><code>&lt;div className="card"&gt;
+  &lt;h2&gt;{title}&lt;/h2&gt;
+  &lt;p&gt;{description}&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+        <div class="cheat-callout"><strong>JSX compiles to <code>React.createElement</code></strong>, which returns <strong>React elements</strong> &mdash; plain objects. At runtime React reads those objects and produces DOM nodes. This is why JSX is optional but strongly recommended for readability.</div>
+
+        <h3>Composition with children</h3>
+
+        <pre><code>function Card({ title, children }) {
+  return (
+    &lt;div className="card"&gt;
+      &lt;h2&gt;{title}&lt;/h2&gt;
+      {children}
+    &lt;/div&gt;
+  );
+}
+
+// Usage: props.children is injected between the tags
+&lt;Card title="Welcome"&gt;
+  &lt;p&gt;Body content&lt;/p&gt;
+&lt;/Card&gt;</code></pre>
+
+        <h2 id="state">State, Hooks, and Lifecycle</h2>
+        <p>Components manage their own state with the <code>useState</code> Hook:</p>
+
+        <pre><code>import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+      Clicked {count} times
+    &lt;/button&gt;
+  );
+}</code></pre>
+
+        <p>Side effects and lifecycle are handled by <code>useEffect</code>:"</p>
+
+        <pre><code>import { useState, useEffect } from 'react';
+
+function Timer() {
+  const [now, setNow] = useState(() =&gt; new Date());
+
+  useEffect(() =&gt; {
+    const id = setInterval(() =&gt; setNow(new Date()), 1000);
+    return () =&gt; clearInterval(id); // cleanup on unmount
+  }, []);
+
+  return &lt;time&gt;{now.toLocaleTimeString()}&lt;/time&gt;;
+}</code></pre>
+
+        <h2 id="patterns">Common Component Patterns</h2>
+
+        <h3>Container / Presentational split</h3>
+        <p>Separate logic from markup. The container owns state and behavior; the presentational component receives data via props.</p>
+
+        <pre><code>// Presentational
+function UserList({ users, onEdit }) {
+  return (
+    &lt;ul&gt;
+      {users.map(u =&gt; (
+        &lt;li key={u.id}&gt;
+          {u.name} &lt;button onClick={() =&gt; onEdit(u)}&gt;Edit&lt;/button&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+
+// Container
+function UserContainer() {
+  const [users, setUsers] = useState([]);
+  const onEdit = (u) =&gt; navigate(`/users/${u.id}`);
+  useEffect(() =&gt; { fetchUsers().then(setUsers); }, []);
+  return &lt;UserList users={users} onEdit={onEdit} /&gt;;
+}</code></pre>
+
+        <h3>Custom Hooks</h3>
+        <p>Reuse stateful logic across components:</p>
+
+        <pre><code>function useForm(initial) {
+  const [values, setValues] = useState(initial);
+  const handleChange = (e) =&gt;
+    setValues({ ...values, [e.target.name]: e.target.value });
+  const reset = () =&gt; setValues(initial);
+  return { values, handleChange, reset };
+}</code></pre>
+
+        <h3>HOC and render props</h3>
+        <p>Still useful for cross-cutting concerns such as authentication gating:</p>
+
+        <pre><code>function withAuth(Component) {
+  return function Authenticated(props) {
+    const { user } = useContext(AuthContext);
+    return user ? &lt;Component {...props} /&gt; : &lt;Login /&gt;;
+  };
+}</code></pre>
+
+        <div class="cheat-callout"><strong>Modern rule of thumb:</strong> prefer Custom Hooks over render props and higher-order components. They are simpler to read, easier to type with TypeScript, and easier to debug.</div>
+
+        <h2 id="ecosystem">The React Ecosystem</h2>
+
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Concern</th>
+                <th scope="col">Library / Tool</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Language</td><td>JavaScript, TypeScript</td></tr>
+              <tr><td>Build</td><td>Vite, webpack, esbuild, Turbopack</td></tr>
+              <tr><td>Routing</td><td>react-router, Next.js, Remix</td></tr>
+              <tr><td>State (local)</td><td>useState, useReducer, useContext</td></tr>
+              <tr><td>State (global)</td><td>Zustand, Jotai, Redux, React Query</td></tr>
+              <tr><td>Data fetching</td><td>React Query, SWR, fetch, axios</td></tr>
+              <tr><td>Styling</td><td>CSS Modules, Tailwind, styled-components, Emotion</td></tr>
+              <tr><td>Component libraries</td><td>MUI, Ant Design, Radix, Chakra UI</td></tr>
+              <tr><td>Forms</td><td>React Hook Form, Formik, Zod</td></tr>
+              <tr><td>Testing</td><td>Vitest, Jest, React Testing Library</td></tr>
+              <tr><td>Deployment</td><td>Next.js, Vite build, Docker</td></tr>
+              <tr><td>Type checking</td><td>TypeScript</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="routing">Routing: React Router</h2>
+
+        <pre><code>import { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;Home&lt;/Link&gt;
+        &lt;Link to="/users/1"&gt;User 1&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="users/:id" element={&lt;User /&gt;} /&gt;
+        &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+function User() {
+  const { id } = useParams();
+  // fetch user by id...
+  return &lt;h1&gt;User {id}&lt;/h1&gt;;
+}</code></pre>
+
+        <h2 id="data-fetching">Data Fetching</h2>
+        <p>Fetch inside <code>useEffect</code>, or in React 18+ with Suspense boundaries:</p>
+
+        <pre><code>import { useState, useEffect } from 'react';
+
+function Todos() {
+  const [todos, setTodos] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() =&gt; {
+    fetch('/api/todos')
+      .then((res) =&gt; res.json())
+      .then((data) =&gt; setTodos(data))
+      .catch((err) =&gt; setError(err))
+      .finally(() =&gt; setLoading(false));
+  }, []);
+
+  if (loading) return &lt;p&gt;Loading…&lt;/p&gt;;
+  if (error) return &lt;p&gt;Error: {error.message}&lt;/p&gt;;
+  return &lt;ul&gt;{todos.map(t =&gt; &lt;li key={t.id}&gt;{t.title}&lt;/li&gt;)}&lt;/ul&gt;;
+}</code></pre>
+
+        <h2 id="tooling">Tooling: Vite, TypeScript, Testing</h2>
+
+        <pre><code># Scaffold a typed React project
+npm create vite@latest myapp -- --template react-ts
+cd myapp
+npm install
+npm run dev</code></pre>
+
+        <div class="cheat-callout"><strong>React 18+ key APIs:</strong> <code>createRoot</code>, <code>startTransition</code>, <code>useId</code>, <code>useSyncExternalStore</code>. Migrate away from the legacy <code>ReactDOM.render</code> API.</div>
+
+        <h2 id="cheatsheet">React Cheatsheet</h2>
+
+        <h3>Core API</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>API</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>useState(initial)</code></td><td>Local state: <code>[value, setValue]</code></td></tr>
+            <tr><td><code>useEffect(fn, deps)</code></td><td>Side effects and re-run on dep change</td></tr>
+            <tr><td><code>useContext(ctx)</code></td><td>Read context value</td></tr>
+            <tr><td><code>useReducer(reducer, init)</code></td><td>State logic via reducer</td></tr>
+            <tr><td><code>useMemo(fn, deps)</code></td><td>Memoise expensive value</td></tr>
+            <tr><td><code>useCallback(fn, deps)</code></td><td>Memoise function reference</td></tr>
+            <tr><td><code>useRef(initial)</code></td><td>Mutable ref: <code>.current</code></td></tr>
+            <tr><td><code>useId()</code></td><td>Unique ID (React 18+)</td></tr>
+            <tr><td><code>startTransition(fn)</code></td><td>Non-urgent update (React 18+)</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Component definition</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Form</th><th>Syntax</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Function component</td><td><code>function App() { return &lt;div /&gt;; }</code></td></tr>
+            <tr><td>Props destructuring</td><td><code>function App({ name, count }) {}</code></td></tr>
+            <tr><td>Typed props (TS)</td><td><code>interface Props { name: string; count?: number; }</code></td></tr>
+            <tr><td>Children</td><td><code>function App({ children }) {}</code></td></tr>
+            <tr><td>Default export</td><td><code>export default App;</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>JSX essentials</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Need</th><th>JSX</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>DOM element</td><td><code>&lt;div&gt;&lt;/div&gt;</code></td></tr>
+            <tr><td>Component</td><td><code>&lt;App /&gt;</code></td></tr>
+            <tr><td>Conditional</td><td><code>{cond ? &lt;A /&gt; : &lt;B /&gt;}</code></td></tr>
+            <tr><td>List</td><td><code>{items.map(i =&gt; &lt;li key={i.id}&gt;)}</code></td></tr>
+            <tr><td>Event handler</td><td><code>onClick={handleClick}</code></td></tr>
+            <tr><td>Two-way input</td><td><code>&lt;input value={v} onChange={e =&gt; setV(e.target.value)} /&gt;</code></td></tr>
+            <tr><td>Key attribute</td><td><code>&lt;li <strong>key</strong>&gt;...</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>React Router quick reference</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Element</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>&lt;BrowserRouter&gt;</code></td><td>Browser history router</td></tr>
+            <tr><td><code>&lt;Routes&gt; / &lt;Route&gt;</code></td><td>Route matching tree</td></tr>
+            <tr><td><code>useParams</code></td><td>Read URL path params</td></tr>
+            <tr><td><code>useNavigate</code></td><td>Programmatic navigation</td></tr>
+            <tr><td><code>&lt;Link&gt; / &lt;NavLink&gt;</code></td><td>Accessible anchor links</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Package.json essentials</h3>
+        <pre><code>"dependencies": {
+  "react": "^18.3.0",
+  "react-dom": "^18.3.0",
+  "react-router-dom": "^6.23.0"
+},
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "lint": "eslint src --fix",
+  "test": "vitest"
+}</code></pre>
+
+        <div class="cheat-callout"><strong>Render performance checklist:</strong> add <code>key</code> to list items, memoise callbacks with <code>useCallback</code>, avoid inline objects in props, lift expensive renders into <code>useMemo</code>, and split bundles with <code>React.lazy</code> + <code>&lt;Suspense&gt;</code>.</div>
+
+        <h2 id="comparison">React vs Angular vs Vue vs Svelte</h2>
+
+        <div class="cloud-compare-wrap">
+          <table class="cloud-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Dimension</th>
+                <th scope="col">React</th>
+                <th scope="col">Angular</th>
+                <th scope="col">Vue</th>
+                <th scope="col">Svelte</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Category</td><td>Library</td><td>Full framework</td><td>Progressive framework</td><td>Compiler</td></tr>
+              <tr><td>Built by</td><td>Meta</td><td>Google</td><td>Evan You + community</td><td>Rich Harris + community</td></tr>
+              <tr><td>Language</td><td>JS/TS + JSX</td><td>TypeScript</td><td>TS + Templates</td><td>TS + Templates</td></tr>
+              <tr><td>Bundled size (min+gz, approx.)</td><td>~43 KB (react-dom)</td><td>~160 KB</td><td>~33 KB</td><td>~1-5 KB (runtime)</td></tr>
+              <tr><td>Learning curve</td><td>Moderate</td><td>High</td><td>Low-Moderate</td><td>Low-Moderate</td></tr>
+              <tr><td>Data binding</td><td>One-way</td><td>Two-way</td><td>Two-way</td><td>Reactive, compile-time</td></tr>
+              <tr><td>State management</td><td>Context/Zustand/Redux/RTK</td><td>Services + RxJS/NgRx</td><td>Pinia / Vuex</td><td>Stores / runes</td></tr>
+              <tr><td>Routing</td><td>react-router</td><td>@angular/router</td><td>vue-router</td><td>SvelteKit routing</td></tr>
+              <tr><td>Routing</td><td>SSR via Next.js</td><td>Angular Universal</td><td>Nuxt / SSR</td><td>SvelteKit (SSR)</td></tr>
+              <tr><td>Removal of runtime</td><td>No</td><td>No</td><td>Yes</td></tr>
+              <tr><td>HMR / DX</td><td>Excellent (Vite)</td><td>Good (CLI)</td><td>Excellent</td><td>Excellent</td></tr>
+              <tr><td>Community / jobs</td><td>Largest</td><td>Large</td><td>Growing</td><td>Smaller but growing</td></tr>
+              <tr><td>IEC use cases</td><td>Web apps, SSR, native</td><td>Enterprise apps</td><td>Progressive web apps</td><td>Small to large web apps</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cheat-callout"><strong>Choosing guidance:</strong> React is the safest choice when you need a large ecosystem, frequent hiring, SSR via Next.js, or React Native for mobile. Angular suits large Enterprise Java/.NET teams that want a batteries-included framework. Vue is ideal when you want approachable progressive adoption. Svelte is best for performance-first or bandwidth-constrained applications.</div>
+
+        <h3>Comparison: data flow</h3>
+        <pre><code># React (one-way props)
+function Child({ value, onChange }) {
+  return &lt;button onClick={() =&gt; onChange(value + 1)}&gt;{value}&lt;/button&gt;;
+}
+
+# Vue (v-model two-way sugar)
+&lt;button @click="value++"&gt;{{ value }}&lt;/button&gt;</code></pre>
+
+        <h2 id="decision">When to Choose React</h2>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Scenario</th><th>React fit</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Large team / hiring market</td><td>✓ Strong job market</td></tr>
+            <tr><td>React Native for mobile</td><td>✓ Shared component model</td></tr>
+            <tr><td>SSR + SEO</td><td>✓ Next.js built-in</td></tr>
+            <tr><td>Incremental adoption</td><td>✓ Mount into a single DOM node</td></tr>
+            <tr><td>Enterprise framework preference</td><td>✗ Angular may fit better</td></tr>
+            <tr><td>Minimal bundle / no runtime</td><td>✗ Svelte is smaller</td></tr>
+            <tr><td>Rapid prototype</td><td>✓ Vite + React</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="conclusion">Conclusion</h2>
+        <p>React is a small, fast, component-based view library. Its power comes from a vast ecosystem and the discipline of hooks and unidirectional data flow. Master the fundamentals &mdash; components, props, state, effects, and composition &mdash; and the rest of the ecosystem becomes straightforward to adopt.</p>
+
+        <p>Do not chase every library. Pick one routing solution (React Router or Next.js), one state story (useState/context locally, one global store for cross-component state), one styling approach (CSS Modules or Tailwind), and one testing strategy (React Testing Library). Consistency is what turns tooling into reliability in production.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">React</span>
+            <span class="blog-tag">JavaScript</span>
+            <span class="blog-tag">TypeScript</span>
+            <span class="blog-tag">Frontend</span>
+            <span class="blog-tag">Architecture</span>
+            <span class="blog-tag">Cheat Sheet</span>
+            <span class="blog-tag">Angular</span>
+            <span class="blog-tag">Vue</span>
+            <span class="blog-tag">Svelte</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Cloud Engineering</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">&larr; Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
