@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bash shell scripting ready reckoner covering essentials, commands, control structures, functions, error handling, and a comparison across Linux, Unix, and Windows.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Bash Shell Scripting: The 5-Minute Ready Reckoner | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Bash Shell Scripting: The 5-Minute Ready Reckoner for Linux, Unix and Windows</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 Nov 12, 2013</div>
+            <div class="blog-meta-item">⏱️ 15 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">A practical cheat sheet for system administrators, DevOps engineers, cloud architects and developers. Shell scripting remains one of the most effective ways to automate repetitive IT operations. Whether you are managing Linux servers, administering Unix systems, automating cloud infrastructure or working with Windows, understanding shell scripting helps you save time, reduce manual errors and improve operational consistency.</p>
+
+        <p><a href="#bash-scripting-essentials">Bash</a> (Bourne Again SHell) is one of the most widely used shells in Linux environments. It is particularly useful for server administration, log analysis, backup automation, deployment pipelines, system monitoring and cloud operations.</p>
+
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#bash-scripting-essentials">Bash scripting essentials</a></li>
+            <li><a href="#bash-ready-reckoner">Bash shell scripting ready reckoner</a></li>
+            <li><a href="#essential-linux-commands">Essential Linux commands for Bash scripts</a></li>
+            <li><a href="#pipes-redirection-exit-codes">Pipes, redirection and exit codes</a></li>
+            <li><a href="#error-handling">Error handling and production-ready scripting</a></li>
+            <li><a href="#shell-scripting-comparison">Shell scripting and automation comparison</a></li>
+            <li><a href="#choosing-bash-perl-python">When should you choose Bash, Perl or Python?</a></li>
+            <li><a href="#best-practices">Practical Bash scripting best practices</a></li>
+            <li><a href="#everyday-automation">A quick reference for everyday automation</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="bash-scripting-essentials">Bash scripting essentials</h2>
+        <p>A Bash script is a text file containing commands that the Bash interpreter executes sequentially.</p>
+
+        <h3>Create and execute your first script.</h3>
+        <pre><code>#!/usr/bin/env bash
+
+# Display a welcome message.
+echo "Welcome to Bash scripting!"
+
+# Display the current user and hostname.
+echo "User: $(whoami)"
+echo "Host: $(hostname)"
+echo "Date: $(date)"
+
+exit 0</code></pre>
+
+        <p>Save the file as <code>hello.sh</code> and execute it:</p>
+        <pre><code>chmod +x hello.sh
+./hello.sh</code></pre>
+
+        <p>Alternatively, execute it explicitly through Bash:</p>
+        <pre><code>bash hello.sh</code></pre>
+
+        <p>The first line, called the <strong>shebang</strong>, specifies the interpreter. The <code>chmod +x</code> command grants executable permission, while <code>exit 0</code> indicates successful completion.</p>
+
+        <h2 id="bash-ready-reckoner">Bash shell scripting ready reckoner</h2>
+
+        <h3>Variables and user input</h3>
+        <pre><code>name="Brits"
+count=10
+
+echo "Hello, $name"
+echo "Count: $count"
+
+read -r -p "Enter your name: " username
+printf 'Welcome, %s\n' "$username"</code></pre>
+
+        <p>Remember that Bash variable assignments must not contain spaces around <code>=</code>.</p>
+        <pre><code># Correct.
+environment="production"
+
+# Incorrect.
+# environment = "production"</code></pre>
+
+        <p>Use double quotes around variables to prevent unintended word splitting and wildcard expansion.</p>
+
+        <h3>Command substitution and arithmetic</h3>
+        <pre><code>current_date=$(date +%F)
+hostname=$(hostname)
+
+echo "Date: $current_date"
+echo "Hostname: $hostname"
+
+count=5
+count=$((count + 1))
+echo "$count"</code></pre>
+
+        <p>Use <code>$(command)</code> instead of the older backtick syntax for command substitution.</p>
+
+        <h3>Conditional statements</h3>
+        <pre><code>if [[ -f "/etc/passwd" ]]; then
+    echo "File exists."
+else
+    echo "File does not exist."
+fi</code></pre>
+
+        <p>Common file tests include:</p>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Operator</th><th>Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>-e file</code></td><td>File or path exists.</td></tr>
+            <tr><td><code>-f file</code></td><td>Regular file exists.</td></tr>
+            <tr><td><code>-d path</code></td><td>Directory exists.</td></tr>
+            <tr><td><code>-r file</code></td><td>File is readable.</td></tr>
+            <tr><td><code>-w file</code></td><td>File is writable.</td></tr>
+            <tr><td><code>-x file</code></td><td>File is executable.</td></tr>
+            <tr><td><code>-z "$var"</code></td><td>String is empty.</td></tr>
+            <tr><td><code>"$a" == "$b"</code></td><td>Strings are equal inside <code>[[ ]]</code>.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Loops</h3>
+        <p>For loop:</p>
+        <pre><code>for server in web01 web02 web03; do
+    echo "Checking $server"
+done</code></pre>
+
+        <p>While loop:</p>
+        <pre><code>count=1
+
+while (( count <= 5 )); do
+    echo "Iteration: $count"
+    ((count += 1))
+done</code></pre>
+
+        <p>Loop control:</p>
+        <pre><code>break      # Exit the loop.
+continue   # Skip to the next iteration.</code></pre>
+
+        <h3>Functions</h3>
+        <p>Functions help organise reusable operations.</p>
+        <pre><code>log_message() {
+    local level="$1"
+    local message="$2"
+
+    printf '[%s] %s: %s\n' \
+        "$(date '+%F %T')" "$level" "$message"
+}
+
+log_message "INFO" "Deployment started"
+log_message "ERROR" "Configuration validation failed"</code></pre>
+
+        <p>Use <code>local</code> for function-scoped variables and pass arguments explicitly.</p>
+
+        <h3>Arrays</h3>
+        <pre><code>servers=("web01" "web02" "db01")
+
+echo "First server: ${servers[0]}"
+
+for server in "${servers[@]}"; do
+    printf 'Server: %s\n' "$server"
+done</code></pre>
+
+        <p>Bash arrays use zero-based indexing. Quoting <code>"${servers[@]}"</code> preserves individual elements containing spaces.</p>
+
+        <h2 id="essential-linux-commands">Essential Linux commands for Bash scripts</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th><th>Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>grep</code></td><td>Search text patterns.</td><td><code>grep -i "error" app.log</code></td></tr>
+            <tr><td><code>find</code></td><td>Locate files and directories.</td><td><code>find /var/log -type f</code></td></tr>
+            <tr><td><code>awk</code></td><td>Process structured text.</td><td><code>awk '{print $1}' file.txt</code></td></tr>
+            <tr><td><code>sed</code></td><td>Transform text.</td><td><code>sed 's/old/new/g' file.txt</code></td></tr>
+            <tr><td><code>sort</code></td><td>Sort lines.</td><td><code>sort names.txt</code></td></tr>
+            <tr><td><code>uniq</code></td><td>Remove adjacent duplicate lines.</td><td><code>sort names.txt | uniq</code></td></tr>
+            <tr><td><code>cut</code></td><td>Extract delimited fields.</td><td><code>cut -d: -f1 /etc/passwd</code></td></tr>
+            <tr><td><code>wc</code></td><td>Count lines, words or bytes.</td><td><code>wc -l app.log</code></td></tr>
+            <tr><td><code>xargs</code></td><td>Pass input as command arguments.</td><td><code>printf '%s\n' *.log | xargs -r ls -l</code></td></tr>
+            <tr><td><code>tee</code></td><td>Write output to a file and standard output.</td><td><code>command | tee output.log</code></td></tr>
+            <tr><td><code>curl</code></td><td>Make HTTP requests.</td><td><code>curl -fsS https://example.com</code></td></tr>
+            <tr><td><code>jq</code></td><td>Process JSON data.</td><td><code>jq '.status' response.json</code></td></tr>
+          </tbody>
+        </table>
+
+        <p>These tools are especially valuable when building log-processing scripts, monitoring checks, deployment automation and incident-response utilities.</p>
+
+        <h2 id="pipes-redirection-exit-codes">Pipes, redirection and exit codes</h2>
+        <p>Pipes and redirection allow you to combine commands into automated workflows.</p>
+        <pre><code># Redirect standard output.
+command &gt; output.log
+
+# Append standard output.
+command &gt;&gt; output.log
+
+# Redirect standard error.
+command 2&gt; error.log
+
+# Redirect both standard output and standard error.
+command &gt; output.log 2&gt;&amp;1
+
+# Send output to another command.
+ps aux | grep '[n]ginx'</code></pre>
+
+        <p>Bash uses exit status 0 to indicate success and a non-zero status to indicate failure.</p>
+        <pre><code>if curl -fsS https://example.com -o /dev/null; then
+    echo "Endpoint is reachable."
+else
+    echo "Endpoint check failed."
+fi</code></pre>
+
+        <div class="cheat-callout"><strong>Important:</strong> Check the exit status of commands that matter. A script that continues after a failed deployment, backup or configuration change can create serious operational problems.</div>
+
+        <h2 id="error-handling">Error handling and production-ready scripting</h2>
+        <p>For automation that runs on production servers, error handling is essential.</p>
+        <pre><code>#!/usr/bin/env bash
+
+# Stop on errors, undefined variables and failed pipeline commands.
+set -Eeuo pipefail
+
+# Display a useful error message and line number.
+trap 'printf "ERROR: Script failed at line %s.\n" "$LINENO" >&2' ERR
+
+main() {
+    local service="nginx"
+
+    printf 'Checking service: %s\n' "$service"
+
+    if systemctl is-active --quiet "$service"; then
+        echo "Service is running."
+    else
+        echo "Service is not running." >&2
+        return 1
+    fi
+}
+
+main "$@"</code></pre>
+
+        <p>Important options:</p>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Option</th><th>Effect</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>set -e</code></td><td>Exit on many unhandled command failures, subject to Bash's documented exceptions.</td></tr>
+            <tr><td><code>set -u</code></td><td>Treat unset variables as errors.</td></tr>
+            <tr><td><code>set -o pipefail</code></td><td>Return a failure status when a command within a pipeline fails.</td></tr>
+            <tr><td><code>set -E</code></td><td>Allow an ERR trap to be inherited by functions and certain other execution contexts.</td></tr>
+          </tbody>
+        </table>
+
+        <p>These options improve reliability but do not replace explicit error checking. Commands inside conditions, pipelines, functions and subshells require particular attention.</p>
+
+        <h3>Script debugging</h3>
+        <pre><code># Check Bash syntax without executing the script.
+bash -n script.sh
+
+# Execute with command tracing.
+bash -x script.sh
+
+# Display Bash version.
+bash --version
+
+# Check the last command's exit status.
+echo "$?"</code></pre>
+
+        <p>Use <code>shellcheck script.sh</code> to identify common scripting mistakes and portability issues. ShellCheck is a widely used static analysis tool for shell scripts.</p>
+
+        <h2 id="shell-scripting-comparison">Shell scripting and automation comparison: Linux, Unix and Windows</h2>
+        <p>Bash is not the only option for system automation. Perl and Python are powerful scripting languages, while PowerShell is particularly useful for Windows administration. Choosing the right tool depends on portability, data-processing requirements, system integration and maintainability.</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Shell or scripting language</th><th>Linux</th><th>Unix and Unix-like systems</th><th>Windows</th><th>Best use case</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Bash</td><td>Widely available.</td><td>Available on many systems; not guaranteed by default.</td><td>WSL, Git Bash and compatible environments.</td><td>Linux administration, DevOps and CI/CD.</td></tr>
+            <tr><td>POSIX sh</td><td>Widely available.</td><td>Common on POSIX-compliant systems.</td><td>Through compatible Unix environments.</td><td>Portable Unix shell scripts.</td></tr>
+            <tr><td>KornShell (ksh)</td><td>Available on many distributions.</td><td>Common in traditional enterprise Unix environments.</td><td>Requires a compatible environment.</td><td>Enterprise Unix and legacy automation.</td></tr>
+            <tr><td>Zsh</td><td>Available on many distributions.</td><td>Available on macOS and other Unix-like systems.</td><td>Requires an additional environment.</td><td>Interactive shell productivity and scripting.</td></tr>
+            <tr><td>Fish</td><td>Available as an additional shell.</td><td>Available on many Unix-like systems.</td><td>Requires an additional environment.</td><td>User-friendly interactive command-line work.</td></tr>
+            <tr><td>PowerShell</td><td>PowerShell 7+ is cross-platform.</td><td>Available on macOS and many Unix-like systems.</td><td>Windows PowerShell 5.1 and PowerShell 7+.</td><td>Windows administration, Azure and cross-platform automation.</td></tr>
+            <tr><td>Perl</td><td>Available through packages or installation.</td><td>Available on many Unix systems.</td><td>Available through distributions such as Strawberry Perl and ActivePerl.</td><td>Text processing, log analysis, regular expressions and legacy automation.</td></tr>
+            <tr><td>Python</td><td>Widely available, although versions vary.</td><td>Available on many Unix-like systems.</td><td>Available through official installers and other distributions.</td><td>General-purpose automation, APIs, cloud SDKs, data processing and application development.</td></tr>
+            <tr><td>Windows Command Prompt (cmd.exe)</td><td>Not native.</td><td>Not native.</td><td>Built into Windows.</td><td>Basic Windows administration and legacy commands.</td></tr>
+            <tr><td>Windows batch (.bat, .cmd)</td><td>Requires a compatible Windows environment or emulator.</td><td>Not native.</td><td>Native Windows command scripting.</td><td>Simple Windows automation and legacy workflows.</td></tr>
+          </tbody>
+        </table>
+
+        <p>Availability depends on the operating system version, installed packages and execution environment.</p>
+
+        <h3>Bash vs PowerShell vs Perl vs Python vs POSIX sh</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Feature</th><th>Bash</th><th>PowerShell</th><th>Perl</th><th>Python</th><th>POSIX sh</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Primary strength</td><td>Shell and command automation.</td><td>System administration and structured objects.</td><td>Text processing and regular expressions.</td><td>General-purpose automation and application development.</td><td>Portable Unix shell scripting.</td></tr>
+            <tr><td>Pipeline model</td><td>Primarily text streams.</td><td>Structured objects.</td><td>Language-level data processing.</td><td>Language-level data processing.</td><td>Primarily text streams.</td></tr>
+            <tr><td>Variables</td><td><code>$name</code></td><td><code>$name</code></td><td><code>$name</code></td><td><code>name</code></td><td><code>$name</code></td></tr>
+            <tr><td>Functions</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>Regular expressions</td><td>Through tools and Bash features.</td><td>Supported through .NET.</td><td>Strong built-in support.</td><td>Built-in re module.</td><td>Usually through utilities such as grep and sed.</td></tr>
+            <tr><td>JSON processing</td><td>Commonly uses jq.</td><td>Built-in cmdlets such as ConvertFrom-Json.</td><td>Available through modules.</td><td>Built-in json module.</td><td>Usually requires external tools.</td></tr>
+            <tr><td>Cloud automation</td><td>CLI tools and SDK integrations.</td><td>Azure and other cloud modules.</td><td>Available through modules and APIs.</td><td>Extensive cloud SDK ecosystem.</td><td>Primarily CLI tools.</td></tr>
+            <tr><td>Portability</td><td>Requires Bash for Bash-specific features.</td><td>PowerShell 7+ supports multiple operating systems.</td><td>Requires a compatible Perl installation.</td><td>Requires a compatible Python installation and dependencies.</td><td>Strong across POSIX-compliant systems.</td></tr>
+            <tr><td>Typical file extension</td><td>.sh</td><td>.ps1</td><td>.pl</td><td>.py</td><td>.sh</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="choosing-bash-perl-python">When should you choose Bash, Perl or Python?</h2>
+        <p>Choose Bash when:</p>
+        <ul>
+          <li>You need to combine Linux commands such as grep, find, awk, sed and systemctl.</li>
+          <li>You are writing deployment scripts, backups, scheduled jobs or container entrypoint scripts.</li>
+          <li>You want lightweight automation with minimal dependencies on Linux systems.</li>
+        </ul>
+
+        <p>Choose Perl when:</p>
+        <ul>
+          <li>You maintain existing Perl-based infrastructure and administration tools.</li>
+          <li>You need sophisticated regular expressions and text transformation.</li>
+          <li>You are processing logs, configuration files or large volumes of structured text in established Perl environments.</li>
+        </ul>
+
+        <p>Choose Python when:</p>
+        <ul>
+          <li>You need to interact with REST APIs, JSON, databases or cloud SDKs.</li>
+          <li>You are building reusable automation with testing, logging, exception handling and complex business logic.</li>
+          <li>You need cross-platform scripts that run on Linux, Unix-like systems and Windows.</li>
+          <li>Your automation is likely to evolve into a larger application.</li>
+        </ul>
+
+        <p>Choose PowerShell when:</p>
+        <ul>
+          <li>You manage Windows services, Active Directory, Microsoft 365 or Azure.</li>
+          <li>You need to manipulate structured objects instead of parsing command output as text.</li>
+          <li>You want a consistent automation language across Windows and supported Unix-like platforms.</li>
+        </ul>
+
+        <p>Choose POSIX sh when:</p>
+        <ul>
+          <li>Portability across different Unix-like operating systems is more important than Bash-specific conveniences.</li>
+          <li>You are creating minimal shell scripts for environments with limited installed software.</li>
+        </ul>
+
+        <h3>Practical example: Count errors in an application log</h3>
+        <p>Bash:</p>
+        <pre><code>grep -ic 'error' application.log</code></pre>
+
+        <p>Perl:</p>
+        <pre><code>#!/usr/bin/env perl
+use strict;
+use warnings;
+
+my $file = 'application.log';
+my $count = 0;
+
+open my $fh, '&lt;', $file
+    or die "Cannot open $file: $!\n";
+
+while (my $line = &lt;$fh&gt;) {
+    $count++ if $line =~ /error/i;
+}
+
+close $fh or die "Cannot close $file: $!\n";
+
+print "Error count: $count\n";</code></pre>
+
+        <p>Python:</p>
+        <pre><code>#!/usr/bin/env python3
+
+from pathlib import Path
+
+log_file = Path("application.log")
+
+try:
+    with log_file.open(encoding="utf-8", errors="replace") as handle:
+        error_count = sum(
+            1 for line in handle if "error" in line.lower()
+        )
+
+    print(f"Error count: {error_count}")
+
+except OSError as exc:
+    raise SystemExit(f"Unable to read {log_file}: {exc}")</code></pre>
+
+        <p>The Bash version is concise and uses an existing command-line utility. Perl offers powerful text-processing capabilities, while Python makes it straightforward to extend the script with additional logic, structured output, APIs and automated tests.</p>
+
+        <h2 id="best-practices">Practical Bash scripting best practices</h2>
+        <p>Use this checklist before deploying a script to a production environment.</p>
+        <ul>
+          <li>Start with an appropriate shebang, such as <code>#!/usr/bin/env bash</code>.</li>
+          <li>Quote variable expansions unless word splitting or glob expansion is intentional.</li>
+          <li>Use <code>"$@"</code> when forwarding script arguments.</li>
+          <li>Validate input and check required commands before execution.</li>
+          <li>Check exit statuses for critical operations.</li>
+          <li>Use meaningful variable and function names.</li>
+          <li>Add logging with timestamps and severity levels.</li>
+          <li>Use temporary files safely and clean them up when appropriate.</li>
+          <li>Avoid hard-coded credentials and secrets.</li>
+          <li>Use <code>mktemp</code> instead of predictable temporary filenames.</li>
+          <li>Use ShellCheck and <code>bash -n</code> before deployment.</li>
+          <li>Test scripts with missing files, invalid input, permission failures and network outages.</li>
+          <li>Review the script's portability requirements before using Bash-specific syntax.</li>
+        </ul>
+
+        <h2 id="everyday-automation">8. A quick reference for everyday automation</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Task</th><th>Command</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Current directory</td><td><code>pwd</code></td></tr>
+            <tr><td>List files</td><td><code>ls -lah</code></td></tr>
+            <tr><td>Search running processes</td><td><code>ps aux</code></td></tr>
+            <tr><td>Check disk usage</td><td><code>df -h</code></td></tr>
+            <tr><td>Check directory size</td><td><code>du -sh /var/log</code></td></tr>
+            <tr><td>Check memory</td><td><code>free -h</code></td></tr>
+            <tr><td>Find listening ports</td><td><code>ss -lntup</code></td></tr>
+            <tr><td>Search logs</td><td><code>grep -i "error" app.log</code></td></tr>
+            <tr><td>Find files modified in the last day</td><td><code>find /path -type f -mtime -1</code></td></tr>
+            <tr><td>Check HTTP endpoint</td><td><code>curl -fsS https://example.com</code></td></tr>
+            <tr><td>Schedule recurring tasks</td><td><code>crontab -e</code></td></tr>
+            <tr><td>Inspect a systemd service</td><td><code>systemctl status nginx</code></td></tr>
+            <tr><td>Validate Bash syntax</td><td><code>bash -n script.sh</code></td></tr>
+            <tr><td>Trace script execution</td><td><code>bash -x script.sh</code></td></tr>
+          </tbody>
+        </table>
+        <p><em>Note: Some commands and options vary between Linux distributions and Unix implementations. For example, <code>free</code> and <code>systemctl</code> are not universally available across Unix systems.</em></p>
+
+        <h2 id="conclusion">Conclusion</h2>
+        <p>Bash shell scripting is a foundational skill for Linux system administration, cloud engineering and DevOps. Mastering variables, conditions, loops, functions, pipes, redirection and error handling enables you to automate repetitive tasks and build reliable operational workflows.</p>
+
+        <p>Start with small scripts, validate them using ShellCheck, test failure scenarios and gradually introduce logging, input validation and reusable functions. For cross-platform environments, understand the differences between Bash, POSIX sh and PowerShell before choosing an implementation.</p>
+
+        <div class="cheat-callout"><strong>Key takeaway:</strong> A good shell script does more than execute commands. It validates inputs, handles failures, records useful information and produces predictable results.</div>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Bash</span>
+            <span class="blog-tag">Linux</span>
+            <span class="blog-tag">Unix</span>
+            <span class="blog-tag">Shell Scripting</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Automation</span>
+            <span class="blog-tag">Cheat Sheet</span>
+            <span class="blog-tag">PowerShell</span>
+            <span class="blog-tag">Python</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">&larr; Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
