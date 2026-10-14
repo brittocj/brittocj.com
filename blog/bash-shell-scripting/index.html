@@ -36,7 +36,7 @@
     <div class="container">
       <article class="blog-content">
         <div class="blog-header">
-          <h1 class="blog-title">Bash Shell Scripting: The 5-Minute Ready Reckoner for Linux, Unix and Windows</h1>
+          <h1 class="blog-title">Bash Shell Scripting: A Ready Reckoner for Linux, Unix and Windows</h1>
           <div class="blog-meta">
             <div class="blog-meta-item">📅 Nov 12, 2013</div>
             <div class="blog-meta-item">⏱️ 15 min read</div>
@@ -59,11 +59,10 @@
             <li><a href="#choosing-bash-perl-python">When should you choose Bash, Perl or Python?</a></li>
             <li><a href="#best-practices">Practical Bash scripting best practices</a></li>
             <li><a href="#everyday-automation">A quick reference for everyday automation</a></li>
-            <li><a href="#conclusion">Conclusion</a></li>
           </ol>
         </nav>
 
-        <h2 id="bash-scripting-essentials">Bash scripting essentials</h2>
+        <h2 id="bash-scripting-essentials">1. Bash scripting essentials</h2>
         <p>A Bash script is a text file containing commands that the Bash interpreter executes sequentially.</p>
 
         <h3>Create and execute your first script.</h3>
@@ -88,7 +87,7 @@ exit 0</code></pre>
 
         <p>The first line, called the <strong>shebang</strong>, specifies the interpreter. The <code>chmod +x</code> command grants executable permission, while <code>exit 0</code> indicates successful completion.</p>
 
-        <h2 id="bash-ready-reckoner">Bash shell scripting ready reckoner</h2>
+        <h2 id="bash-ready-reckoner">2. Bash shell scripting ready reckoner</h2>
 
         <h3>Variables and user input</h3>
         <pre><code>name="Brits"
@@ -190,7 +189,7 @@ done</code></pre>
 
         <p>Bash arrays use zero-based indexing. Quoting <code>"${servers[@]}"</code> preserves individual elements containing spaces.</p>
 
-        <h2 id="essential-linux-commands">Essential Linux commands for Bash scripts</h2>
+        <h2 id="essential-linux-commands">3. Essential Linux commands for Bash scripts</h2>
         <table class="cheat-table">
           <thead>
             <tr><th>Command</th><th>Purpose</th><th>Example</th></tr>
@@ -213,7 +212,7 @@ done</code></pre>
 
         <p>These tools are especially valuable when building log-processing scripts, monitoring checks, deployment automation and incident-response utilities.</p>
 
-        <h2 id="pipes-redirection-exit-codes">Pipes, redirection and exit codes</h2>
+        <h2 id="pipes-redirection-exit-codes">4. Pipes, redirection and exit codes</h2>
         <p>Pipes and redirection allow you to combine commands into automated workflows.</p>
         <pre><code># Redirect standard output.
 command &gt; output.log
@@ -239,7 +238,7 @@ fi</code></pre>
 
         <div class="cheat-callout"><strong>Important:</strong> Check the exit status of commands that matter. A script that continues after a failed deployment, backup or configuration change can create serious operational problems.</div>
 
-        <h2 id="error-handling">Error handling and production-ready scripting</h2>
+        <h2 id="error-handling">5. Error handling and production-ready scripting</h2>
         <p>For automation that runs on production servers, error handling is essential.</p>
         <pre><code>#!/usr/bin/env bash
 
@@ -294,7 +293,7 @@ echo "$?"</code></pre>
 
         <p>Use <code>shellcheck script.sh</code> to identify common scripting mistakes and portability issues. ShellCheck is a widely used static analysis tool for shell scripts.</p>
 
-        <h2 id="shell-scripting-comparison">Shell scripting and automation comparison: Linux, Unix and Windows</h2>
+        <h2 id="shell-scripting-comparison">6. Shell scripting and automation comparison: Linux, Unix and Windows</h2>
         <p>Bash is not the only option for system automation. Perl and Python are powerful scripting languages, while PowerShell is particularly useful for Windows administration. Choosing the right tool depends on portability, data-processing requirements, system integration and maintainability.</p>
 
         <table class="cheat-table">
@@ -335,7 +334,7 @@ echo "$?"</code></pre>
           </tbody>
         </table>
 
-        <h2 id="choosing-bash-perl-python">When should you choose Bash, Perl or Python?</h2>
+        <h2 id="choosing-bash-perl-python">7. When should you choose Bash, Perl or Python?</h2>
         <p>Choose Bash when:</p>
         <ul>
           <li>You need to combine Linux commands such as grep, find, awk, sed and systemctl.</li>
@@ -414,7 +413,7 @@ except OSError as exc:
 
         <p>The Bash version is concise and uses an existing command-line utility. Perl offers powerful text-processing capabilities, while Python makes it straightforward to extend the script with additional logic, structured output, APIs and automated tests.</p>
 
-        <h2 id="best-practices">Practical Bash scripting best practices</h2>
+        <h2 id="best-practices">8. Practical Bash scripting best practices</h2>
         <p>Use this checklist before deploying a script to a production environment.</p>
         <ul>
           <li>Start with an appropriate shebang, such as <code>#!/usr/bin/env bash</code>.</li>
@@ -432,7 +431,7 @@ except OSError as exc:
           <li>Review the script's portability requirements before using Bash-specific syntax.</li>
         </ul>
 
-        <h2 id="everyday-automation">8. A quick reference for everyday automation</h2>
+        <h2 id="everyday-automation">9. A quick reference for everyday automation</h2>
         <table class="cheat-table">
           <thead>
             <tr><th>Task</th><th>Command</th></tr>
