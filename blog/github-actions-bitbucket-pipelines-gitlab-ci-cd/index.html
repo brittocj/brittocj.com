@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GitHub Actions vs Bitbucket Pipelines vs GitLab CI/CD: a production-ready CI/CD guide covering pipelines, security, deployment strategies, runners and platform selection.">
+  <meta name="author" content="Antony Britto C J">
+  <title>GitHub Actions vs Bitbucket Pipelines vs GitLab CI/CD | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">GitHub Actions vs Bitbucket Pipelines vs GitLab CI/CD</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 Oct 16, 2026</div>
+            <div class="blog-meta-item">⏱️ 19 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Modern software teams need a reliable way to test, build, secure and release applications without relying on error-prone manual processes. Continuous Integration and Continuous Delivery or Deployment (CI/CD) provide the foundation for this automation.</p>
+
+        <p>Three popular platforms are GitHub Actions, Bitbucket Pipelines and GitLab CI/CD. All three can automate builds, tests, security checks and deployments, but they differ in workflow design, repository integration, runner infrastructure, security controls and operational experience.</p>
+
+        <p>This article compares the platforms and explains how to design a production-ready CI/CD pipeline for applications running on Windows, Linux, containers and cloud infrastructure.</p>
+
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#what-is-cicd">What is CI/CD?</a></li>
+            <li><a href="#platform-comparison">GitHub Actions vs Bitbucket Pipelines vs GitLab CI/CD</a></li>
+            <li><a href="#production-pipeline">Build a production-ready pipeline</a></li>
+            <li><a href="#branching-triggers">Branching strategy and pipeline triggers</a></li>
+            <li><a href="#github-actions-example">GitHub Actions example</a></li>
+            <li><a href="#gitlab-ci-example">GitLab CI/CD example</a></li>
+            <li><a href="#bitbucket-pipelines-example">Bitbucket Pipelines example</a></li>
+            <li><a href="#runner-architecture">CI/CD runner architecture</a></li>
+            <li><a href="#cicd-security">CI/CD security and software supply-chain protection</a></li>
+            <li><a href="#deployment-strategies">Deployment strategies for production</a></li>
+            <li><a href="#release-controls">Production release controls</a></li>
+            <li><a href="#maturity-model">Continuous delivery maturity model</a></li>
+            <li><a href="#common-mistakes">Common CI/CD mistakes</a></li>
+            <li><a href="#operational-metrics">CI/CD operational metrics</a></li>
+            <li><a href="#final-recommendation">Final recommendation</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="what-is-cicd">1. What is CI/CD?</h2>
+        <p>CI/CD is a set of engineering practices and automation processes that move code changes from development into a releasable or production state.</p>
+        <p>A typical CI/CD workflow follows these stages:</p>
+        <ol>
+          <li>Source control: Commit, branch, pull request or merge request.</li>
+          <li>Continuous Integration: Lint, test, scan, build and validate.</li>
+          <li>Artifact publication: Package, container image, version and provenance.</li>
+          <li>Continuous Delivery or Deployment: Release approval or automated production rollout.</li>
+          <li>Operate and improve: Health checks, monitoring, rollback and feedback.</li>
+        </ol>
+
+        <h3>Continuous Integration (CI)</h3>
+        <p>Developers integrate changes frequently. Automated pipelines compile or package the application, run tests and report failures before changes are merged.</p>
+        <p>The goal is to detect integration problems early and keep the main branch in a working state.</p>
+
+        <h3>Continuous Delivery</h3>
+        <p>Every accepted change passes through an automated build, test and release-preparation process. The software remains ready for release, but production deployment normally requires an explicit decision or approval.</p>
+
+        <h3>Continuous Deployment</h3>
+        <p>Every change that passes the required automated checks is automatically deployed to production, without a routine manual release approval.</p>
+        <p>Continuous deployment requires high test coverage, reliable monitoring, controlled rollouts and effective recovery mechanisms.</p>
+        <p><strong>Important distinction:</strong> Continuous Delivery does not mean every change must be deployed automatically. Continuous Deployment does.</p>
+
+        <h2 id="platform-comparison">2. GitHub Actions vs Bitbucket Pipelines vs GitLab CI/CD</h2>
+
+        <h3>GitHub Actions</h3>
+        <p>GitHub Actions is a CI/CD automation platform integrated with GitHub repositories, pull requests and the wider GitHub ecosystem.</p>
+        <p>Key features:</p>
+        <ul>
+          <li>YAML-based workflow definitions.</li>
+          <li>GitHub-hosted and self-hosted runners.</li>
+          <li>Automated builds, tests and deployments.</li>
+          <li>Reusable workflows and third-party actions.</li>
+          <li>Deployment environments and protection rules.</li>
+          <li>Cloud authentication using OpenID Connect (OIDC), where supported.</li>
+          <li>Integration with GitHub repositories and pull requests.</li>
+        </ul>
+        <p><strong>Configuration file:</strong> <code>.github/workflows/ci.yml</code></p>
+        <p><strong>Best suited for:</strong> Teams using GitHub repositories that want flexible automation and access to a broad ecosystem of reusable actions.</p>
+        <p><strong>Official documentation:</strong> <a href="https://docs.github.com/en/actions">https://docs.github.com/en/actions</a></p>
+
+        <h3>Bitbucket Pipelines</h3>
+        <p>Bitbucket Pipelines is a CI/CD service integrated with Bitbucket repositories and the Atlassian development ecosystem.</p>
+        <p>Key features:</p>
+        <ul>
+          <li>YAML-based pipeline definitions.</li>
+          <li>Atlassian-hosted and self-hosted runners.</li>
+          <li>Automated testing, builds and deployments.</li>
+          <li>Deployment environments and deployment permissions.</li>
+          <li>Integration with Bitbucket pull requests and Jira workflows.</li>
+          <li>Support for container-based build steps.</li>
+          <li>OIDC-based authentication for supported integrations.</li>
+        </ul>
+        <p><strong>Configuration file:</strong> <code>bitbucket-pipelines.yml</code></p>
+        <p><strong>Best suited for:</strong> Organisations already using Bitbucket and Jira that want integrated source control, issue tracking and delivery workflows.</p>
+        <p><strong>Official documentation:</strong> <a href="https://support.atlassian.com/bitbucket-cloud/docs/get-started-with-bitbucket-pipelines/">https://support.atlassian.com/bitbucket-cloud/docs/get-started-with-bitbucket-pipelines/</a></p>
+
+        <h3>GitLab CI/CD</h3>
+        <p>GitLab CI/CD is an integrated continuous integration and deployment platform that forms part of the GitLab development and DevSecOps ecosystem.</p>
+        <p>Key features:</p>
+        <ul>
+          <li>YAML-based pipeline definitions.</li>
+          <li>GitLab-hosted and self-managed runners.</li>
+          <li>Automated builds, tests and deployments.</li>
+          <li>Pipeline stages, jobs, artefacts and caching.</li>
+          <li>Reusable configurations, components and child pipelines.</li>
+          <li>Container registry and environment management.</li>
+          <li>Protected environments and deployment controls.</li>
+          <li>Security capabilities that vary by product tier.</li>
+        </ul>
+        <p><strong>Configuration file:</strong> <code>.gitlab-ci.yml</code></p>
+        <p><strong>Best suited for:</strong> Teams seeking an integrated development and delivery platform, especially where self-managed infrastructure or consolidated DevSecOps workflows are important.</p>
+        <p><strong>Official documentation:</strong> <a href="https://docs.gitlab.com/ci/">https://docs.gitlab.com/ci/</a></p>
+
+        <h3>Platform comparison</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Feature</th><th>GitHub Actions</th><th>Bitbucket Pipelines</th><th>GitLab CI/CD</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Workflow definition</td><td>YAML</td><td>YAML</td><td>YAML</td></tr>
+            <tr><td>Source control integration</td><td>GitHub</td><td>Bitbucket</td><td>GitLab</td></tr>
+            <tr><td>Hosted execution</td><td>GitHub-hosted runners</td><td>Atlassian-hosted runners</td><td>GitLab-hosted runners</td></tr>
+            <tr><td>Self-hosted execution</td><td>Supported</td><td>Supported</td><td>Supported</td></tr>
+            <tr><td>Pull request / merge request checks</td><td>Pull requests</td><td>Pull requests</td><td>Merge requests</td></tr>
+            <tr><td>Container workflows</td><td>Supported</td><td>Supported</td><td>Supported</td></tr>
+            <tr><td>Production deployment controls</td><td>Environments, protection rules and scoped secrets</td><td>Deployment environments, manual steps and permissions</td><td>Protected environments, manual jobs and deployment controls</td></tr>
+            <tr><td>Reusable pipeline components</td><td>Reusable workflows and actions</td><td>YAML anchors, shared configurations and supported reusable mechanisms</td><td>Includes, components and child pipelines</td></tr>
+            <tr><td>Cloud authentication using OIDC</td><td>Supported</td><td>Supported</td><td>Supported</td></tr>
+            <tr><td>Self-managed platform</td><td>GitHub Enterprise Server</td><td>Bitbucket Data Center</td><td>GitLab Self-Managed</td></tr>
+          </tbody>
+        </table>
+        <p>Feature availability, security features, usage limits, billing and runner capabilities vary by subscription and deployment model. Verify the current product documentation before making a procurement decision.</p>
+
+        <h3>Which platform should you choose?</h3>
+        <ul>
+          <li>Choose GitHub Actions if your code is already hosted on GitHub and you want flexible automation with a large ecosystem of reusable actions.</li>
+          <li>Choose Bitbucket Pipelines if your organisation relies on Bitbucket and Jira and wants to keep development workflows closely integrated.</li>
+          <li>Choose GitLab CI/CD if you want an integrated development and delivery platform, particularly where self-management or consolidated DevSecOps workflows are important.</li>
+        </ul>
+        <p>Do not migrate repositories solely because one platform has a more attractive YAML syntax. Consider developer experience, existing integrations, runner costs, security requirements, auditability and migration effort.</p>
+
+        <h2 id="production-pipeline">3. Build a production-ready pipeline</h2>
+        <p>A production pipeline should do more than compile code and copy files to a server. It must verify changes, create traceable release artefacts, control deployment permissions and verify the result.</p>
+        <p>A recommended pipeline follows these stages:</p>
+        <ol>
+          <li>Validate: Run linting, formatting, type checks and configuration validation.</li>
+          <li>Test: Run unit, integration and contract tests.</li>
+          <li>Secure: Perform dependency, secret, source-code and container scans.</li>
+          <li>Build once: Create a versioned package or container image.</li>
+          <li>Publish: Push the immutable artefact to an approved registry.</li>
+          <li>Deploy to staging: Deploy the same artefact and run smoke and acceptance tests.</li>
+          <li>Approve and release: Apply production policy, authorisation and change controls.</li>
+          <li>Verify: Check health, monitor errors and roll back when required.</li>
+        </ol>
+
+        <h3>Use immutable build artefacts</h3>
+        <p>A common mistake is rebuilding the application separately for testing, staging and production. Different dependency versions, timestamps, environment settings or build tools can produce different outputs.</p>
+        <p>A safer approach is:</p>
+        <ol>
+          <li>Build the application once for a specific commit.</li>
+          <li>Assign a unique version, release identifier or commit SHA.</li>
+          <li>Store the artefact in a controlled registry.</li>
+          <li>Test that artefact in staging.</li>
+          <li>Promote the exact same artefact to production.</li>
+          <li>Record the deployed version and associated commit.</li>
+        </ol>
+        <p>Environment-specific configuration and secrets should be supplied at deployment or runtime rather than embedded into the artefact.</p>
+        <p>For container workloads, use immutable image digests for reliable promotion and integrity verification.</p>
+
+        <h2 id="branching-triggers">4. Branching strategy and pipeline triggers</h2>
+        <p>The branching model determines when pipelines run and what changes are eligible for release.</p>
+        <p>A practical branching model for many teams is:</p>
+        <ul>
+          <li><code>main</code>: Protected branch containing reviewed, releasable changes.</li>
+          <li><code>feature/*</code>: Short-lived feature branches.</li>
+          <li><code>fix/*</code>: Short-lived bug-fix branches.</li>
+          <li><code>release/*</code>: Optional branches for release stabilisation.</li>
+          <li><code>hotfix/*</code>: Optional branches for urgent fixes.</li>
+        </ul>
+        <p>For smaller teams, trunk-based development with short-lived branches is often simpler than maintaining long-lived develop, release and hotfix branches. Gitflow remains useful where release management requirements justify its additional complexity.</p>
+
+        <h3>Recommended pipeline triggers</h3>
+        <ul>
+          <li>Pull request or merge request: Run linting, tests, security scans and build validation.</li>
+          <li>Push to a feature branch: Run fast feedback checks.</li>
+          <li>Merge to main: Run full validation and build the release artefact.</li>
+          <li>Successful staging deployment: Run smoke and acceptance tests.</li>
+          <li>Approved release or version tag: Run the production release workflow.</li>
+          <li>Scheduled pipeline: Run dependency checks, maintenance tasks or selected security scans.</li>
+        </ul>
+        <p>Do not give every branch access to production credentials. A pull request from a fork or an untrusted contributor must not be able to obtain privileged deployment access.</p>
+
+        <h2 id="github-actions-example">5. GitHub Actions example</h2>
+        <p>The following workflow demonstrates a Python application's CI pipeline. It installs dependencies, runs Ruff and pytest, and validates the application before merging.</p>
+        <p>Create the file:</p>
+        <pre><code>.github/workflows/ci.yml</code></pre>
+        <p>Example:</p>
+        <pre><code>name: Python CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ruff pytest
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Run tests
+        run: pytest -q</code></pre>
+        <p>This is an illustrative starting point, not a complete production deployment workflow. It assumes <code>requirements.txt</code> exists and contains the application's runtime dependencies.</p>
+        <p>For production use:</p>
+        <ul>
+          <li>Pin third-party actions to verified full commit SHAs where practical.</li>
+          <li>Review updates to pinned actions.</li>
+          <li>Set the minimum necessary permissions for each job.</li>
+          <li>Protect main with required reviews and successful status checks.</li>
+          <li>Add type checking, coverage and security scanning as appropriate.</li>
+          <li>Cache only dependencies that are safe to cache.</li>
+          <li>Avoid granting write permissions to jobs that only need to test code.</li>
+        </ul>
+        <p>GitHub's official documentation covers workflow permissions, action pinning and OIDC-based deployment authentication.</p>
+        <p><strong>Security documentation:</strong> <a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions">https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions</a></p>
+
+        <h3>Adding a production deployment gate</h3>
+        <p>GitHub Actions environments can restrict deployment branches, require approval and scope environment secrets.</p>
+        <p>An illustrative deployment job is:</p>
+        <pre><code>deploy-production:
+  name: Deploy production
+  needs: test
+  runs-on: ubuntu-latest
+  environment: production
+  permissions:
+    contents: read
+  steps:
+    - name: Deploy approved release
+      run: ./scripts/deploy-production.sh</code></pre>
+        <p>This example assumes the deployment script and release artefact have been prepared by an appropriate preceding workflow.</p>
+        <p>Configure environment protection rules and authorised deployment branches separately. Do not put cloud credentials directly into the YAML.</p>
+        <p>Where supported, prefer OIDC federation to obtain short-lived cloud credentials rather than storing long-lived cloud access keys as repository secrets.</p>
+
+        <h2 id="gitlab-ci-example">6. GitLab CI/CD example</h2>
+        <p>GitLab pipelines are defined in <code>.gitlab-ci.yml</code>. Jobs are grouped into stages and can pass artefacts to later jobs.</p>
+        <p>Example:</p>
+        <pre><code>stages:
+  - validate
+  - test
+  - build
+
+default:
+  image: python:3.12-slim
+
+variables:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+lint:
+  stage: validate
+  script:
+    - python -m pip install ruff
+    - ruff check .
+
+unit-tests:
+  stage: test
+  script:
+    - python -m pip install -r requirements.txt
+    - python -m pip install pytest
+    - pytest -q
+
+build:
+  stage: build
+  script:
+    - python -m pip install -r requirements.txt
+    - python -m compileall -q .
+  artifacts:
+    paths:
+      - .
+    expire_in: 1 day</code></pre>
+        <p>This example is intentionally simple. In a real pipeline, do not archive the entire repository as a build artefact. Publish only the required package or release output, and exclude credentials, local configuration, caches and unnecessary files.</p>
+        <p>For production, define an explicit deployment job, protect the production environment, scope deployment credentials and prevent concurrent releases from interfering with one another.</p>
+        <p><strong>Official reference:</strong> <a href="https://docs.gitlab.com/ci/">https://docs.gitlab.com/ci/</a></p>
+
+        <h2 id="bitbucket-pipelines-example">7. Bitbucket Pipelines example</h2>
+        <p>Bitbucket Pipelines uses <code>bitbucket-pipelines.yml</code> in the repository root.</p>
+        <p>Example:</p>
+        <pre><code>image: python:3.12-slim
+
+pipelines:
+  pull-requests:
+    "**":
+      - step:
+          name: Lint and test
+          caches:
+            - pip
+          script:
+            - python -m pip install --upgrade pip
+            - pip install -r requirements.txt
+            - pip install ruff pytest
+            - ruff check .
+            - pytest -q
+
+  branches:
+    main:
+      - step:
+          name: Validate main
+          caches:
+            - pip
+          script:
+            - python -m pip install --upgrade pip
+            - pip install -r requirements.txt
+            - pip install ruff pytest
+            - ruff check .
+            - pytest -q</code></pre>
+        <p>This provides basic pull-request and main-branch validation. It does not deploy the application.</p>
+        <p>For production deployment, add a deployment step using the appropriate deployment environment, secure environment-specific variables and the required deployment permissions. Configure production controls in Bitbucket settings, not only in the YAML file.</p>
+        <p><strong>Official documentation:</strong> <a href="https://support.atlassian.com/bitbucket-cloud/docs/get-started-with-bitbucket-pipelines/">https://support.atlassian.com/bitbucket-cloud/docs/get-started-with-bitbucket-pipelines/</a></p>
+
+        <h2 id="runner-architecture">8. CI/CD runner architecture</h2>
+        <p>Runners or agents execute pipeline jobs. They may be hosted by the platform provider or managed by your organisation.</p>
+        <p>A typical architecture is:</p>
+        <pre><code>Source repository
+    |
+    v
+CI/CD orchestration
+    |
+    +-------------------------+
+    |                         |
+    v                         v
+Hosted runners           Self-hosted runners
+    |                         |
+    +------------+------------+
+                 |
+                 v
+       Build, test, scan and deploy
+                 |
+                 v
+       Windows, Linux, containers,
+       cloud and private infrastructure</code></pre>
+
+        <h3>Hosted runners</h3>
+        <p>Advantages:</p>
+        <ul>
+          <li>Less infrastructure to maintain.</li>
+          <li>Convenient scaling.</li>
+          <li>Managed execution images.</li>
+          <li>Faster onboarding.</li>
+        </ul>
+        <p>Considerations:</p>
+        <ul>
+          <li>Usage quotas and billing.</li>
+          <li>Available operating systems and software.</li>
+          <li>Network access to private resources.</li>
+          <li>Data handling and compliance requirements.</li>
+          <li>Custom hardware or specialised build requirements.</li>
+        </ul>
+
+        <h3>Self-hosted runners</h3>
+        <p>Advantages:</p>
+        <ul>
+          <li>Access to private networks and internal systems.</li>
+          <li>Custom build tools and operating systems.</li>
+          <li>Control over execution infrastructure.</li>
+          <li>Potentially useful for specialised or high-volume workloads.</li>
+        </ul>
+        <p>Risks:</p>
+        <ul>
+          <li>Untrusted pipeline code can compromise the runner.</li>
+          <li>Persistent workspaces may leak credentials or data.</li>
+          <li>Shared runners can create cross-project contamination.</li>
+          <li>Network access may expose production systems.</li>
+          <li>The organisation becomes responsible for patching and isolation.</li>
+        </ul>
+        <div class="cheat-callout"><strong>Production recommendation:</strong> Use ephemeral or isolated runners for sensitive workloads where feasible. Separate untrusted pull-request builds from privileged deployment jobs. Do not run arbitrary repository code on a runner that has unrestricted access to production.</div>
+
+        <h2 id="cicd-security">9. CI/CD security and software supply-chain protection</h2>
+        <p>CI/CD pipelines have privileged access to source code, build artefacts, registries and deployment environments. A compromised pipeline can become a route into production.</p>
+
+        <h3>Identity and credentials</h3>
+        <ul>
+          <li>Use least-privilege service identities.</li>
+          <li>Prefer short-lived credentials and OIDC federation where supported.</li>
+          <li>Store secrets in an approved secrets manager.</li>
+          <li>Scope credentials by environment and job.</li>
+          <li>Rotate exposed or compromised credentials immediately.</li>
+          <li>Never print secrets into build logs.</li>
+        </ul>
+
+        <h3>Pipeline configuration</h3>
+        <ul>
+          <li>Review changes to workflow files and deployment scripts.</li>
+          <li>Protect the default branch.</li>
+          <li>Restrict who can modify production deployment settings.</li>
+          <li>Pin third-party actions and external dependencies to trusted versions.</li>
+          <li>Use trusted base images and immutable image digests where feasible.</li>
+          <li>Avoid running untrusted code with production permissions.</li>
+        </ul>
+
+        <h3>Software security</h3>
+        <ul>
+          <li>Scan dependencies for known vulnerabilities.</li>
+          <li>Detect accidentally committed secrets.</li>
+          <li>Use Static Application Security Testing (SAST) where appropriate.</li>
+          <li>Scan container images and infrastructure-as-code changes.</li>
+          <li>Generate a Software Bill of Materials (SBOM) when required.</li>
+          <li>Sign artefacts and verify provenance where the toolchain supports it.</li>
+        </ul>
+
+        <h3>Auditability</h3>
+        <ul>
+          <li>Record the commit associated with each release.</li>
+          <li>Record which workflow and identity performed the deployment.</li>
+          <li>Preserve relevant build and deployment logs.</li>
+          <li>Track approvals, exceptions and rollback events.</li>
+        </ul>
+        <p>Masking a secret in the user interface or logs is not sufficient protection if a malicious pipeline can read and transmit its value.</p>
+        <p><strong>GitLab pipeline security guidance:</strong> <a href="https://docs.gitlab.com/ci/pipeline_security/">https://docs.gitlab.com/ci/pipeline_security/</a></p>
+
+        <h2 id="deployment-strategies">10. Deployment strategies for production</h2>
+        <p>A successful pipeline should minimise the risk and impact of a faulty release.</p>
+
+        <h3>Rolling deployment</h3>
+        <p>Replaces application instances gradually.</p>
+        <p>Best suited for replicated applications with compatible versions.</p>
+
+        <h3>Blue-green deployment</h3>
+        <p>Maintains two environments and switches traffic between them.</p>
+        <p>Best suited for applications requiring controlled traffic cutover and a prepared fallback environment.</p>
+
+        <h3>Canary deployment</h3>
+        <p>Sends a small percentage of traffic to the new version before increasing exposure.</p>
+        <p>Best suited for services with sufficient traffic and reliable telemetry.</p>
+
+        <h3>Feature flags</h3>
+        <p>Enable or disable functionality independently of application deployment.</p>
+        <p>Best suited for gradual feature releases and rapid feature rollback.</p>
+
+        <h3>Recreate deployment</h3>
+        <p>Stops the old version before starting the new one.</p>
+        <p>Best suited for applications that tolerate downtime or cannot support parallel versions.</p>
+        <p>No strategy guarantees zero downtime. Database migrations, background jobs, session handling, stateful services and backward compatibility can complicate rollback.</p>
+
+        <h3>Health checks and automatic rollback</h3>
+        <p>After deployment, verify:</p>
+        <ul>
+          <li>Application readiness and liveness.</li>
+          <li>HTTP status codes and API response correctness.</li>
+          <li>Error rates and response latency.</li>
+          <li>Database and queue connectivity.</li>
+          <li>Background job health.</li>
+          <li>Business-critical synthetic transactions.</li>
+        </ul>
+        <p>Define explicit rollback criteria before enabling automatic rollback. A shallow health check can report success even when the application is unusable.</p>
+        <p>Use backward-compatible database migrations where possible. Rolling back application code cannot automatically reverse an irreversible schema or data change.</p>
+
+        <h2 id="release-controls">11. Production release controls</h2>
+        <p>A mature delivery process separates the ability to change code from the ability to deploy it to production.</p>
+        <p>Recommended controls:</p>
+        <ol>
+          <li>Mandatory peer review for protected branches.</li>
+          <li>Required automated checks before merge.</li>
+          <li>Separation of staging and production credentials.</li>
+          <li>Restricted production deployment permissions.</li>
+          <li>Approval workflows where business risk or compliance requires them.</li>
+          <li>Deployment concurrency controls.</li>
+          <li>Release versioning and audit history.</li>
+          <li>Change freezes for agreed periods where necessary.</li>
+          <li>Rollback and recovery procedures.</li>
+          <li>Post-deployment monitoring.</li>
+        </ol>
+        <p>Manual approval should not be added indiscriminately to every deployment. It is valuable when it provides a real risk-control or governance benefit. Otherwise, strong automated checks and controlled continuous deployment can reduce unnecessary delays.</p>
+
+        <h2 id="maturity-model">12. Continuous delivery maturity model</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Level</th><th>Name</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Basic automation</td><td>Automated builds, basic tests and version-controlled scripts.</td></tr>
+            <tr><td>2</td><td>Continuous Integration</td><td>Pull-request validation, required checks, linting and automated tests.</td></tr>
+            <tr><td>3</td><td>Continuous Delivery</td><td>Versioned artefacts, staging deployments, security checks and repeatable release procedures.</td></tr>
+            <tr><td>4</td><td>Controlled production releases</td><td>Protected environments, approvals when needed, progressive rollout and tested rollback.</td></tr>
+            <tr><td>5</td><td>Continuous Deployment</td><td>Automated production deployment of changes that satisfy the release policy, with strong telemetry and recovery controls.</td></tr>
+          </tbody>
+        </table>
+        <p>This is a practical maturity model, not an official certification framework. A team can be production-ready without implementing every advanced technique.</p>
+
+        <h2 id="common-mistakes">13. Common CI/CD mistakes</h2>
+        <p>Avoid these patterns:</p>
+        <ul>
+          <li>Deploying directly from a developer's laptop without an auditable process.</li>
+          <li>Rebuilding different artefacts for staging and production.</li>
+          <li>Storing cloud access keys in repository files.</li>
+          <li>Giving pull-request pipelines production credentials.</li>
+          <li>Using unreviewed third-party pipeline actions or scripts.</li>
+          <li>Sharing persistent runners across untrusted projects.</li>
+          <li>Treating a green build as proof that a deployment is healthy.</li>
+          <li>Running database migrations without compatibility and recovery planning.</li>
+          <li>Deploying without monitoring or rollback criteria.</li>
+          <li>Creating manual approval gates that have no clear owner or risk-control purpose.</li>
+          <li>Allowing workflow configuration to change without code review.</li>
+          <li>Ignoring pipeline execution costs, duration and flaky tests.</li>
+        </ul>
+
+        <h2 id="operational-metrics">14. CI/CD operational metrics</h2>
+        <p>Measure whether the pipeline improves delivery and reliability.</p>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Metric</th><th>What it measures</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Deployment frequency</td><td>How often the team releases changes.</td></tr>
+            <tr><td>Lead time for changes</td><td>How long changes take to reach production.</td></tr>
+            <tr><td>Change failure rate</td><td>How often releases cause failures requiring intervention.</td></tr>
+            <tr><td>Failed deployment recovery time</td><td>How quickly the service recovers after a failed change.</td></tr>
+            <tr><td>Pipeline duration</td><td>How long a change takes to validate and release.</td></tr>
+            <tr><td>Test failure and flakiness rate</td><td>Whether tests provide dependable feedback.</td></tr>
+            <tr><td>Build reproducibility</td><td>Whether the same inputs produce consistent outputs.</td></tr>
+            <tr><td>Rollback frequency</td><td>How often releases need to be reversed.</td></tr>
+            <tr><td>Vulnerability remediation time</td><td>How quickly relevant security findings are addressed.</td></tr>
+          </tbody>
+        </table>
+        <p>Use these metrics to identify bottlenecks and reliability issues, not to encourage teams to deploy changes without sufficient testing.</p>
+
+        <h2 id="final-recommendation">15. Final recommendation</h2>
+        <p>For most teams, the best CI/CD platform is the one that integrates well with the existing source-control system, supports the required execution environments and allows the organisation to enforce secure, auditable releases.</p>
+        <ul>
+          <li>GitHub Actions: A strong choice for GitHub-centric repositories and teams wanting a flexible workflow ecosystem.</li>
+          <li>Bitbucket Pipelines: A strong choice for teams already invested in Bitbucket and Jira.</li>
+          <li>GitLab CI/CD: A strong choice for teams seeking integrated source control, CI/CD and DevSecOps workflows, including self-managed options.</li>
+        </ul>
+        <p>Regardless of platform, a production-ready CI/CD process should build once, test consistently, scan appropriately, publish traceable artefacts, protect deployment credentials, promote releases through controlled environments and verify application health after deployment.</p>
+        <p>The ultimate objective is not simply to deploy faster. It is to deliver changes frequently and predictably while maintaining security, availability, auditability and the ability to recover from failure.</p>
+
+        <h3>Official documentation</h3>
+        <ul>
+          <li><a href="https://docs.github.com/en/actions">GitHub Actions</a></li>
+          <li><a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions">GitHub Actions security hardening</a></li>
+          <li><a href="https://docs.github.com/en/actions/concepts/workflows-and-actions/deployment-environments">GitHub deployment environments</a></li>
+          <li><a href="https://support.atlassian.com/bitbucket-cloud/docs/get-started-with-bitbucket-pipelines/">Bitbucket Pipelines</a></li>
+          <li><a href="https://support.atlassian.com/bitbucket-cloud/docs/set-up-and-monitor-deployments/">Bitbucket deployments</a></li>
+          <li><a href="https://support.atlassian.com/bitbucket-cloud/docs/integrate-pipelines-with-resource-servers-using-oidc/">Bitbucket OIDC</a></li>
+          <li><a href="https://docs.gitlab.com/ci/">GitLab CI/CD</a></li>
+          <li><a href="https://docs.gitlab.com/ci/pipeline_security/">GitLab pipeline security</a></li>
+          <li><a href="https://docs.gitlab.com/ci/environments/deployment_safety/">GitLab deployment safety</a></li>
+        </ul>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">CI/CD</span>
+            <span class="blog-tag">GitHub Actions</span>
+            <span class="blog-tag">Bitbucket Pipelines</span>
+            <span class="blog-tag">GitLab CI/CD</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Automation</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">&larr; Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
