@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Production-ready Nginx hardening and operations: secure TLS, reverse proxy config, rate limits, worker tuning, WebSockets, logging, high availability, and a full deployment checklist.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Nginx Production Best Practices: Security, Performance, High Availability and Operations | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Nginx Production Best Practices: Security, Performance, High Availability and Operations</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 Oct 16, 2026</div>
+            <div class="blog-meta-item">⏱️ 17 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">A production-ready Nginx deployment requires more than a working configuration file. It requires secure TLS settings, controlled upstream access, reliable application integration, sensible resource limits, observability, configuration validation and a tested recovery strategy.</p>
+
+        <p>This independent article covers practical Nginx hardening and operational practices for Linux servers, reverse proxies, APIs, containerised applications and cloud environments.</p>
+
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#keep-nginx-updated">Keep Nginx updated and minimise the attack surface</a></li>
+            <li><a href="#harden-tls">Harden TLS and HTTPS</a></li>
+            <li><a href="#secure-reverse-proxy">Configure a secure reverse proxy</a></li>
+            <li><a href="#rate-connection-limits">Prevent abuse with rate and connection limits</a></li>
+            <li><a href="#tune-workers">Tune worker processes and connections</a></li>
+            <li><a href="#static-compression-caching">Configure static content, compression and caching</a></li>
+            <li><a href="#websockets-long-lived">Handle WebSockets and long-lived connections</a></li>
+            <li><a href="#logging-monitoring">Implement reliable logging and monitoring</a></li>
+            <li><a href="#validate-deploy">Validate configuration and deploy safely</a></li>
+            <li><a href="#high-availability">Design for high availability</a></li>
+            <li><a href="#production-readiness-checklist">Production readiness checklist</a></li>
+            <li><a href="#example-production-configuration">Example production configuration</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="keep-nginx-updated">1. Keep Nginx Updated and Minimise the Attack Surface</h2>
+        <p>Install Nginx from a trusted, maintained package repository. Apply security updates regularly and verify the version, build options and enabled modules.</p>
+        <p>On Ubuntu or Debian:</p>
+        <pre><code>sudo apt update
+sudo apt upgrade
+nginx -v
+nginx -V
+sudo nginx -t</code></pre>
+
+        <p>Best practices:</p>
+        <ul>
+          <li>Use supported Nginx releases and operating system packages.</li>
+          <li>Remove unnecessary third-party modules and avoid untrusted binaries.</li>
+          <li>Track security advisories and package updates.</li>
+          <li>Restrict administrative access through SSH, VPN or private networks.</li>
+          <li>Run application processes with dedicated, unprivileged service accounts.</li>
+          <li>Avoid exposing application ports directly to the public internet.</li>
+        </ul>
+
+        <p>Nginx commonly uses a privileged master process and unprivileged worker processes. Avoid changing this process model without understanding the implications.</p>
+
+        <p><strong>Official reference:</strong> <a href="https://nginx.org/en/docs/beginners_guide.html">https://nginx.org/en/docs/beginners_guide.html</a></p>
+
+        <h2 id="harden-tls">2. Harden TLS and HTTPS</h2>
+        <p>HTTPS should be mandatory for public production websites, APIs and administrative interfaces.</p>
+        <p>A typical configuration is:</p>
+        <pre><code>server {
+    listen 443 ssl;
+    server_name example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+    }
+}</code></pre>
+
+        <p>Production recommendations:</p>
+        <ul>
+          <li>Use valid certificates from a trusted certificate authority.</li>
+          <li>Automate certificate renewal and monitor expiry.</li>
+          <li>Permit TLS 1.2 and TLS 1.3 unless a documented compatibility requirement dictates otherwise.</li>
+          <li>Protect private keys with appropriate ownership and file permissions.</li>
+          <li>Test certificate chains, supported protocols and cipher negotiation.</li>
+          <li>Configure HTTP-to-HTTPS redirection.</li>
+          <li>Enable HTTP Strict Transport Security (HSTS) only after confirming that HTTPS is reliable across the intended domain scope.</li>
+        </ul>
+
+        <p>Do not copy arbitrary cipher-suite lists from old tutorials. Use maintained security guidance appropriate to your Nginx and OpenSSL versions.</p>
+
+        <p><strong>Official reference:</strong> <a href="https://nginx.org/en/docs/http/ngx_http_ssl_module.html">https://nginx.org/en/docs/http/ngx_http_ssl_module.html</a></p>
+
+        <h2 id="secure-reverse-proxy">3. Configure a Secure Reverse Proxy</h2>
+        <p>Nginx should normally be the public entry point, while application runtimes listen on loopback addresses or private networks.</p>
+        <p>Example:</p>
+        <pre><code>location /api/ {
+    proxy_pass http://127.0.0.1:8000;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    proxy_connect_timeout 5s;
+    proxy_send_timeout 60s;
+    proxy_read_timeout 60s;
+}</code></pre>
+
+        <p>Important considerations:</p>
+        <ul>
+          <li>Bind applications to loopback or private interfaces where possible.</li>
+          <li>Set explicit connection and response timeouts.</li>
+          <li>Forward only the headers required by the application.</li>
+          <li>Configure trusted proxy addresses correctly when another load balancer or CDN precedes Nginx.</li>
+          <li>Prevent clients from spoofing forwarding headers.</li>
+          <li>Use separate upstream definitions for applications with different operational requirements.</li>
+          <li>Verify URI handling carefully because the trailing slash in <code>proxy_pass</code> can affect how request paths are forwarded.</li>
+        </ul>
+
+        <p>Timeouts should reflect actual workload behaviour. A short timeout may interrupt legitimate long-running requests, while an excessively long timeout may consume resources unnecessarily.</p>
+
+        <p><strong>Official reference:</strong> <a href="https://nginx.org/en/docs/http/ngx_http_proxy_module.html">https://nginx.org/en/docs/http/ngx_http_proxy_module.html</a></p>
+
+        <h2 id="rate-connection-limits">4. Prevent Abuse with Rate and Connection Limits</h2>
+        <p>Rate limiting helps protect login endpoints, expensive API operations and other sensitive routes from excessive requests.</p>
+        <p>Define a rate-limit zone in the http context:</p>
+        <pre><code>http {
+    limit_req_zone $binary_remote_addr
+        zone=api_limit:10m rate=10r/s;
+
+    server {
+        listen 443 ssl;
+        server_name api.example.com;
+
+        location /api/ {
+            limit_req zone=api_limit burst=20 nodelay;
+            proxy_pass http://127.0.0.1:8000;
+        }
+    }
+}</code></pre>
+
+        <p>This illustrative configuration permits an average rate of 10 requests per second per client key, with a burst allowance of 20 requests. Excess requests may be rejected.</p>
+        <p>Production recommendations:</p>
+        <ul>
+          <li>Apply different limits to login, search, upload and general API endpoints.</li>
+          <li>Test limits in a non-enforcing or dry-run mode where supported.</li>
+          <li>Monitor rejected requests and adjust thresholds using real traffic data.</li>
+          <li>Account for shared public IP addresses, such as corporate NAT gateways.</li>
+          <li>Configure connection limits for resource-intensive routes.</li>
+          <li>Use an upstream WAF or dedicated DDoS protection where necessary.</li>
+        </ul>
+
+        <p>Nginx rate limiting is not a substitute for application-level abuse prevention or authentication.</p>
+
+        <p><strong>Official references:</strong></p>
+        <ul>
+          <li><a href="https://nginx.org/en/docs/http/ngx_http_limit_req_module.html">limit_req_module</a></li>
+          <li><a href="https://nginx.org/en/docs/http/ngx_http_limit_conn_module.html">limit_conn_module</a></li>
+        </ul>
+
+        <h2 id="tune-workers">5. Tune Worker Processes and Connections</h2>
+        <p>Nginx uses an event-driven architecture. Its worker processes handle client connections, and the appropriate configuration depends on CPU resources, file descriptor limits, network traffic and workload characteristics.</p>
+        <p>A reasonable starting point is:</p>
+        <pre><code>worker_processes auto;
+
+events {
+    worker_connections 2048;
+}</code></pre>
+
+        <p>These values are illustrative, not universal performance recommendations.</p>
+        <p>Consider the following:</p>
+        <ul>
+          <li>Start with <code>worker_processes auto</code> and benchmark before changing it.</li>
+          <li>Calculate connection capacity while accounting for file descriptors and upstream connections.</li>
+          <li>Review operating system limits, including open files and process limits.</li>
+          <li>Monitor CPU saturation, memory use, dropped connections and latency.</li>
+          <li>Avoid increasing connection limits without checking operating system and infrastructure capacity.</li>
+          <li>Test under realistic concurrent traffic before tuning production settings.</li>
+        </ul>
+
+        <p>The maximum theoretical connection count is not the same as the number of supported application requests. Reverse-proxy traffic may consume connections on both the client and upstream sides.</p>
+
+        <p><strong>Official reference:</strong> <a href="https://nginx.org/en/docs/ngx_core_module.html">https://nginx.org/en/docs/ngx_core_module.html</a></p>
+
+        <h2 id="static-compression-caching">6. Configure Static Content, Compression and Caching</h2>
+        <p>Static assets such as JavaScript, CSS, images and fonts should generally be served directly by Nginx or a CDN instead of passing through the application runtime.</p>
+        <p>Example:</p>
+        <pre><code>location /assets/ {
+    root /var/www/example;
+    expires 30d;
+    add_header Cache-Control "public";
+}</code></pre>
+
+        <p>This example assumes that the assets are versioned or otherwise safe to cache for the configured duration. Verify the resulting filesystem path because <code>root</code> and <code>alias</code> behave differently.</p>
+        <p>Best practices:</p>
+        <ul>
+          <li>Use content-hashed filenames for frontend assets.</li>
+          <li>Apply long cache lifetimes to immutable assets.</li>
+          <li>Use shorter or no caching for personalised responses and sensitive content.</li>
+          <li>Enable compression where it improves performance without excessive CPU overhead.</li>
+          <li>Avoid compressing already compressed formats unnecessarily.</li>
+          <li>Consider a CDN for globally distributed static content.</li>
+          <li>Monitor cache hit rates when proxy caching is enabled.</li>
+        </ul>
+
+        <p>Do not apply a long public cache lifetime indiscriminately to HTML documents, authentication responses or user-specific API data.</p>
+
+        <h2 id="websockets-long-lived">7. Handle WebSockets and Long-Lived Connections Correctly</h2>
+        <p>Applications using WebSockets, event streaming, chat or real-time dashboards require additional proxy configuration.</p>
+        <p>Example:</p>
+        <pre><code>map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 443 ssl;
+    server_name app.example.com;
+
+    location /ws/ {
+        proxy_pass http://127.0.0.1:8000;
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+
+        proxy_set_header Host $host;
+        proxy_read_timeout 3600s;
+    }
+}</code></pre>
+
+        <p>A long read timeout is appropriate only when the application needs long-lived connections. Application-level ping/pong messages and idle connection handling should also be designed properly.</p>
+        <p>For production:</p>
+        <ul>
+          <li>Validate WebSocket upgrade behaviour end to end.</li>
+          <li>Configure idle timeouts across the load balancer, proxy and application.</li>
+          <li>Set realistic connection and memory limits.</li>
+          <li>Ensure graceful deployment behaviour for connected clients.</li>
+          <li>Monitor active connections and abnormal disconnects.</li>
+        </ul>
+
+        <p><strong>Official reference:</strong> <a href="https://nginx.org/en/docs/http/websocket.html">https://nginx.org/en/docs/http/websocket.html</a></p>
+
+        <h2 id="logging-monitoring">8. Implement Reliable Logging and Monitoring</h2>
+        <p>Nginx access and error logs are essential for diagnosing HTTP errors, upstream failures, latency and suspicious traffic.</p>
+        <p>Example access-log format:</p>
+        <pre><code>log_format production
+    '$remote_addr [$time_iso8601] '
+    '"$request_method $uri $server_protocol" '
+    '$status $body_bytes_sent '
+    'request_time=$request_time '
+    'upstream_time=$upstream_response_time';
+
+access_log /var/log/nginx/access.log production;
+error_log /var/log/nginx/error.log warn;</code></pre>
+
+        <p>Avoid logging query strings, authentication tokens, session identifiers or sensitive personal information unless there is a documented and protected requirement.</p>
+        <p>Monitor:</p>
+        <ul>
+          <li>HTTP 4xx and 5xx response rates.</li>
+          <li>Upstream connection failures and response times.</li>
+          <li>Request volume, bandwidth and active connections.</li>
+          <li>CPU, memory, disk utilisation and file descriptors.</li>
+          <li>Certificate expiry and renewal failures.</li>
+          <li>Rate-limit rejections and suspicious traffic patterns.</li>
+        </ul>
+        <p>Forward logs to a centralised platform where appropriate, and establish alerts for actionable failures rather than every isolated warning.</p>
+
+        <p><strong>Official reference:</strong> <a href="https://nginx.org/en/docs/http/ngx_http_log_module.html">https://nginx.org/en/docs/http/ngx_http_log_module.html</a></p>
+
+        <h2 id="validate-deploy">9. Validate Configuration and Deploy Safely</h2>
+        <p>Never reload an untested configuration in production.</p>
+        <p>Recommended workflow:</p>
+        <pre><code>sudo nginx -t
+
+sudo nginx -T
+
+sudo systemctl reload nginx</code></pre>
+
+        <p>The first command checks configuration syntax and referenced files. The second displays the effective configuration, which may contain sensitive operational details. Restrict access to its output. The third requests a graceful reload.</p>
+        <p>Best practices:</p>
+        <ul>
+          <li>Store configuration in version control.</li>
+          <li>Review changes through pull requests or an equivalent approval process.</li>
+          <li>Validate configuration automatically in CI/CD.</li>
+          <li>Back up the previous working configuration.</li>
+          <li>Apply changes through controlled deployment automation.</li>
+          <li>Verify application health, logs and error rates after deployment.</li>
+          <li>Maintain a documented rollback procedure.</li>
+        </ul>
+
+        <p>Nginx normally starts new workers with the new configuration and allows old workers to finish existing connections. If the new configuration cannot be applied, Nginx can retain its previous working configuration. Therefore, a successful command invocation should not replace post-deployment verification.</p>
+
+        <p><strong>Official reference:</strong> <a href="https://nginx.org/en/docs/control.html">https://nginx.org/en/docs/control.html</a></p>
+
+        <h2 id="high-availability">10. Design for High Availability</h2>
+        <p>A single Nginx server is a single point of failure unless the surrounding architecture provides redundancy.</p>
+        <p>For important production services, consider:</p>
+        <ul>
+          <li>Multiple proxy instances across separate failure domains.</li>
+          <li>A managed load balancer or another suitable traffic-distribution layer.</li>
+          <li>Health checks and removal of unhealthy backends.</li>
+          <li>Redundant application instances.</li>
+          <li>Automated certificate management across proxy instances.</li>
+          <li>Configuration consistency and controlled rollout procedures.</li>
+          <li>Capacity planning for peak traffic and failover conditions.</li>
+          <li>Tested disaster recovery and restoration procedures.</li>
+        </ul>
+        <p>For a small application, a single Nginx instance with reliable backups may be sufficient. For critical services, redundancy should cover the complete request path, not just the web server.</p>
+
+        <h2 id="production-readiness-checklist">11. Production Readiness Checklist</h2>
+        <h3>Security</h3>
+        <ul>
+          <li>Supported software and security updates.</li>
+          <li>HTTPS and certificate renewal.</li>
+          <li>Private backend ports.</li>
+          <li>Trusted proxy-header configuration.</li>
+          <li>Appropriate rate and connection limits.</li>
+          <li>Access controls and least-privilege permissions.</li>
+        </ul>
+        <h3>Performance</h3>
+        <ul>
+          <li>Worker and file descriptor capacity.</li>
+          <li>Appropriate timeouts.</li>
+          <li>Static asset caching and compression.</li>
+          <li>WebSocket and streaming tests.</li>
+          <li>Load tests using realistic traffic.</li>
+        </ul>
+        <h3>Operations</h3>
+        <ul>
+          <li>Centralised logging and monitoring.</li>
+          <li>Configuration validation and version control.</li>
+          <li>Graceful reload and rollback tests.</li>
+          <li>Health checks and alerting.</li>
+          <li>Backup and disaster recovery procedures.</li>
+        </ul>
+
+        <h2 id="example-production-configuration">12. Example Production Configuration</h2>
+        <p>The configuration below assumes Ubuntu/Debian, Nginx, a domain with a valid TLS certificate, and a FastAPI application listening on <code>127.0.0.1:8000</code>. It uses a single Nginx instance and can be adapted for Django, Node.js or other backends.</p>
+        <div class="cheat-callout"><strong>Important security principle:</strong> the configuration is a reference baseline, not a substitute for validating your application, firewall, certificate lifecycle and upstream trust boundaries.</div>
+
+        <h3>1. Install Nginx and obtain a TLS certificate</h3>
+        <p>Replace <code>example.com</code> with your actual domain and configure its DNS A/AAAA records correctly.</p>
+        <pre><code>sudo apt update
+sudo apt install -y nginx certbot python3-certbot-nginx
+sudo certbot --nginx -d example.com</code></pre>
+
+        <h3>2. Configure Nginx</h3>
+        <p>Create the HTTP-level settings (rate-limit zone and a production log format) inside the <code>http</code> block, for example in <code>/etc/nginx/conf.d/00-http.conf</code>:</p>
+        <pre><code>log_format production
+    '$remote_addr [$time_iso8601] '
+    '"$request_method $uri $server_protocol" '
+    '$status $body_bytes_sent '
+    'request_time=$request_time '
+    'upstream_time=$upstream_response_time';
+
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}</code></pre>
+        <p>Then define the server blocks in a site file such as <code>/etc/nginx/sites-available/example.com</code> and enable it:</p>
+        <pre><code>server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    client_max_body_size 10m;
+    client_body_timeout   12s;
+    client_header_timeout 12s;
+    send_timeout          10s;
+    keepalive_timeout     30s;
+
+    access_log /var/log/nginx/example.access.log production;
+    error_log  /var/log/nginx/example.error.log warn;
+
+    location /static/ {
+        alias /var/www/example/static/;
+        expires 30d;
+        add_header Cache-Control "public";
+        access_log off;
+    }
+
+    location /ws/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host       $host;
+        proxy_read_timeout 3600s;
+    }
+
+    location / {
+        limit_req zone=api_limit burst=20 nodelay;
+
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+
+        proxy_connect_timeout 5s;
+        proxy_send_timeout    60s;
+        proxy_read_timeout    60s;
+    }
+}</code></pre>
+
+        <h3>3. Start the application and verify</h3>
+        <pre><code>sudo nginx -t
+sudo systemctl enable --now nginx
+
+# Run the application runtime on loopback only, for example:
+# uvicorn main:app --host 127.0.0.1 --port 8000
+
+sudo systemctl reload nginx
+curl -i https://example.com/health</code></pre>
+
+        <h2 id="conclusion">Conclusion</h2>
+        <p>Production Nginx should be treated as a critical infrastructure component, not merely a configuration file. Secure the public entry point, isolate application runtimes, configure TLS and proxy headers correctly, tune resources using measurements, monitor operational behaviour and deploy changes through a controlled process.</p>
+
+        <p>Start with a minimal secure configuration, establish measurable performance and reliability targets, and introduce additional complexity only when the workload justifies it.</p>
+
+        <h3>Official Documentation</h3>
+        <ul>
+          <li><a href="https://nginx.org/en/docs/">Nginx documentation</a></li>
+          <li><a href="https://nginx.org/en/docs/http/ngx_http_ssl_module.html">ngx_http_ssl_module</a></li>
+          <li><a href="https://nginx.org/en/docs/http/ngx_http_proxy_module.html">ngx_http_proxy_module</a></li>
+          <li><a href="https://nginx.org/en/docs/http/ngx_http_limit_req_module.html">limit_req_module</a></li>
+          <li><a href="https://nginx.org/en/docs/control.html">Processes control and configuration</a></li>
+        </ul>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Nginx</span>
+            <span class="blog-tag">Security</span>
+            <span class="blog-tag">Performance</span>
+            <span class="blog-tag">High Availability</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Web Servers</span>
+            <span class="blog-tag">Operations</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">&larr; Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Nginx vs Apache vs IIS and how to choose: reverse proxies, TLS termination, WSGI/ASGI, containers, Kubernetes, HTTP/2/3, WebSockets, and a production deployment checklist.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Web Servers in 2026: Nginx vs Apache vs IIS and How to Choose | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Web Servers in 2026: Nginx vs Apache vs IIS and How to Choose the Right Architecture</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 Oct 16, 2026</div>
+            <div class="blog-meta-item">⏱️ 13 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Modern web infrastructure is no longer about simply installing a web server and opening port 443. Choosing the right solution requires understanding reverse proxies, application runtimes, TLS termination, load balancing, containers, API gateways and cloud-native deployment patterns.</p>
+
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#what-is-a-web-server">What is a web server?</a></li>
+            <li><a href="#popular-web-servers-and-proxies">Popular web servers and proxies</a></li>
+            <li><a href="#quick-comparison">Quick comparison</a></li>
+            <li><a href="#reverse-proxy">Reverse proxy: why it matters</a></li>
+            <li><a href="#wsgi-vs-asgi">WSGI vs ASGI in Python</a></li>
+            <li><a href="#stacks">Web servers across application stacks</a></li>
+            <li><a href="#monoliths-containers-microservices">Monoliths, containers and microservices</a></li>
+            <li><a href="#http-versions">HTTP/1.1, HTTP/2, HTTP/3 and WebSockets</a></li>
+            <li><a href="#how-to-choose">How to choose the right solution</a></li>
+            <li><a href="#production-checklist">Production deployment checklist</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="what-is-a-web-server">1. What Is a Web Server?</h2>
+        <p>A web server accepts HTTP/HTTPS requests and returns responses. It may serve static files, forward requests to application processes, terminate TLS connections, enforce access policies or distribute traffic across backend servers.</p>
+
+        <p>The typical request flow is:</p>
+        <pre><code>Client → DNS/CDN/WAF → Web Server/Reverse Proxy → Application Runtime → Database and Services.</code></pre>
+
+        <p>The web server handles HTTP traffic, whereas the application runtime executes application code. Some products support both roles, but their responsibilities remain conceptually different.</p>
+
+        <h2 id="popular-web-servers-and-proxies">2. Popular Web Servers and Proxies</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Server/Proxy</th><th>Role</th><th>Typical stack</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Nginx</td><td>Event-driven web server and reverse proxy: static content, TLS termination, API routing, caching and load balancing.</td><td>Nginx + Gunicorn/Uvicorn + Django/FastAPI</td></tr>
+            <tr><td>Apache HTTP Server</td><td>Mature, modular web server for traditional hosting, PHP applications, shared hosting and legacy workloads, with <code>.htaccess</code> support where enabled.</td><td>Apache + PHP-FPM + WordPress</td></tr>
+            <tr><td>Microsoft IIS</td><td>Microsoft's web server for Windows Server, with Windows authentication, Active Directory and .NET integration.</td><td>IIS + ASP.NET Core</td></tr>
+            <tr><td>Caddy</td><td>Modern web server noted for simple configuration and automatic HTTPS provisioning.</td><td>Self-hosted apps, Docker deployments, small infrastructure</td></tr>
+            <tr><td>Envoy Proxy</td><td>Cloud-native proxy for microservices, advanced traffic management, observability and service mesh architectures.</td><td>Service mesh, Kubernetes sidecars</td></tr>
+            <tr><td>HAProxy</td><td>Specialised proxy and load balancer for high availability, TCP/HTTP traffic distribution, health checks and failover.</td><td>Load balancer, edge proxy</td></tr>
+            <tr><td>Traefik</td><td>Container-aware router with automatic service discovery.</td><td>Docker, Kubernetes ingress</td></tr>
+            <tr><td>Tomcat</td><td>Servlet container for Java applications, often placed behind a reverse proxy.</td><td>Spring Boot, Java EE</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="quick-comparison">3. Quick Comparison</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Server/Proxy</th><th>Primary use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Nginx</td><td>Reverse proxy, static content and APIs.</td></tr>
+            <tr><td>Apache</td><td>Modular hosting, PHP and legacy applications.</td></tr>
+            <tr><td>IIS</td><td>Windows enterprise and ASP.NET workloads.</td></tr>
+            <tr><td>Caddy</td><td>Simple configuration and automatic HTTPS.</td></tr>
+            <tr><td>Envoy</td><td>Cloud-native traffic management and microservices.</td></tr>
+            <tr><td>HAProxy</td><td>Dedicated load balancing and high availability.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Note:</strong> The right choice depends on application requirements, platform compatibility, security, operational complexity and measured performance rather than popularity alone.</div>
+
+        <h2 id="reverse-proxy">4. Reverse Proxy: Why Is It Important?</h2>
+        <p>A reverse proxy receives requests on behalf of backend servers. Clients connect to the proxy rather than directly to application processes.</p>
+        <pre><code>Client → Nginx → React Frontend / FastAPI Backend / WebSocket Service / Admin Application.</code></pre>
+
+        <p>Common use cases include:</p>
+        <ul>
+          <li>TLS termination and certificate management.</li>
+          <li>Path-based routing, such as <code>/api</code>, <code>/admin</code> and <code>/ws</code>.</li>
+          <li>Host-based routing for multiple domains.</li>
+          <li>Load balancing across application instances.</li>
+          <li>Keeping application ports private.</li>
+          <li>WebSocket forwarding for chat, games and live dashboards.</li>
+          <li>Response caching and compression.</li>
+          <li>Blue-green and canary deployments.</li>
+          <li>Centralised access logging and latency monitoring.</li>
+        </ul>
+        <p>A reverse proxy is not automatically a Web Application Firewall (WAF). Authentication, authorisation, rate limiting and application security must be configured appropriately.</p>
+
+        <h3>Example Nginx Configuration</h3>
+        <pre><code>server {
+    listen 80;
+    server_name example.com;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre>
+        <p>Validate and reload the configuration:</p>
+        <pre><code>sudo nginx -t
+sudo systemctl reload nginx
+curl -i http://example.com/api/health</code></pre>
+        <p>This example assumes the frontend and API are already running. Configure HTTPS separately before production deployment. Trust forwarded headers only from known proxies.</p>
+
+        <h2 id="wsgi-vs-asgi">5. WSGI vs ASGI in Python</h2>
+        <p>Installing Nginx alone does not run a Python application. Nginx normally forwards dynamic requests to an application server or runtime.</p>
+        <p><strong>WSGI</strong> (Web Server Gateway Interface) is the traditional synchronous interface for Python web applications. Common combinations include Django or Flask with Gunicorn or uWSGI.</p>
+        <pre><code>gunicorn --workers 4 --bind 127.0.0.1:8000 myproject.wsgi:application</code></pre>
+        <p>Architecture: <code>Client → Nginx → Gunicorn WSGI Workers → Django/Flask</code>.</p>
+        <p><strong>ASGI</strong> (Asynchronous Server Gateway Interface) supports asynchronous application processing and long-lived connections, including WebSockets. Common combinations include FastAPI, Starlette and Django with Uvicorn or Daphne.</p>
+        <pre><code>from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}</code></pre>
+        <p>Run it using:</p>
+        <pre><code>uvicorn main:app --host 127.0.0.1 --port 8000</code></pre>
+        <p>WSGI is appropriate for conventional request-response workloads. ASGI is particularly useful for asynchronous APIs, WebSockets and mixed workloads. ASGI does not automatically make an application faster; performance depends on code, I/O, concurrency and resource allocation.</p>
+
+        <h2 id="stacks">6. Web Servers Across Application Stacks</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Stack</th><th>Runtime</th><th>Server / Proxy</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>PHP / WordPress</td><td>PHP-FPM</td><td>Nginx or Apache</td></tr>
+            <tr><td>Python / Django</td><td>Gunicorn/uWSGI (WSGI) or ASGI server</td><td>Nginx or Caddy</td></tr>
+            <tr><td>Python / FastAPI</td><td>Uvicorn</td><td>Nginx, Caddy or Envoy</td></tr>
+            <tr><td>Node.js / Express</td><td>Node.js HTTP server</td><td>Reverse proxy</td></tr>
+            <tr><td>Java / Spring Boot</td><td>Embedded Tomcat/Jetty</td><td>Proxy where appropriate</td></tr>
+            <tr><td>.NET / ASP.NET Core</td><td>Kestrel</td><td>IIS, Nginx or Apache</td></tr>
+            <tr><td>Go</td><td>net/http</td><td>Nginx, Caddy or cloud load balancer</td></tr>
+            <tr><td>Ruby / Rails</td><td>Puma</td><td>Reverse proxy</td></tr>
+            <tr><td>React / Vue / Angular</td><td>Static assets</td><td>Nginx, Apache, Caddy or CDN</td></tr>
+          </tbody>
+        </table>
+        <p>A frontend framework is not necessarily a production web server. React, for example, usually produces static assets that are served independently of the backend API.</p>
+
+        <h2 id="monoliths-containers-microservices">7. Monoliths, Containers and Microservices</h2>
+        <ul>
+          <li><strong>Monolithic application:</strong> <code>Client → Nginx/Caddy → Application → Database.</code> Simple to deploy and operate.</li>
+          <li><strong>Containerised application:</strong> <code>Client → Nginx/Traefik/Caddy → Frontend, API and worker containers → Supporting services.</code> Provides isolation and reproducible deployments.</li>
+          <li><strong>Kubernetes/microservices:</strong> <code>Client → Cloud Load Balancer/CDN/WAF → Gateway or Ingress → Kubernetes Services → Application Pods.</code></li>
+        </ul>
+        <p>Kubernetes provides orchestration, service discovery, automated rollouts and scaling, but also introduces operational complexity.</p>
+        <div class="cheat-callout"><strong>Warning:</strong> Do not adopt microservices or Kubernetes simply because they are modern. A well-designed monolith behind a reverse proxy may be more reliable and cost-effective than an unnecessarily distributed architecture.</div>
+        <p>An API gateway extends the reverse-proxy concept with API-specific features such as consumer quotas, authentication integration, API keys, version-aware routing and request transformation. Use one when these requirements justify the additional complexity.</p>
+
+        <h2 id="http-versions">8. HTTP/1.1, HTTP/2, HTTP/3 and WebSockets</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Protocol</th><th>Characteristics</th><th>Typical use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>HTTP/1.1</td><td>One request per connection; widely supported.</td><td>General web traffic and APIs.</td></tr>
+            <tr><td>HTTP/2</td><td>Multiplexed streams over a single connection; header compression.</td><td>Improved performance for HTTP/2-capable clients and backends.</td></tr>
+            <tr><td>HTTP/3</td><td>QUIC over UDP; faster connection setup and better lossy-network resilience.</td><td>Edge delivery where supported; client to edge.</td></tr>
+            <tr><td>WebSockets</td><td>Persistent, bidirectional communication.</td><td>Chat, notifications, dashboards and games.</td></tr>
+          </tbody>
+        </table>
+        <p>Protocol support at the public edge does not guarantee that the same protocol is used between the proxy and backend. Verify compatibility across the entire request path, especially for streaming and real-time workloads. gRPC typically uses HTTP/2-based transport.</p>
+
+        <h2 id="how-to-choose">9. How to Choose the Right Solution</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Use case</th><th>Recommended solution</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Static website or SPA</td><td>Nginx, Caddy or a CDN.</td></tr>
+            <tr><td>WordPress / PHP</td><td>Nginx + PHP-FPM, or Apache.</td></tr>
+            <tr><td>Django</td><td>Nginx + Gunicorn/uWSGI (WSGI), or an ASGI-capable server.</td></tr>
+            <tr><td>FastAPI / WebSockets</td><td>Nginx or Caddy + Uvicorn.</td></tr>
+            <tr><td>Windows enterprise application</td><td>IIS + ASP.NET Core.</td></tr>
+            <tr><td>Docker Compose</td><td>Nginx, Caddy or Traefik.</td></tr>
+            <tr><td>Kubernetes routing</td><td>A maintained Gateway API implementation or ingress/gateway.</td></tr>
+            <tr><td>Advanced microservice traffic management</td><td>Envoy or a service mesh.</td></tr>
+            <tr><td>Dedicated load balancing</td><td>HAProxy or a managed load balancer.</td></tr>
+            <tr><td>Simple configuration and automatic HTTPS</td><td>Caddy.</td></tr>
+            <tr><td>Existing Apache hosting</td><td>Retain Apache unless a requirement justifies migration.</td></tr>
+          </tbody>
+        </table>
+        <p>Treat these as starting recommendations. Validate maintenance status, protocol support, licensing, security requirements and platform compatibility before deployment.</p>
+
+        <h2 id="production-checklist">10. Production Deployment Checklist</h2>
+        <h3>Network and security</h3>
+        <ul>
+          <li>Expose only required public ports, normally 80 and 443.</li>
+          <li>Keep application, database and administration ports private.</li>
+          <li>Configure TLS certificates and renewal.</li>
+          <li>Trust forwarded headers only from known proxies.</li>
+          <li>Implement authentication, authorisation and appropriate rate limits.</li>
+        </ul>
+        <h3>Reliability and performance</h3>
+        <ul>
+          <li>Configure upstream timeouts and connection limits.</li>
+          <li>Set up health checks and load balancing where required.</li>
+          <li>Configure WebSocket and streaming behaviour.</li>
+          <li>Monitor latency, throughput, CPU, memory and errors.</li>
+          <li>Test failure recovery and graceful reloads.</li>
+        </ul>
+        <h3>Operations</h3>
+        <ul>
+          <li>Centralise access and error logs.</li>
+          <li>Monitor certificate expiry, disk space and service health.</li>
+          <li>Automate configuration validation and rollback.</li>
+          <li>Keep software and dependencies patched.</li>
+          <li>Load-test realistic traffic before increasing capacity.</li>
+        </ul>
+
+        <h2 id="conclusion">Conclusion</h2>
+        <p>Choose Nginx for a versatile web-serving and reverse-proxy foundation, Apache for modular hosting and established ecosystems, IIS for Windows-centric enterprise workloads, Caddy for straightforward HTTPS, Envoy for sophisticated cloud-native traffic management, and HAProxy for dedicated load balancing.</p>
+
+        <p>Then select the appropriate application runtime, establish network boundaries, implement monitoring and security controls, and validate the design under realistic load.</p>
+
+        <div class="cheat-callout"><strong>Takeaway:</strong> The best production architecture is not the one with the most components. It is the simplest architecture that satisfies your performance, availability, security, scalability and operational requirements.</div>
+
+        <h3>Official Documentation</h3>
+        <ul>
+          <li><a href="https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/">Nginx Reverse Proxy</a></li>
+          <li><a href="https://nginx.org/en/docs/http/load_balancing.html">Nginx Load Balancing</a></li>
+          <li><a href="https://caddyserver.com/docs/quick-starts/https">Caddy HTTPS</a></li>
+          <li><a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/when-to-use-a-reverse-proxy">Microsoft Kestrel Reverse Proxy</a></li>
+          <li><a href="https://docs.djangoproject.com/en/stable/howto/deployment/">Django Deployment</a></li>
+          <li><a href="https://www.uvicorn.org/">Uvicorn</a></li>
+        </ul>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Web Servers</span>
+            <span class="blog-tag">Nginx</span>
+            <span class="blog-tag">Apache</span>
+            <span class="blog-tag">IIS</span>
+            <span class="blog-tag">Architecture</span>
+            <span class="blog-tag">DevOps</span>
+            <span class="blog-tag">Backend</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">&larr; Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Visual Studio Code best practices: extensions, configuration, remote development, debugging, security, security-conscious tooling and a productive workflow.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Visual Studio Code: Best Practices, Essential Extensions and a Productive Development Workflow | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Visual Studio Code: Best Practices, Essential Extensions and a Productive Development Workflow</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 Oct 16, 2026</div>
+            <div class="blog-meta-item">⏱️ 19 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Visual Studio Code (VS Code) has become one of the most widely used code editors because it combines a lightweight interface with powerful debugging, Git integration, language tooling, remote development and extension support.</p>
+
+        <p>However, installing dozens of extensions does not automatically make a developer more productive. A well-configured editor should improve code quality, reduce repetitive work, support consistent team practices and avoid unnecessary resource consumption.</p>
+
+        <p>This article covers practical VS Code best practices, popular extensions, recommended configurations, security considerations and workflows for professional software development.</p>
+
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#core-features">Understand the core features before installing extensions</a></li>
+            <li><a href="#organise-projects">Organise projects properly</a></li>
+            <li><a href="#formatting-linting">Use consistent formatting and linting</a></li>
+            <li><a href="#vscode-settings">Recommended VS Code settings</a></li>
+            <li><a href="#extensions">Recommended VS Code extensions</a></li>
+            <li><a href="#extension-cheat-sheet">Extension selection cheat sheet</a></li>
+            <li><a href="#extensions-engineering">Manage extensions as part of your engineering process</a></li>
+            <li><a href="#profiles">Use profiles for different roles</a></li>
+            <li><a href="#git-collaboration">Git and team collaboration</a></li>
+            <li><a href="#debugging-testing">Debugging and testing best practices</a></li>
+            <li><a href="#remote-development">Remote development and containers</a></li>
+            <li><a href="#ai-coding-assistants">AI coding assistants: use them responsibly</a></li>
+            <li><a href="#performance-productivity">Performance and productivity</a></li>
+            <li><a href="#production-checklist">Production-ready development checklist</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="core-features">1. Understand the core features before installing extensions</h2>
+        <p>VS Code already provides several essential capabilities:</p>
+        <ul>
+          <li>IntelliSense for supported programming languages.</li>
+          <li>Integrated terminal and task execution.</li>
+          <li>Source Control integration with Git.</li>
+          <li>Debugging through launch configurations and language extensions.</li>
+          <li>Search across files and folders.</li>
+          <li>Code navigation, refactoring and symbol search.</li>
+          <li>Settings, keyboard shortcuts, snippets and profiles.</li>
+          <li>Remote development support through appropriate extensions.</li>
+        </ul>
+
+        <div class="cheat-callout"><strong>Best practice:</strong> Learn the built-in features first. Install an extension only when it provides a capability that the editor or your existing toolchain does not already provide.</div>
+
+        <h2 id="organise-projects">2. Organise projects properly</h2>
+        <p>Open the project root folder rather than individual source files. This allows VS Code to detect project configuration, Git repositories, language environments and workspace settings correctly.</p>
+
+        <p>A typical web application might use this structure:</p>
+        <pre><code>my-application/
+├── frontend/
+├── backend/
+├── tests/
+├── docs/
+├── scripts/
+├── .github/
+│   └── workflows/
+├── .vscode/
+│   ├── settings.json
+│   ├── extensions.json
+│   └── launch.json
+├── .editorconfig
+├── .gitignore
+├── README.md
+└── package.json</code></pre>
+
+        <p>Not every project needs all these files. Use a structure appropriate to the language, framework and repository size.</p>
+
+        <h3>Keep configuration in the right place</h3>
+        <ul>
+          <li><strong>User settings:</strong> personal preferences across projects.</li>
+          <li><strong>Workspace settings:</strong> project-specific editor behaviour.</li>
+          <li><strong>Language-specific settings:</strong> formatting and behaviour for a particular language.</li>
+          <li><code>.vscode/extensions.json</code>: recommended extensions for the team.</li>
+          <li><code>.vscode/launch.json</code>: shared debugging configurations.</li>
+          <li><code>.vscode/tasks.json</code>: repeatable development tasks.</li>
+        </ul>
+
+        <p>Avoid committing personal paths, credentials, machine-specific interpreter paths or local environment settings.</p>
+
+        <h2 id="formatting-linting">3. Use consistent formatting and linting</h2>
+        <p>Formatting and linting solve different problems.</p>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Role</th><th>Purpose</th><th>Examples</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Formatter</td><td>Standardises code layout, indentation, quotes and line wrapping.</td><td>Prettier, Ruff</td></tr>
+            <tr><td>Linter</td><td>Detects suspicious patterns, potential bugs and violations of coding rules.</td><td>ESLint, Ruff</td></tr>
+            <tr><td>Type checker</td><td>Identifies type inconsistencies before runtime.</td><td>TypeScript, Pylance</td></tr>
+            <tr><td>Tests</td><td>Validate expected behaviour.</td><td>pytest, Jest</td></tr>
+          </tbody>
+        </table>
+
+        <p>For example, a JavaScript or TypeScript project may use Prettier for formatting and ESLint for code analysis. A Python project may use Ruff for linting and formatting, alongside the project's chosen type checker.</p>
+
+        <p>Avoid configuring several formatters to compete for the same file type. Select a standard, document it and enforce it in CI where practical.</p>
+
+        <h2 id="vscode-settings">4. Recommended VS Code settings</h2>
+        <p>The following is a reasonable starting point for many development projects. Adjust it to match the repository's conventions and installed tools.</p>
+
+        <p>Example <code>.vscode/settings.json</code>:</p>
+        <pre><code>{
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "selection",
+  "editor.rulers": [100],
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.eol": "\n",
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/dist": true,
+    "**/build": true
+  }
+}</code></pre>
+
+        <p>Important considerations:</p>
+        <ul>
+          <li>A two-space indentation setting is suitable for many JavaScript and JSON projects, but Python requires indentation consistent with its conventions. Language-specific settings can override the default.</li>
+          <li><code>formatOnSave</code> works only when a formatter is configured for the file type.</li>
+          <li>Save-time code actions depend on installed extensions and their supported settings.</li>
+          <li>Do not enable automatic fixes indiscriminately if they can alter code in ways the team has not reviewed.</li>
+          <li>Excluding generated directories from search can improve usability, but do not exclude source files that need to be inspected.</li>
+        </ul>
+
+        <h3>Use EditorConfig</h3>
+        <p>An <code>.editorconfig</code> file helps maintain consistent basic formatting across editors and IDEs.</p>
+        <pre><code>root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.py]
+indent_style = space
+indent_size = 4
+
+[*.{js,jsx,ts,tsx,json,css,scss,yml,yaml}]
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false</code></pre>
+
+        <p>EditorConfig complements formatters; it does not replace them.</p>
+
+        <h2 id="extensions">5. Recommended VS Code extensions</h2>
+        <p>The right extensions depend on your language and workflow. The following are established options worth evaluating, not a recommendation to install everything.</p>
+
+        <h3>General development</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Extension</th><th>Role</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Prettier - Code formatter</td><td>Formats supported files consistently.</td><td>JavaScript, TypeScript, JSON, CSS, HTML and Markdown.</td></tr>
+            <tr><td>ESLint</td><td>JavaScript and TypeScript linting within the editor.</td><td>Use the project's local ESLint configuration.</td></tr>
+            <tr><td>EditorConfig for VS Code</td><td>Applies basic formatting conventions defined in <code>.editorconfig</code>.</td><td>Complements formatters.</td></tr>
+            <tr><td>GitLens</td><td>Git history, line authorship information and commit exploration.</td><td>Useful for investigating changes in a large codebase.</td></tr>
+            <tr><td>Error Lens</td><td>Makes diagnostics more visible directly in the editor.</td><td>Can improve feedback speed; some may find it noisy.</td></tr>
+            <tr><td>Path Intellisense</td><td>Path completion while editing import statements.</td><td>Useful for file references.</td></tr>
+            <tr><td>Todo Tree</td><td>Locates comments such as <code>TODO</code> and <code>FIXME</code>.</td><td>Treat as reminders, not tracked work items.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Python development</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Extension</th><th>Role</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Python (Microsoft)</td><td>Interpreter selection, debugging integration and testing support.</td><td>Additional language components may be installed as needed.</td></tr>
+            <tr><td>Pylance (Microsoft)</td><td>Python IntelliSense, navigation and type-aware analysis.</td><td>Commonly used alongside the Python extension.</td></tr>
+            <tr><td>Ruff</td><td>Fast Python linting and formatting when configured.</td><td>Avoid overlapping lint and formatting tools.</td></tr>
+            <tr><td>Jupyter (Microsoft)</td><td>Notebooks and interactive workflows.</td><td>Data analysis, experimentation and machine learning.</td></tr>
+            <tr><td>Python Debugger (Microsoft)</td><td>Python debugging workflows.</td><td>Related components may install automatically.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>JavaScript, TypeScript and frontend</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Extension</th><th>Role</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>ESLint</td><td>JavaScript and TypeScript linting.</td><td>Enforces configured rules.</td></tr>
+            <tr><td>Prettier</td><td>Consistent formatting for frontend file types.</td><td>Project-configured.</td></tr>
+            <tr><td>Tailwind CSS IntelliSense</td><td>Class-name completion.</td><td>Tailwind CSS projects only.</td></tr>
+            <tr><td>Angular Language Service</td><td>Angular template diagnostics, completion and navigation.</td><td>Angular applications.</td></tr>
+            <tr><td>Volar / Vue - Official</td><td>Vue language support.</td><td>Use the extension recommended for the Vue version.</td></tr>
+            <tr><td>Live Server</td><td>Serves static files locally with browser reload.</td><td>Convenient for simple exercises; not a framework dev server.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Backend, APIs and databases</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Extension</th><th>Role</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>REST Client</td><td>Sends HTTP requests from <code>.http</code> or <code>.rest</code> files.</td><td>Repeatable API tests; exclude secrets.</td></tr>
+            <tr><td>Docker</td><td>Container images, containers and Docker workflows.</td><td>Backend container development.</td></tr>
+            <tr><td>Remote - SSH</td><td>Connects to remote development hosts over SSH.</td><td>Files and terminal commands on the remote machine.</td></tr>
+            <tr><td>Dev Containers</td><td>Development inside a project-configured container.</td><td>Standardises dependencies and tooling.</td></tr>
+            <tr><td>SQLTools</td><td>Database connectivity and query workflows.</td><td>Verify driver compatibility and security.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Cloud and infrastructure</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Extension</th><th>Role</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>HashiCorp Terraform</td><td>Terraform syntax support.</td><td>Validate infrastructure with Terraform CLI and CI pipeline.</td></tr>
+            <tr><td>AWS Toolkit</td><td>AWS-related development features.</td><td>Least-privilege IAM permissions.</td></tr>
+            <tr><td>Azure Resources</td><td>Browse and work with supported Azure resources.</td><td>Editor integration.</td></tr>
+            <tr><td>Kubernetes</td><td>Kubernetes resource workflows.</td><td>Confirm cluster context before applying changes.</td></tr>
+            <tr><td>YAML</td><td>YAML language support with validation.</td><td>Use schema validation where supported.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Documentation and productivity</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Extension</th><th>Role</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Markdown All in One</td><td>Markdown editing conveniences.</td><td>Shortcuts, list assistance and tables of contents.</td></tr>
+            <tr><td>Code Spell Checker</td><td>Identifies possible spelling errors.</td><td>Configure domain-specific vocabulary.</td></tr>
+            <tr><td>Better Comments</td><td>Highlights different categories of comments.</td><td>Use sparingly.</td></tr>
+            <tr><td>GitHub Pull Requests</td><td>Selected GitHub PR and issue workflows.</td><td>Complements, not replaces, branch protection.</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="extension-cheat-sheet">6. Extension selection cheat sheet</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Requirement</th><th>Extension to evaluate</th><th>Important note</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Code formatting</td><td>Prettier</td><td>Keep project configuration consistent.</td></tr>
+            <tr><td>JavaScript linting</td><td>ESLint</td><td>Use repository rules.</td></tr>
+            <tr><td>Python development</td><td>Python + Pylance</td><td>Select the correct environment.</td></tr>
+            <tr><td>Python linting</td><td>Ruff</td><td>Avoid duplicate linting rules.</td></tr>
+            <tr><td>Git history</td><td>GitLens</td><td>Review changes and blame carefully.</td></tr>
+            <tr><td>API testing</td><td>REST Client</td><td>Do not commit credentials.</td></tr>
+            <tr><td>Containers</td><td>Docker</td><td>Validate images and runtime settings.</td></tr>
+            <tr><td>Remote Linux development</td><td>Remote - SSH</td><td>Protect SSH keys and host access.</td></tr>
+            <tr><td>Reproducible environments</td><td>Dev Containers</td><td>Review container configuration.</td></tr>
+            <tr><td>Terraform</td><td>HashiCorp Terraform</td><td>Run <code>terraform validate</code> and plan checks.</td></tr>
+            <tr><td>Kubernetes</td><td>Kubernetes</td><td>Confirm cluster context before applying changes.</td></tr>
+            <tr><td>Markdown</td><td>Markdown All in One</td><td>Useful for documentation-heavy projects.</td></tr>
+            <tr><td>Tailwind CSS</td><td>Tailwind CSS IntelliSense</td><td>Only needed for Tailwind projects.</td></tr>
+            <tr><td>Notebooks</td><td>Jupyter</td><td>Useful for data and ML workflows.</td></tr>
+          </tbody>
+        </table>
+        <p>Extension popularity and availability change over time. Check the current Visual Studio Marketplace listing, publisher, maintenance activity, compatibility and permissions before installation.</p>
+
+        <h2 id="extensions-engineering">7. Manage extensions as part of your engineering process</h2>
+        <p>Extensions can consume memory and CPU, introduce conflicts, access workspace files or execute code. Treat them as software dependencies.</p>
+        <p>Recommended practices:</p>
+        <ol>
+          <li>Install from the official Visual Studio Marketplace or an organisation-approved source.</li>
+          <li>Verify the publisher and extension identifier.</li>
+          <li>Review permissions, release notes, maintenance activity and known security issues.</li>
+          <li>Install only extensions that solve a real problem.</li>
+          <li>Disable extensions that are not relevant to the current profile.</li>
+          <li>Avoid installing multiple extensions that perform the same task.</li>
+          <li>Test important extensions after editor updates.</li>
+          <li>Keep an eye on extension host performance.</li>
+          <li>Use organisation policies or approved extension lists in managed environments.</li>
+          <li>Remove abandoned extensions when suitable alternatives are available.</li>
+        </ol>
+        <p>You can inspect extension IDs with:</p>
+        <pre><code>code --list-extensions</code></pre>
+        <p>Install a known extension by its identifier:</p>
+        <pre><code>code --install-extension ms-python.python</code></pre>
+        <p>These commands assume the VS Code <code>code</code> command is available in your terminal.</p>
+
+        <h2 id="profiles">8. Use profiles for different roles</h2>
+        <p>Profiles allow separate editor configurations for different kinds of work.</p>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Profile</th><th>Example extensions</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Python and data science</td><td>Python, Pylance, Ruff, Jupyter.</td></tr>
+            <tr><td>Frontend</td><td>ESLint, Prettier, Tailwind CSS IntelliSense or framework-specific tooling.</td></tr>
+            <tr><td>Cloud and DevOps</td><td>Docker, Terraform, Kubernetes, YAML and cloud extensions.</td></tr>
+            <tr><td>Documentation</td><td>Markdown tooling and spelling assistance.</td></tr>
+            <tr><td>Minimal troubleshooting</td><td>A clean profile with only essential extensions.</td></tr>
+          </tbody>
+        </table>
+        <p>This avoids loading every extension into every workspace. Settings Sync can help keep supported preferences and profiles consistent across machines.</p>
+
+        <h2 id="git-collaboration">9. Git and team collaboration</h2>
+        <p>Use VS Code's Source Control panel for routine Git operations, but understand the underlying Git commands.</p>
+        <p>Useful commands include:</p>
+        <pre><code>git status
+git diff
+git diff --staged
+git log --oneline --decorate -10
+git switch -c feature/my-change
+git add .
+git commit -m "feat: add customer search"
+git push -u origin feature/my-change</code></pre>
+        <p>Before committing:</p>
+        <ul>
+          <li>Inspect the diff.</li>
+          <li>Check that no secrets, generated files or local configuration have been staged.</li>
+          <li>Run tests, linting and formatting checks.</li>
+          <li>Write a meaningful commit message.</li>
+          <li>Use a pull request for review when required by the project.</li>
+        </ul>
+        <p>A <code>.gitignore</code> file should exclude appropriate generated files, local environments and secret-bearing files. However, <code>.gitignore</code> does not remove a secret that has already been committed. If a secret is exposed, revoke or rotate it promptly.</p>
+
+        <h2 id="debugging-testing">10. Debugging and testing best practices</h2>
+        <p>Prefer the debugger over repeated <code>print()</code> or <code>console.log()</code> statements when investigating complex behaviour.</p>
+        <p>Use:</p>
+        <ul>
+          <li>Breakpoints to pause execution.</li>
+          <li>Conditional breakpoints for specific conditions.</li>
+          <li>The Variables and Watch panels to inspect state.</li>
+          <li>The Call Stack to trace execution.</li>
+          <li>Integrated terminals for test and build commands.</li>
+          <li>Test integration where supported by your language extension.</li>
+        </ul>
+        <p>Share project-level debug configurations through <code>.vscode/launch.json</code> when they are portable and safe. Avoid committing personal machine paths, tokens or sensitive environment values.</p>
+        <p>Editor debugging does not replace automated tests. Run the same test commands locally and in CI wherever possible.</p>
+
+        <h2 id="remote-development">11. Remote development and containers</h2>
+        <p>For cloud and infrastructure engineers, remote development can reduce differences between local and target environments.</p>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Method</th><th>Use case</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Remote - SSH</td><td>Work on a remote Linux or Unix host.</td></tr>
+            <tr><td>Dev Containers</td><td>Work inside a containerised development environment.</td></tr>
+            <tr><td>WSL</td><td>Use a Linux development environment on Windows.</td></tr>
+            <tr><td>Docker extension</td><td>Inspect and manage supported container workflows.</td></tr>
+          </tbody>
+        </table>
+        <p>Keep secrets outside the repository and use approved credential stores or environment injection. Never assume a container is secure merely because it isolates dependencies.</p>
+        <p>Before running tasks or scripts in an unfamiliar repository, review its configuration. VS Code Workspace Trust provides a Restricted Mode for potentially untrusted projects, but it is not a complete security boundary.</p>
+
+        <h2 id="ai-coding-assistants">12. AI coding assistants: use them responsibly</h2>
+        <p>AI coding tools can assist with code completion, explanations, tests, refactoring and debugging. They can also produce incorrect code, miss security concerns or make broad changes that are difficult to review.</p>
+        <p>Best practices:</p>
+        <ul>
+          <li>Follow your organisation's policy on AI tools and source-code sharing.</li>
+          <li>Do not submit credentials, private keys, customer records or confidential data without explicit authorisation.</li>
+          <li>Review generated changes as if they were written by another developer.</li>
+          <li>Run tests, linters, type checks and security scans.</li>
+          <li>Review dependency changes and shell commands before execution.</li>
+          <li>Use small, reviewable changes rather than accepting large unverified edits.</li>
+          <li>Treat instructions found in untrusted repositories and files as potentially malicious.</li>
+          <li>Keep human review and approval for production changes.</li>
+        </ul>
+        <p>AI assistance can accelerate development, but accountability for the resulting code remains with the engineering team.</p>
+
+        <h2 id="performance-productivity">13. Performance and productivity</h2>
+        <p>A responsive editor is more useful than a heavily customised one that consumes excessive resources.</p>
+        <p>Recommended practices:</p>
+        <ul>
+          <li>Keep the number of active extensions small.</li>
+          <li>Exclude large generated directories from search and file watching when appropriate.</li>
+          <li>Avoid opening unnecessarily large parent directories as workspaces.</li>
+          <li>Use the built-in Process Explorer and extension troubleshooting tools when performance degrades.</li>
+          <li>Review large files, generated logs and bundled assets separately when needed.</li>
+          <li>Use keyboard shortcuts and the Command Palette for repetitive operations.</li>
+          <li>Use snippets for recurring code patterns.</li>
+          <li>Learn multi-cursor editing, symbol navigation and workspace search.</li>
+          <li>Use profiles to separate unrelated development environments.</li>
+        </ul>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Action</th><th>Shortcut (Windows and Linux)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Command Palette</td><td><code>Ctrl+Shift+P</code></td></tr>
+            <tr><td>Quick Open</td><td><code>Ctrl+P</code></td></tr>
+            <tr><td>Search across files</td><td><code>Ctrl+Shift+F</code></td></tr>
+            <tr><td>Toggle terminal</td><td><code>Ctrl+`</code></td></tr>
+            <tr><td>Go to definition</td><td><code>F12</code></td></tr>
+            <tr><td>Find references</td><td><code>Shift+F12</code></td></tr>
+            <tr><td>Rename symbol</td><td><code>F2</code></td></tr>
+            <tr><td>Format document</td><td><code>Shift+Alt+F</code></td></tr>
+            <tr><td>Toggle line comment</td><td><code>Ctrl+/</code></td></tr>
+            <tr><td>Source Control view</td><td><code>Ctrl+Shift+G</code></td></tr>
+          </tbody>
+        </table>
+        <p>Shortcuts can differ by operating system, keyboard layout and custom keybindings.</p>
+
+        <h2 id="production-checklist">14. Production-ready development checklist</h2>
+        <p>Before considering a VS Code project setup ready for a professional team, verify the following:</p>
+        <ul>
+          <li>Project structure is documented.</li>
+          <li>Formatting and linting rules are defined.</li>
+          <li>Language and runtime versions are documented or pinned appropriately.</li>
+          <li>Required extensions are recommended through <code>.vscode/extensions.json</code>.</li>
+          <li>Workspace settings are minimal and portable.</li>
+          <li>Secrets and machine-specific configuration are excluded from Git.</li>
+          <li>Debug and task configurations do not expose sensitive information.</li>
+          <li>Tests and validation commands are documented.</li>
+          <li>CI enforces relevant linting, tests and build checks.</li>
+          <li>Extension publishers and permissions have been reviewed.</li>
+          <li>Untrusted repositories are inspected before execution.</li>
+          <li>AI tooling complies with organisational policy.</li>
+          <li>Production access follows least privilege.</li>
+          <li>Changes are reviewed before merging and deployment.</li>
+        </ul>
+
+        <h2 id="conclusion">Conclusion</h2>
+        <p>VS Code is most effective when its built-in capabilities, extensions, project settings and development practices work together.</p>
+        <p>Start with a small extension set, establish consistent formatting and linting, use Git and automated tests, create profiles for different roles, and treat extensions and AI tools as part of your software supply chain.</p>
+        <div class="cheat-callout"><strong>Takeaway:</strong> The goal is not to build the most customised editor. It is to create a secure, reproducible and efficient development environment that helps you deliver maintainable software.</div>
+
+        <h3>Official resources</h3>
+        <ul>
+          <li><a href="https://code.visualstudio.com/docs">VS Code documentation</a></li>
+          <li><a href="https://marketplace.visualstudio.com/VSCode">Extension Marketplace</a></li>
+          <li><a href="https://code.visualstudio.com/docs/configure/settings">User and workspace settings</a></li>
+          <li><a href="https://code.visualstudio.com/docs/configure/settings-sync">Settings Sync</a></li>
+          <li><a href="https://code.visualstudio.com/docs/configure/profiles">Profiles</a></li>
+          <li><a href="https://code.visualstudio.com/docs/editing/workspaces/workspace-trust">Workspace Trust</a></li>
+          <li><a href="https://code.visualstudio.com/docs/configure/extensions/extension-marketplace">Extension Marketplace guide</a></li>
+          <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">Python extension</a></li>
+          <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance">Pylance</a></li>
+        </ul>
+        <p><strong>My recommendation:</strong> Start with the extensions relevant to your current stack, such as Python/Pylance/Ruff, ESLint/Prettier, GitLens, Docker, Terraform and Remote - SSH. Add others only when a concrete development need justifies them.</p>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics &amp; Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">VS Code</span>
+            <span class="blog-tag">Development</span>
+            <span class="blog-tag">Productivity</span>
+            <span class="blog-tag">IDE</span>
+            <span class="blog-tag">DevOps</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">&larr; Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
