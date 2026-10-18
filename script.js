@@ -241,6 +241,54 @@
 
   initBlogSearch();
 
+  function initBlogSort() {
+    const sortSelect = document.getElementById('blogSort');
+    const blogGrid = document.getElementById('blogGrid');
+
+    if (!sortSelect || !blogGrid) return;
+
+    const cards = Array.from(blogGrid.querySelectorAll('.blog-card'));
+
+    const sortCards = (criteria) => {
+      const sorted = [...cards].sort((a, b) => {
+        const dateA = parseInt(a.dataset.date || '0', 10);
+        const dateB = parseInt(b.dataset.date || '0', 10);
+        const techA = parseInt(a.dataset.techDate || '0', 10);
+        const techB = parseInt(b.dataset.techDate || '0', 10);
+        const viewsA = parseInt(a.dataset.views || '0', 10);
+        const viewsB = parseInt(b.dataset.views || '0', 10);
+
+        switch (criteria) {
+          case 'date-desc':
+            return dateB - dateA;
+          case 'date-asc':
+            return dateA - dateB;
+          case 'views-desc':
+            return viewsB - viewsA;
+          case 'tech-date-desc':
+            return techB - techA;
+          case 'tech-date-asc':
+            return techA - techB;
+          default:
+            return 0;
+        }
+      });
+
+      sorted.forEach((card, index) => {
+        card.style.order = index;
+      });
+    };
+
+    sortSelect.addEventListener('change', (e) => {
+      sortCards(e.target.value);
+    });
+
+    // Initial sort (newest first)
+    sortCards('date-desc');
+  }
+
+  initBlogSort();
+
   function initBlogJumpTop() {
     const blogPost = document.querySelector('.blog-post');
     if (!blogPost) return;
@@ -412,6 +460,9 @@
         const readtime = card.querySelector('.blog-card-readtime');
 
         if (!meta || !readtime || counts[slug] === undefined) return;
+
+        // Store view count for sorting
+        card.dataset.views = counts[slug];
 
         const endGroup = document.createElement('div');
         endGroup.className = 'blog-card-meta-end';

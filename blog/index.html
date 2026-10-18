@@ -245,6 +245,19 @@
       color: var(--text-primary);
     }
 
+    .blog-sort {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .blog-sort select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+    }
+
     .blog-search__status {
       min-height: 1.25rem;
       margin-top: 10px;
@@ -339,11 +352,21 @@
           >
           <button type="button" id="blogSearchClear" class="blog-search__clear" aria-label="Clear search" hidden>&times;</button>
         </div>
+        <div class="blog-sort" style="margin-top: 16px;">
+          <label for="blogSort" class="blog-search__label">Sort by</label>
+          <select id="blogSort" class="blog-search__input" style="width: auto; padding-right: 40px;">
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="views-desc">Most Viewed</option>
+            <option value="tech-date-desc">Technology Release Date (Newest)</option>
+            <option value="tech-date-asc">Technology Release Date (Oldest)</option>
+          </select>
+        </div>
         <p class="blog-search__status" id="blogSearchStatus" aria-live="polite"></p>
       </div>
 
       <div class="blog-grid" id="blogGrid">
-        <a href="github-actions-bitbucket-pipelines-gitlab-ci-cd/index.html" class="blog-card">
+        <a href="github-actions-bitbucket-pipelines-gitlab-ci-cd/index.html" class="blog-card" data-date="1792089000" data-tech-date="1514745000" data-slug="github-actions-bitbucket-pipelines-gitlab-ci-cd">
           <span class="blog-card-tag">CI/CD</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">GitHub Actions</span> vs Bitbucket Pipelines vs GitLab CI/CD</h2>
           <p class="blog-card-excerpt">A production-ready CI/CD guide covering pipelines, security, deployment strategies, runners, supply-chain protection and platform selection.</p>
@@ -353,7 +376,7 @@
           </div>
         </a>
 
-        <a href="enterprise-production-stack/index.html" class="blog-card">
+        <a href="enterprise-production-stack/index.html" class="blog-card" data-date="1792089000" data-tech-date="1420050600" data-slug="enterprise-production-stack">
           <span class="blog-card-tag">Architecture</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">The Enterprise Production Stack:</span> Essential Tools for Secure, Reliable Windows and Linux Workloads</h2>
           <p class="blog-card-excerpt">Identity, email security, endpoint protection, networking, monitoring, observability, backup, automation and incident response for Windows and Linux workloads.</p>
@@ -363,7 +386,7 @@
           </div>
         </a>
 
-        <a href="visual-studio-code-best-practices/index.html" class="blog-card">
+        <a href="visual-studio-code-best-practices/index.html" class="blog-card" data-date="1792089000" data-tech-date="1420050600" data-slug="visual-studio-code-best-practices">
           <span class="blog-card-tag">IDE</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Visual Studio Code:</span> Best Practices, Essential Extensions and a Productive Development Workflow</h2>
           <p class="blog-card-excerpt">VS Code best practices, extensions, configuration, remote development, debugging, security and workflows for professional software development.</p>
@@ -373,7 +396,7 @@
           </div>
         </a>
 
-        <a href="git-github-gitflow-best-practices/index.html" class="blog-card">
+        <a href="git-github-gitflow-best-practices/index.html" class="blog-card" data-date="1792089000" data-tech-date="1104517800" data-slug="git-github-gitflow-best-practices">
           <span class="blog-card-tag">DevOps</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">GitHub, Gitflow</span> and Production-Ready Best Practices: A Complete Guide to Modern Software Delivery</h2>
           <p class="blog-card-excerpt">Git, GitHub and Gitflow best practices: branching strategies, CI/CD, security, releases, semantic versioning, monorepos, and a production-ready delivery workflow.</p>
@@ -383,7 +406,7 @@
           </div>
         </a>
 
-        <a href="nginx-production-best-practices/index.html" class="blog-card">
+        <a href="nginx-production-best-practices/index.html" class="blog-card" data-date="1792089000" data-tech-date="1072895400" data-slug="nginx-production-best-practices">
           <span class="blog-card-tag">DevOps</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Nginx Production Best Practices:</span> Security, Performance, High Availability and Operations</h2>
           <p class="blog-card-excerpt">Practical Nginx hardening for Linux and cloud: secure TLS, reverse proxy config, rate limits, worker tuning, WebSockets, logging, high availability, and a deployment checklist.</p>
@@ -393,7 +416,7 @@
           </div>
         </a>
 
-        <a href="web-servers-2026/index.html" class="blog-card">
+        <a href="web-servers-2026/index.html" class="blog-card" data-date="1792089000" data-tech-date="788898600" data-slug="web-servers-2026">
           <span class="blog-card-tag">Architecture</span>
           <h2 class="blog-card-title">Web Servers in 2026: <span class="google-us-gradient">Nginx vs Apache vs IIS</span> and How to Choose the Right Architecture</h2>
           <p class="blog-card-excerpt">Reverse proxies, TLS termination, WSGI/ASGI, containers, Kubernetes, HTTP/2/3, WebSockets, and a production deployment checklist for choosing the right web server.</p>
@@ -403,7 +426,7 @@
           </div>
         </a>
 
-        <a href="modern-api-architectures/index.html" class="blog-card">
+        <a href="modern-api-architectures/index.html" class="blog-card" data-date="1791916200" data-tech-date="946665000" data-slug="modern-api-architectures">
           <span class="blog-card-tag">Architecture</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Modern API Architectures:</span> REST, GraphQL, gRPC, WebSockets, Webhooks and Beyond</h2>
           <p class="blog-card-excerpt">An engineer's guide to API communication patterns, database abstraction, frontend/backend integration, microservices, monoliths, and modern repository strategies.</p>
@@ -413,7 +436,7 @@
           </div>
         </a>
 
-        <a href="linux-security-hardening-cheat-sheet/index.html" class="blog-card">
+        <a href="linux-security-hardening-cheat-sheet/index.html" class="blog-card" data-date="1790793000" data-tech-date="662668200" data-slug="linux-security-hardening-cheat-sheet">
           <span class="blog-card-tag">Reference</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Linux Security Hardening</span> Commands Cheat Sheet: RHEL, SLES and Ubuntu</h2>
           <p class="blog-card-excerpt">Distro-specific commands for enterprise Linux hardening: inventory, patching, SSH, UFW/firewalld, SELinux/AppArmor, permissions, auditd, AIDE, Lynis, and a CIS-style baseline checklist.</p>
@@ -423,7 +446,7 @@
           </div>
         </a>
 
-        <a href="react-fundamentals/index.html" class="blog-card">
+        <a href="react-fundamentals/index.html" class="blog-card" data-date="1764613800" data-tech-date="1356978600" data-slug="react-fundamentals">
           <span class="blog-card-tag">Frontend</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">React Fundamentals</span> and Cheatsheet: Architecture, Patterns, and Comparison with Angular, Vue, Svelte</h2>
           <p class="blog-card-excerpt">Component architecture, hooks, common patterns, routing, data fetching, tooling, a practical cheatsheet, and a comparison with Angular, Vue, and Svelte.</p>
@@ -433,7 +456,7 @@
           </div>
         </a>
 
-        <a href="python-backend/index.html" class="blog-card">
+        <a href="python-backend/index.html" class="blog-card" data-date="1764786600" data-tech-date="662668200" data-slug="python-backend">
           <span class="blog-card-tag">Backend</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Python Backend</span> Cheatsheet: Django, DRF, FastAPI, and Flask</h2>
           <p class="blog-card-excerpt">Architecture, async/sync tradeoffs, common patterns, authentication, validation, testing, deployment, a practical cheatsheet, and a framework comparison.</p>
@@ -443,7 +466,7 @@
           </div>
         </a>
 
-        <a href="typescript-cheatsheet/index.html" class="blog-card">
+        <a href="typescript-cheatsheet/index.html" class="blog-card" data-date="1764786600" data-tech-date="1325356200" data-slug="typescript-cheatsheet">
           <span class="blog-card-tag">Cheat Sheet</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">TypeScript vs JavaScript</span> Cheatsheet: Types, Tooling, and Migration</h2>
           <p class="blog-card-excerpt">TypeScript vs JavaScript fundamentals, the type system, interfaces, generics, utility types, tsconfig, migration, and a side-by-side framework/timing comparison.</p>
@@ -453,7 +476,7 @@
           </div>
         </a>
 
-        <a href="linux-security-hardening/index.html" class="blog-card">
+        <a href="linux-security-hardening/index.html" class="blog-card" data-date="1790793000" data-tech-date="662668200" data-slug="linux-security-hardening">
           <span class="blog-card-tag">Security</span>
           <h2 class="blog-card-title">Linux <span class="google-us-gradient">Security Hardening:</span> A Practical Enterprise Guide for Linux Administrators</h2>
           <p class="blog-card-excerpt">A practical hardening checklist covering assessment, patching, SSH, sudo, firewalls, SELinux/AppArmor, permissions, auditd, logging, CIS benchmarks, and file integrity monitoring.</p>
@@ -463,7 +486,7 @@
           </div>
         </a>
 
-        <a href="enterprise-linux-services/index.html" class="blog-card">
+        <a href="enterprise-linux-services/index.html" class="blog-card" data-date="1790793000" data-tech-date="662668200" data-slug="enterprise-linux-services">
           <span class="blog-card-tag">Linux</span>
           <h2 class="blog-card-title">Enterprise <span class="google-us-gradient">Linux Services:</span> Essential Services Every Administrator Should Know</h2>
           <p class="blog-card-excerpt">A comprehensive guide to the key enterprise Linux services: SSH, SFTP, NFS, SMB, HTTP, DNS, LDAP, rsync, chrony, logging, and firewall management.</p>
@@ -473,7 +496,7 @@
           </div>
         </a>
 
-        <a href="microservices-on-azure-aks/index.html" class="blog-card">
+        <a href="microservices-on-azure-aks/index.html" class="blog-card" data-date="1557945000" data-tech-date="1388514600" data-slug="microservices-on-azure-aks">
           <span class="blog-card-tag">Featured</span>
           <h2 class="blog-card-title">Microservices <span class="google-us-gradient">Architecture on Azure</span> Kubernetes Service</h2>
           <p class="blog-card-excerpt">How to design a production AKS platform with ingress, Azure Pipelines, managed data services, and Azure Active Directory integration.</p>
@@ -483,7 +506,7 @@
           </div>
         </a>
 
-        <a href="linux-networking-2026/index.html" class="blog-card">
+        <a href="linux-networking-2026/index.html" class="blog-card" data-date="1790793000" data-tech-date="662668200" data-slug="linux-networking-2026">
           <span class="blog-card-tag">Networking</span>
           <h2 class="blog-card-title">Linux Networking in 2026: <span class="google-us-gradient">RHEL vs SUSE vs Ubuntu</span>, CIDR and Real-World Troubleshooting</h2>
           <p class="blog-card-excerpt">Enterprise Linux networking configuration across distributions, CIDR notation, and a practical troubleshooting workflow for cloud administrators.</p>
@@ -493,7 +516,7 @@
           </div>
         </a>
 
-        <a href="entropy-eternal-energy/index.html" class="blog-card">
+        <a href="entropy-eternal-energy/index.html" class="blog-card" data-date="1786127400" data-tech-date="946665000" data-slug="entropy-eternal-energy">
           <span class="blog-card-tag">Featured</span>
           <h2 class="blog-card-title">Entropy and Eternal Energy: A Thermodynamic Necessity for <span class="google-us-gradient">One Transcendent God</span></h2>
           <p class="blog-card-excerpt">How the second law of thermodynamics, the arrow of time, and the need for eternal non-entropic energy imply a transcendent God identified across the Vedas, Bible, and Qur'an.</p>
@@ -503,7 +526,7 @@
           </div>
         </a>
 
-        <a href="mahabharata-human-body/index.html" class="blog-card">
+        <a href="mahabharata-human-body/index.html" class="blog-card" data-date="1725388200" data-tech-date="-9999999999" data-slug="mahabharata-human-body">
           <span class="blog-card-tag">Featured</span>
           <h2 class="blog-card-title">The <span class="google-us-gradient">Mahabharata</span> as the Human Body: A Biomedical Allegory of Jaya</h2>
           <p class="blog-card-excerpt">How the Mahabharata, originally called Jaya (Victory), serves as a biomedical allegory of the human body, mapping immunology, oncology, and cellular biology onto the Kurukshetra war.</p>
@@ -513,7 +536,7 @@
           </div>
         </a>
 
-        <a href="yhwh-lord-lord-lord/index.html" class="blog-card">
+        <a href="yhwh-lord-lord-lord/index.html" class="blog-card" data-date="1752258600" data-tech-date="-9999999999" data-slug="yhwh-lord-lord-lord">
           <span class="blog-card-tag">Theology</span>
           <h2 class="blog-card-title">Understanding יְהוָه <span class="google-us-gradient">and the Different Meanings of "LORD," "Lord," and "lord" in the Bible</span></h2>
           <p class="blog-card-excerpt">How the sacred name YHWH (Yahweh) differs from the titles Lord and lord in Scripture, with Hebrew, Greek, and Malayalam reflections.</p>
@@ -523,7 +546,7 @@
           </div>
         </a>
 
-        <a href="agentic-ai-in-india/index.html" class="blog-card">
+        <a href="agentic-ai-in-india/index.html" class="blog-card" data-date="1784226600" data-tech-date="1640975400" data-slug="agentic-ai-in-india">
           <span class="blog-card-tag">Featured</span>
           <h2 class="blog-card-title">My Vision for the Future of Agentic <span class="google-us-gradient">AI in India</span></h2>
           <p class="blog-card-excerpt">Exploring how Agentic AI can transform healthcare, education, governance, and agriculture across India with inclusive innovation.</p>
@@ -533,7 +556,7 @@
           </div>
         </a>
 
-        <a href="owning-google-us/index.html" class="blog-card">
+        <a href="owning-google-us/index.html" class="blog-card" data-date="1785781800" data-tech-date="883593000" data-slug="owning-google-us">
           <span class="blog-card-tag">Cybersecurity</span>
           <h2 class="blog-card-title">The Day I Legally Owned <span class="google-us-gradient">google.us</span> for a Short Time</h2>
           <p class="blog-card-excerpt">A 2015 story about ethical domain reconnaissance, registering <span class="google-us-gradient">google.us</span> after expiration, and choosing responsibility over exploitation.</p>
@@ -543,7 +566,7 @@
           </div>
         </a>
 
-        <a href="devops-ready-reckoner/index.html" class="blog-card">
+        <a href="devops-ready-reckoner/index.html" class="blog-card" data-date="1785781800" data-tech-date="1230748200" data-slug="devops-ready-reckoner">
           <span class="blog-card-tag">Reference</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">DevOps Ready Reckoner:</span> Essential Cheat Sheets</h2>
           <p class="blog-card-excerpt">Terraform, Kubernetes, kubectl, K3s, Docker, Docker Compose, Helm, Ansible, Git, and CI/CD cheat sheets in one bookmarkable guide.</p>
@@ -553,7 +576,7 @@
           </div>
         </a>
 
-        <a href="from-sql-to-vector-databases/index.html" class="blog-card">
+        <a href="from-sql-to-vector-databases/index.html" class="blog-card" data-date="1786559400" data-tech-date="-19800" data-slug="from-sql-to-vector-databases">
           <span class="blog-card-tag">Database</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">From SQL to Vector Databases:</span> Understanding the Modern Database Landscape</h2>
           <p class="blog-card-excerpt">A practical overview of the database evolution - SQL, NoSQL, distributed, time-series, graph, and vector databases - with architecture diagrams, example commands, and cloud comparisons.</p>
@@ -563,7 +586,7 @@
           </div>
         </a>
 
-        <a href="cloud-services-comparison/index.html" class="blog-card">
+        <a href="cloud-services-comparison/index.html" class="blog-card" data-date="1785781800" data-tech-date="1136053800" data-slug="cloud-services-comparison">
           <span class="blog-card-tag">Multi-Cloud</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Cloud Services Comparison:</span> AWS vs Azure vs GCP vs OCI</h2>
           <p class="blog-card-excerpt">Side-by-side mapping of compute, Kubernetes, storage, databases, networking, identity, security, and observability across all four major clouds.</p>
@@ -573,7 +596,7 @@
           </div>
         </a>
 
-        <a href="technology-trends-2026/index.html" class="blog-card">
+        <a href="technology-trends-2026/index.html" class="blog-card" data-date="1761589800" data-tech-date="1577817000" data-slug="technology-trends-2026">
           <span class="blog-card-tag">Innovation</span>
           <h2 class="blog-card-title">Technology Trends 2026: <span class="google-us-gradient">What's Shaping the Cloud Landscape</span></h2>
           <p class="blog-card-excerpt">AI integration, quantum computing, edge computing, and emerging architectural patterns.</p>
@@ -583,7 +606,7 @@
           </div>
         </a>
 
-        <a href="microservices-on-aws-eks/index.html" class="blog-card">
+        <a href="microservices-on-aws-eks/index.html" class="blog-card" data-date="1531074600" data-tech-date="1388514600" data-slug="microservices-on-aws-eks">
           <span class="blog-card-tag">AWS</span>
           <h2 class="blog-card-title">Microservices <span class="google-us-gradient">Architecture on Amazon EKS</span></h2>
           <p class="blog-card-excerpt">Reference architecture for running microservices on Amazon EKS with ALB ingress, ECR, and managed AWS data services.</p>
@@ -593,7 +616,7 @@
           </div>
         </a>
 
-        <a href="leading-technical-teams/index.html" class="blog-card">
+        <a href="leading-technical-teams/index.html" class="blog-card" data-date="1749666600" data-tech-date="946665000" data-slug="leading-technical-teams">
           <span class="blog-card-tag">Leadership</span>
           <h2 class="blog-card-title">Leading <span class="google-us-gradient">Technical Teams:</span> From IC to Manager</h2>
           <p class="blog-card-excerpt">Transitioning roles, mentoring, delegation, and building high-performing teams.</p>
@@ -603,7 +626,7 @@
           </div>
         </a>
 
-        <a href="microservices-on-gcp-gke/index.html" class="blog-card">
+        <a href="microservices-on-gcp-gke/index.html" class="blog-card" data-date="1600021800" data-tech-date="1388514600" data-slug="microservices-on-gcp-gke">
           <span class="blog-card-tag">Google Cloud</span>
           <h2 class="blog-card-title">Microservices <span class="google-us-gradient">Architecture on Google Kubernetes Engine</span></h2>
           <p class="blog-card-excerpt">Building resilient microservices on GKE with Cloud Load Balancing, Artifact Registry, and managed Google Cloud data services.</p>
@@ -613,7 +636,7 @@
           </div>
         </a>
 
-        <a href="growing-cloud-career/index.html" class="blog-card">
+        <a href="growing-cloud-career/index.html" class="blog-card" data-date="1741113000" data-tech-date="1136053800" data-slug="growing-cloud-career">
           <span class="blog-card-tag">Career</span>
           <h2 class="blog-card-title">Growing Your <span class="google-us-gradient">Cloud Engineering Career:</span> Skills and Mindset</h2>
           <p class="blog-card-excerpt">Continuous learning, certifications, building a strong professional network, and thought leadership.</p>
@@ -623,7 +646,7 @@
           </div>
         </a>
 
-        <a href="microservices-on-oci-oke/index.html" class="blog-card">
+        <a href="microservices-on-oci-oke/index.html" class="blog-card" data-date="1650220200" data-tech-date="1388514600" data-slug="microservices-on-oci-oke">
           <span class="blog-card-tag">Oracle Cloud</span>
           <h2 class="blog-card-title">Microservices <span class="google-us-gradient">Architecture on Oracle Kubernetes Engine</span></h2>
           <p class="blog-card-excerpt">Deploying microservices on OKE with OCI Load Balancer, OCIR, Autonomous Database, and OCI Vault for enterprise workloads.</p>
@@ -633,7 +656,7 @@
           </div>
         </a>
 
-        <a href="performance-optimization/index.html" class="blog-card">
+        <a href="performance-optimization/index.html" class="blog-card" data-date="1731868200" data-tech-date="946665000" data-slug="performance-optimization">
           <span class="blog-card-tag">Performance</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Performance Optimization:</span> From Application to Infrastructure</h2>
           <p class="blog-card-excerpt">Profiling, bottleneck identification, and scaling strategies at each layer.</p>
@@ -643,7 +666,7 @@
           </div>
         </a>
 
-        <a href="scalable-ml-pipelines/index.html" class="blog-card">
+        <a href="scalable-ml-pipelines/index.html" class="blog-card" data-date="1724265000" data-tech-date="1420050600" data-slug="scalable-ml-pipelines">
           <span class="blog-card-tag">AI/ML</span>
           <h2 class="blog-card-title">Building Scalable <span class="google-us-gradient">ML Pipelines</span> with Cloud Infrastructure</h2>
           <p class="blog-card-excerpt">Architecture patterns for ML workflows, data processing, and model serving in cloud-native environments.</p>
@@ -653,7 +676,7 @@
           </div>
         </a>
 
-        <a href="compliance-as-code/index.html" class="blog-card">
+        <a href="compliance-as-code/index.html" class="blog-card" data-date="1715625000" data-tech-date="1262284200" data-slug="compliance-as-code">
           <span class="blog-card-tag">Compliance</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Compliance as Code:</span> Automating Governance and Audits</h2>
           <p class="blog-card-excerpt">Policy as Code, automated compliance checks, and maintaining audit trails.</p>
@@ -663,7 +686,7 @@
           </div>
         </a>
 
-        <a href="contributing-open-source/index.html" class="blog-card">
+        <a href="contributing-open-source/index.html" class="blog-card" data-date="1706898600" data-tech-date="883593000" data-slug="contributing-open-source">
           <span class="blog-card-tag">Open Source</span>
           <h2 class="blog-card-title">Contributing to <span class="google-us-gradient">Open Source:</span> A Guide for Cloud Engineers</h2>
           <p class="blog-card-excerpt">Finding the right projects, making meaningful contributions, and building community.</p>
@@ -673,7 +696,7 @@
           </div>
         </a>
 
-        <a href="edge-computing-sovereign-infrastructure/index.html" class="blog-card">
+        <a href="edge-computing-sovereign-infrastructure/index.html" class="blog-card" data-date="1696789800" data-tech-date="1262284200" data-slug="edge-computing-sovereign-infrastructure">
           <span class="blog-card-tag">Edge Computing</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Edge Computing</span> and the Future of Sovereign Infrastructure</h2>
           <p class="blog-card-excerpt">Distributed computing at the edge, data residency, and building sovereign cloud appliances.</p>
@@ -683,7 +706,7 @@
           </div>
         </a>
 
-        <a href="data-pipelines-etl/index.html" class="blog-card">
+        <a href="data-pipelines-etl/index.html" class="blog-card" data-date="1689877800" data-tech-date="631132200" data-slug="data-pipelines-etl">
           <span class="blog-card-tag">Data Engineering</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Data Pipelines and ETL:</span> Modern Approaches</h2>
           <p class="blog-card-excerpt">Stream processing, batch processing, data warehousing, and real-time analytics.</p>
@@ -693,7 +716,7 @@
           </div>
         </a>
 
-        <a href="cloud-cost-optimization/index.html" class="blog-card">
+        <a href="cloud-cost-optimization/index.html" class="blog-card" data-date="1680719400" data-tech-date="1136053800" data-slug="cloud-cost-optimization">
           <span class="blog-card-tag">Cloud Cost</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Cloud Cost Optimization:</span> Beyond Just Shutting Down Resources</h2>
           <p class="blog-card-excerpt">Strategic approaches to FinOps, reserved instances, and building cost-conscious cloud cultures.</p>
@@ -703,7 +726,7 @@
           </div>
         </a>
 
-        <a href="multi-cloud-strategies/index.html" class="blog-card">
+        <a href="multi-cloud-strategies/index.html" class="blog-card" data-date="1669746600" data-tech-date="1262284200" data-slug="multi-cloud-strategies">
           <span class="blog-card-tag">Cloud Architecture</span>
           <h2 class="blog-card-title">Designing <span class="google-us-gradient">Multi-Cloud Strategies</span> for Enterprise Scale</h2>
           <p class="blog-card-excerpt">Best practices for building resilient, cost-effective multi-cloud architectures across AWS, Azure, GCP, and OCI.</p>
@@ -713,7 +736,7 @@
           </div>
         </a>
 
-        <a href="rto-rpo-business-continuity/index.html" class="blog-card">
+        <a href="rto-rpo-business-continuity/index.html" class="blog-card" data-date="1662575400" data-tech-date="315513000" data-slug="rto-rpo-business-continuity">
           <span class="blog-card-tag">Disaster Recovery</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">RTO and RPO:</span> Planning for Business Continuity</h2>
           <p class="blog-card-excerpt">Designing resilient architectures with recovery time and recovery point objectives in mind.</p>
@@ -723,7 +746,7 @@
           </div>
         </a>
 
-        <a href="green-cloud-sustainable-computing/index.html" class="blog-card">
+        <a href="green-cloud-sustainable-computing/index.html" class="blog-card" data-date="1642617000" data-tech-date="1136053800" data-slug="green-cloud-sustainable-computing">
           <span class="blog-card-tag">Sustainability</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Green Cloud:</span> Sustainable Computing and Carbon-Aware Architectures</h2>
           <p class="blog-card-excerpt">Building environmentally responsible infrastructure, energy-efficient operations, and sustainability metrics.</p>
@@ -733,7 +756,7 @@
           </div>
         </a>
 
-        <a href="mlops-operationalizing-models/index.html" class="blog-card">
+        <a href="mlops-operationalizing-models/index.html" class="blog-card" data-date="1638815400" data-tech-date="1514745000" data-slug="mlops-operationalizing-models">
           <span class="blog-card-tag">AI/MLOps</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">MLOps:</span> Operationalizing Machine Learning Models</h2>
           <p class="blog-card-excerpt">Model training, validation, deployment, monitoring, and continuous improvement cycles.</p>
@@ -743,7 +766,7 @@
           </div>
         </a>
 
-        <a href="zero-trust-architecture/index.html" class="blog-card">
+        <a href="zero-trust-architecture/index.html" class="blog-card" data-date="1628965800" data-tech-date="1262284200" data-slug="zero-trust-architecture">
           <span class="blog-card-tag">Security</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Zero Trust Architecture</span> in Cloud Environments</h2>
           <p class="blog-card-excerpt">Implementing zero-trust principles for identity, access control, and network security at enterprise scale.</p>
@@ -753,7 +776,7 @@
           </div>
         </a>
 
-        <a href="building-internal-developer-platforms/index.html" class="blog-card">
+        <a href="building-internal-developer-platforms/index.html" class="blog-card" data-date="1616610600" data-tech-date="1420050600" data-slug="building-internal-developer-platforms">
           <span class="blog-card-tag">Platform Engineering</span>
           <h2 class="blog-card-title">Building <span class="google-us-gradient">Internal Developer Platforms (IDP)</span></h2>
           <p class="blog-card-excerpt">Creating self-service infrastructure and standardized deployment platforms that empower development teams.</p>
@@ -763,7 +786,7 @@
           </div>
         </a>
 
-        <a href="kubernetes-networking-cni/index.html" class="blog-card">
+        <a href="kubernetes-networking-cni/index.html" class="blog-card" data-date="1591122600" data-tech-date="1388514600" data-slug="kubernetes-networking-cni">
           <span class="blog-card-tag">Kubernetes</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Kubernetes Networking:</span> Understanding CNI Plugins</h2>
           <p class="blog-card-excerpt">Deep dive into Container Networking Interface, overlay networks, and service mesh considerations.</p>
@@ -773,7 +796,7 @@
           </div>
         </a>
 
-        <a href="api-governance-at-scale/index.html" class="blog-card">
+        <a href="api-governance-at-scale/index.html" class="blog-card" data-date="1740076200" data-tech-date="1420050600" data-slug="api-governance-at-scale">
           <span class="blog-card-tag">API Management</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">API Governance at Scale:</span> Building Production-Ready APIs in the AI-Driven SDLC</h2>
           <p class="blog-card-excerpt">Embed governance into the AI-driven SDLC with contract-first design, OpenAPI, CI/CD gates, security, observability, and metrics — without slowing development.</p>
@@ -783,7 +806,7 @@
           </div>
         </a>
 
-        <a href="gitops-declarative-infrastructure/index.html" class="blog-card">
+        <a href="gitops-declarative-infrastructure/index.html" class="blog-card" data-date="1571682600" data-tech-date="1483209000" data-slug="gitops-declarative-infrastructure">
           <span class="blog-card-tag">DevOps</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">GitOps:</span> Declarative Infrastructure for Modern Teams</h2>
           <p class="blog-card-excerpt">How GitOps principles enable consistent, auditable, and automated infrastructure deployments at scale.</p>
@@ -793,7 +816,7 @@
           </div>
         </a>
 
-        <a href="serverless-when-to-use/index.html" class="blog-card">
+        <a href="serverless-when-to-use/index.html" class="blog-card" data-date="1541097000" data-tech-date="1388514600" data-slug="serverless-when-to-use">
           <span class="blog-card-tag">Serverless</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Serverless Computing:</span> When and When Not to Use It</h2>
           <p class="blog-card-excerpt">Vendor comparison across AWS Lambda, Azure Functions, GCP, OCI, and more. Cold starts, cost modeling, and when to pick serverless vs containers.</p>
@@ -803,7 +826,7 @@
           </div>
         </a>
 
-        <a href="observability-vs-monitoring/index.html" class="blog-card">
+        <a href="observability-vs-monitoring/index.html" class="blog-card" data-date="1505759400" data-tech-date="1262284200" data-slug="observability-vs-monitoring">
           <span class="blog-card-tag">Observability</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Observability vs. Monitoring:</span> Why the Distinction Matters</h2>
           <p class="blog-card-excerpt">Understanding logs, metrics, traces, and how to build truly observable systems.</p>
@@ -813,7 +836,7 @@
           </div>
         </a>
 
-        <a href="testing-infrastructure/index.html" class="blog-card">
+        <a href="testing-infrastructure/index.html" class="blog-card" data-date="1491244200" data-tech-date="946665000" data-slug="testing-infrastructure">
           <span class="blog-card-tag">Testing</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Testing Infrastructure:</span> Unit, Integration, and End-to-End Tests</h2>
           <p class="blog-card-excerpt">Building test pyramids, chaos engineering, and ensuring infrastructure reliability.</p>
@@ -823,7 +846,7 @@
           </div>
         </a>
 
-        <a href="cloud-networking-vpcs/index.html" class="blog-card">
+        <a href="cloud-networking-vpcs/index.html" class="blog-card" data-date="1486319400" data-tech-date="1230748200" data-slug="cloud-networking-vpcs">
           <span class="blog-card-tag">Networking</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Understanding Cloud Networking:</span> VPCs, Subnets, and Routing</h2>
           <p class="blog-card-excerpt">Network architecture patterns, VPC design, and connectivity between cloud and on-premises.</p>
@@ -833,7 +856,7 @@
           </div>
         </a>
 
-        <a href="iac-best-practices/index.html" class="blog-card">
+        <a href="iac-best-practices/index.html" class="blog-card" data-date="1477852200" data-tech-date="1388514600" data-slug="iac-best-practices">
           <span class="blog-card-tag">Infrastructure as Code</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">IaC Best Practices:</span> Terraform, CloudFormation, and Beyond</h2>
           <p class="blog-card-excerpt">State management, modularity, testing, and CI/CD integration for infrastructure code.</p>
@@ -843,7 +866,7 @@
           </div>
         </a>
 
-        <a href="devops-culture-beyond-tools/index.html" class="blog-card">
+        <a href="devops-culture-beyond-tools/index.html" class="blog-card" data-date="1465324200" data-tech-date="1230748200" data-slug="devops-culture-beyond-tools">
           <span class="blog-card-tag">DevOps Culture</span>
           <h2 class="blog-card-title">Building a <span class="google-us-gradient">DevOps Culture:</span> Beyond Tools and Automation</h2>
           <p class="blog-card-excerpt">Organizational change, breaking silos, and fostering shared responsibility for production.</p>
@@ -853,7 +876,7 @@
           </div>
         </a>
 
-        <a href="on-call-excellence/index.html" class="blog-card">
+        <a href="on-call-excellence/index.html" class="blog-card" data-date="1447266600" data-tech-date="946665000" data-slug="on-call-excellence">
           <span class="blog-card-tag">Incident Management</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">On-Call Excellence:</span> Building Effective Incident Response</h2>
           <p class="blog-card-excerpt">Runbooks, blameless postmortems, and creating sustainable on-call rotations.</p>
@@ -863,7 +886,7 @@
           </div>
         </a>
 
-        <a href="monolith-to-microservices/index.html" class="blog-card">
+        <a href="monolith-to-microservices/index.html" class="blog-card" data-date="1409077800" data-tech-date="1293820200" data-slug="monolith-to-microservices">
           <span class="blog-card-tag">Microservices</span>
           <h2 class="blog-card-title">From Monolith to <span class="google-us-gradient">Microservices:</span> A Pragmatic Migration Strategy</h2>
           <p class="blog-card-excerpt">Planning and executing microservices adoption without the operational chaos.</p>
@@ -873,7 +896,7 @@
           </div>
         </a>
 
-        <a href="sql-vs-nosql/index.html" class="blog-card">
+        <a href="sql-vs-nosql/index.html" class="blog-card" data-date="1394735400" data-tech-date="-19800" data-slug="sql-vs-nosql">
           <span class="blog-card-tag">Database</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">SQL vs. NoSQL:</span> Choosing the Right Database for Your Use Case</h2>
           <p class="blog-card-excerpt">Evaluation criteria for relational databases, document stores, time-series, and graph databases.</p>
@@ -883,7 +906,7 @@
           </div>
         </a>
 
-        <a href="bash-shell-scripting/index.html" class="blog-card">
+        <a href="bash-shell-scripting/index.html" class="blog-card" data-date="1384194600" data-tech-date="599596200" data-slug="bash-shell-scripting">
           <span class="blog-card-tag">Cheat Sheet</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Bash Shell Scripting:</span> A Ready Reckoner for Linux, Unix and Windows</h2>
           <p class="blog-card-excerpt">A practical cheat sheet covering Bash essentials, commands, control structures, functions, error handling, and a language comparison across Linux, Unix, and Windows.</p>
@@ -893,7 +916,7 @@
           </div>
         </a>
 
-        <a href="linux-fundamentals/index.html" class="blog-card">
+        <a href="linux-fundamentals/index.html" class="blog-card" data-date="1382293800" data-tech-date="662668200" data-slug="linux-fundamentals">
           <span class="blog-card-tag">Linux</span>
           <h2 class="blog-card-title"><span class="google-us-gradient">Linux Fundamentals:</span> The Foundation Every Cloud Engineer Needs</h2>
           <p class="blog-card-excerpt">Every Kubernetes node, every EC2 instance, every containerized workload. Underneath it all, Linux is running the show.</p>
