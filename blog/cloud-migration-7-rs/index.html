@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cloud migration 7 R's strategy: Rehost, Replatform, Repurchase, Refactor, Retire, Retain, Relocate. Decision framework, cost analysis, and migration patterns.">
+  <meta name="author" content="Antony Britto C J">
+  <title>Cloud Migration 7 R's Strategy: Complete Decision Framework | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Cloud Migration 7 R's Strategy: Complete Decision Framework</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 February 12, 2022</div>
+            <div class="blog-meta-item">⏱️ 15 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">The 7 R's of cloud migration — Rehost, Replatform, Repurchase, Refactor, Retire, Retain, Relocate — provide a structured framework for evaluating every workload. This guide includes decision criteria, effort vs. value analysis, cost models, and real-world pattern matching to choose the right strategy for each application.</p>
+
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#section1">The 7 R's at a Glance</a></li>
+            <li><a href="#section2">Decision Framework: How to Choose</a></li>
+            <li><a href="#section3">1. Rehost (Lift and Shift)</a></li>
+            <li><a href="#section4">2. Replatform (Lift, Tinker, and Shift)</a></li>
+            <li><a href="#section5">3. Repurchase (Drop and Shop)</a></li>
+            <li><a href="#section6">4. Refactor / Re-architect</a></li>
+            <li><a href="#section7">5. Relocate (Hypervisor-Level Lift and Shift)</a></li>
+            <li><a href="#section8">6. Retire</a></li>
+            <li><a href="#section9">7. Retain (Revisit Later)</a></li>
+            <li><a href="#section10">Migration Wave Planning</a></li>
+            <li><a href="#section11">Cost Comparison and ROI</a></li>
+            <li><a href="#section12">Common Anti-Patterns</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="section1">1. The 7 R's at a Glance</h2>
+        <p>The 7 R's originated from Gartner's 5 R's (2011), expanded by AWS to 6 R's, and later to 7 with the addition of Relocate. Each represents a distinct migration pathway with different effort, cost, risk, and cloud-native benefit profiles.</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>R</th><th>Name</th><th>Description</th><th>Effort</th><th>Cloud-Native Value</th><th>Typical Timeline</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Rehost</strong></td><td>Move VMs as-is to cloud (lift and shift)</td><td>Low</td><td>Minimal</td><td>Days–Weeks</td></tr>
+            <tr><td>2</td><td><strong>Replatform</strong></td><td>Minor optimizations during move (lift, tinker, shift)</td><td>Low–Medium</td><td>Moderate</td><td>Weeks–Months</td></tr>
+            <tr><td>3</td><td><strong>Repurchase</strong></td><td>Replace with SaaS/managed service (drop and shop)</td><td>Medium</td><td>High</td><td>Months</td></tr>
+            <tr><td>4</td><td><strong>Refactor</strong></td><td>Re-architect for cloud-native (re-architect)</td><td>High</td><td>Maximum</td><td>Months–Years</td></tr>
+            <tr><td>5</td><td><strong>Relocate</strong></td><td>Hypervisor-level move to cloud (VMware on AWS, etc.)</td><td>Low</td><td>Minimal</td><td>Days–Weeks</td></tr>
+            <tr><td>6</td><td><strong>Retire</strong></td><td>Decommission unused/legacy systems</td><td>Low</td><td>N/A (cost savings)</td><td>Days</td></tr>
+            <tr><td>7</td><td><strong>Retain</strong></td><td>Keep on-prem for now (revisit later)</td><td>None</td><td>None</td><td>Ongoing</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Key insight:</strong> Most enterprises use a mix. A typical portfolio: 40% Rehost, 25% Replatform, 15% Refactor, 10% Repurchase, 5% Retire, 5% Retain. Relocate is newer and applies mainly to VMware-heavy shops.</div>
+
+        <h2 id="section2">2. Decision Framework: How to Choose</h2>
+        <p>Use this decision tree for each workload. Score each dimension 1–5, then map to the recommended R.</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Dimension</th><th>Score 1–2: Favor Rehost/Relocate</th><th>Score 3: Favor Replatform</th><th>Score 4–5: Favor Refactor/Repurchase</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Business criticality</td><td>Low (dev/test, internal tools)</td><td>Medium (supporting systems)</td><td>High (customer-facing, revenue-generating)</td></tr>
+            <tr><td>Technical debt</td><td>Low (modern stack, well-documented)</td><td>Medium (some legacy components)</td><td>High (spaghetti code, outdated frameworks)</td></tr>
+            <tr><td>Scalability needs</td><td>Predictable, stable load</td><td>Seasonal or moderate growth</td><td>Unpredictable, elastic, bursty</td></tr>
+            <tr><td>Time to migrate</td><td>Urgent (datacenter exit deadline)</td><td>Flexible (6–12 months)</td><td>Strategic (12+ months, phased)</td></tr>
+            <tr><td>Team cloud maturity</td><td>Low (learning phase)</td><td>Medium (some certifications)</td><td>High (cloud-native experienced)</td></tr>
+            <tr><td>Compliance constraints</td><td>Strict (data residency, certifications)</td><td>Moderate (some controls needed)</td><td>Flexible (cloud-native controls OK)</td></tr>
+            <tr><td>License portability</td><td>BYOL available, simple</td><td>Complex licensing</td><td>SaaS replacement preferred</td></tr>
+            <tr><td>Dependency complexity</td><td>Few, well-understood</td><td>Moderate coupling</td><td>Tight coupling, chatty interfaces</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Quick mapping</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Total Score</th><th>Primary Strategy</th><th>Secondary Option</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>8–16</td><td>Rehost / Relocate</td><td>Replatform</td></tr>
+            <tr><td>17–28</td><td>Replatform</td><td>Rehost or Refactor</td></tr>
+            <tr><td>29–40</td><td>Refactor / Repurchase</td><td>Replatform</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Exception:</strong> Retire and Retain are business decisions, not technical scores. If an app has zero users or is being replaced, Retire regardless of score. If compliance or latency mandates on-prem, Retain.</div>
+
+        <h2 id="section3">3. Rehost (Lift and Shift)</h2>
+        <p>Move virtual machines to cloud with minimal changes. The VM image, OS, middleware, and application stay identical.</p>
+
+        <h3>When to use</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Good Fit</th><th>Avoid When</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Datacenter exit deadline < 6 months</td><td>Application needs auto-scaling</td></tr>
+            <tr><td>Legacy apps with no source code / vendor support ended</td><td>High licensing costs (Windows/SQL per-core)</td></tr>
+            <tr><td>Large portfolio, need quick wins</td><td>Architecture prevents horizontal scaling</td></tr>
+            <tr><td>Compliance requires identical environment</td><td>Technical debt blocks future changes</td></tr>
+            <tr><td>Team lacks cloud skills</td><td>Cost optimization is primary driver</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Tools and patterns</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Provider</th><th>Migration Tool</th><th>Target</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AWS</td><td>AWS Application Migration Service (MGN), VM Import/Export</td><td>EC2</td></tr>
+            <tr><td>Azure</td><td>Azure Migrate, Azure Site Recovery</td><td>Azure VMs</td></tr>
+            <tr><td>GCP</td><td>Migrate for Compute Engine, Transfer Appliance</td><td>Compute Engine</td></tr>
+            <tr><td>OCI</td><td>OCI VM Migration, Ravello</td><td>OCI Compute</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Post-migration optimizations</h3>
+        <ul>
+          <li>Right-size instance types (often 30–50% over-provisioned on-prem)</li>
+          <li>Enable automated stop/start for non-prod</li>
+          <li>Move to reserved instances / savings plans after validation</li>
+          <li>Implement backup, monitoring, and patching via cloud services</li>
+        </ul>
+
+        <div class="cheat-callout"><strong>Warning:</strong> Rehost alone often increases costs 20–40% vs. on-prem due to lack of right-sizing and cloud premium pricing. Plan Replatform follow-up within 6 months.</div>
+
+        <h2 id="section4">4. Replatform (Lift, Tinker, and Shift)</h2>
+        <p>Make targeted optimizations during migration without changing the core architecture. Typical changes: OS upgrade, containerization, managed database, managed cache.</p>
+
+        <h3>Common replatforming moves</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>From (On-Prem)</th><th>To (Cloud)</th><th>Effort</th><th>Benefit</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Self-managed MySQL/PostgreSQL</td><td>RDS / Cloud SQL / Azure Database</td><td>Medium</td><td>Automated backups, patching, HA, read replicas</td></tr>
+            <tr><td>Self-managed Redis/Memcached</td><td>ElastiCache / Memorystore / Azure Cache</td><td>Low</td><td>Managed scaling, multi-AZ</td></tr>
+            <tr><td>VM-based app server</td><td>Container (ECS/Fargate, Cloud Run, ACA)</td><td>Medium</td><td>Faster deploy, density, portability</td></tr>
+            <tr><td>Windows Server 2012/2016</td><td>Windows Server 2022 / Azure Arc</td><td>Low</td><td>Security updates, extended support</td></tr>
+            <tr><td>Physical load balancer (F5, Netscaler)</td><td>ALB / NLB / Cloud Load Balancing</td><td>Medium</td><td>Native integration, auto-scaling</td></tr>
+            <tr><td>On-prem message queue (MQ, RabbitMQ)</td><td>SQS/SNS / PubSub / Service Bus</td><td>Medium</td><td>Serverless, infinite scale</td></tr>
+            <tr><td>File server (SMB/NFS)</td><td>EFS / Azure Files / Filestore</td><td>Low</td><td>Managed, multi-AZ, scalable</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Containerization as replatforming</h3>
+        <pre><code># Typical replatforming path: VM → Container → Managed Service
+
+# 1. Containerize existing app
+FROM ubuntu:22.04
+COPY app /app
+RUN apt-get update && apt-get install -y openjdk-17-jre
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
+# 2. Deploy to managed container service
+# AWS: ECS Fargate or EKS
+# GCP: Cloud Run (simplest) or GKE Autopilot
+# Azure: Container Apps
+
+# 3. Swap backing services to managed equivalents
+# application.properties
+spring.datasource.url=jdbc:postgresql://${RDS_ENDPOINT}:5432/db
+spring.redis.host=${ELASTICACHE_ENDPOINT}</code></pre>
+
+        <div class="cheat-callout"><strong>Rule of thumb:</strong> Replatform when you can achieve 80% of cloud-native benefits with 20% of refactor effort. Database and cache migration to managed services is the highest ROI replatforming move.</div>
+
+        <h2 id="section5">5. Repurchase (Drop and Shop)</h2>
+        <p>Replace custom or legacy software with SaaS or managed cloud services. Trade customization for operational simplicity.</p>
+
+        <h3>Common repurchase scenarios</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Legacy System</th><th>SaaS / Managed Replacement</th><th>Migration Complexity</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Custom CRM / Siebel / On-prem Salesforce</td><td>Salesforce, HubSpot, Dynamics 365</td><td>High (data migration, process change)</td></tr>
+            <tr><td>Homegrown HRIS / PeopleSoft / Workday on-prem</td><td>Workday, BambooHR, Rippling</td><td>High</td></tr>
+            <tr><td>On-prem ERP (SAP ECC, Oracle EBS)</td><td>SAP S/4HANA Cloud, Oracle Cloud ERP</td><td>Very High</td></tr>
+            <tr><td>Custom BI / Cognos / BusinessObjects</td><td>Looker, Power BI, Tableau Cloud</td><td>Medium</td></tr>
+            <tr><td>Self-hosted GitLab / Jenkins / Bamboo</td><td>GitHub Enterprise, GitLab SaaS, CircleCI</td><td>Low–Medium</td></tr>
+            <tr><td>On-prem monitoring (Nagios, SolarWinds)</td><td>Datadog, New Relic, Grafana Cloud</td><td>Low</td></tr>
+            <tr><td>Custom identity / LDAP / ADFS</td><td>Okta, Entra ID, Ping Identity</td><td>Medium</td></tr>
+            <tr><td>On-prem email (Exchange, Notes)</td><td>Microsoft 365, Google Workspace</td><td>Low</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Data migration considerations</h3>
+        <ul>
+          <li><strong>Schema mapping:</strong> Legacy schemas rarely map 1:1. Plan for data transformation layer.</li>
+          <li><strong>Historical data:</strong> Migrate last 2–3 years hot; archive rest to cold storage (S3 Glacier, Azure Archive).</li>
+          <li><strong>Delta sync:</strong> Use CDC (Change Data Capture) for near-zero downtime cutover.</li>
+          <li><strong>Validation:</strong> Automated row-count, checksum, and business-rule validation post-migration.</li>
+        </ul>
+
+        <div class="cheat-callout"><strong>Decision factor:</strong> Repurchase when TCO of SaaS (license + implementation + ongoing) < TCO of maintaining custom software over 3–5 years. Factor in opportunity cost of engineering time.</div>
+
+        <h2 id="section6">6. Refactor / Re-architect</h2>
+        <p>Fundamentally redesign the application for cloud-native principles: microservices, serverless, event-driven, immutable infrastructure.</p>
+
+        <h3>Refactoring patterns</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Pattern</th><th>From</th><th>To</th><th>When to Apply</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Strangler Fig</td><td>Monolith</td><td>Microservices</td><td>Incremental migration, domain boundaries clear</td></tr>
+            <tr><td>Decompose by Business Capability</td><td>Monolith</td><td>Domain-driven services</td><td>Team autonomy needed, different scaling profiles</td></tr>
+            <tr><td>Event-Driven Architecture</td><td>Sync REST/RPC</td><td>Async events (Kafka, EventBridge)</td><td>Loose coupling, audit trail, replay needed</td></tr>
+            <tr><td>Serverless First</td><td>Always-on services</td><td>Functions + managed services</td><td>Bursty traffic, event-driven, low ops overhead</td></tr>
+            <tr><td>CQRS / Event Sourcing</td><td>CRUD monolith</td><td>Separate read/write models</td><td>Complex domain, audit requirements, temporal queries</td></tr>
+            <tr><td>Sidecar / Service Mesh</td><td>Library-based cross-cutting</td><td>Infrastructure-level (Istio, Linkerd)</td><td>Polyglot, observability, security standardization</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Refactor decision checklist</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Question</th><th>Yes → Refactor</th><th>No → Replatform/Rehost</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Will this app exist > 3 years?</td><td>Invest in cloud-native</td><td>Minimal changes</td></tr>
+            <tr><td>Does it need elastic scaling?</td><td>Refactor for serverless/k8s</td><td>Fixed capacity OK</td></tr>
+            <tr><td>Are deployments painful/slow?</td><td>Containerize + CI/CD</td><td>Current process acceptable</td></tr>
+            <tr><td>Is tech stack end-of-life?</td><td>Rewrite on modern stack</td><td>Supported for years</td></tr>
+            <tr><td>Team ready to own services?</td><td>Microservices viable</td><td>Keep modular monolith</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Start small:</strong> Pick one bounded context with clear domain boundaries, high change rate, and scalability needs. Prove the pattern, build team confidence, then expand.</div>
+
+        <h2 id="section7">7. Relocate (Hypervisor-Level Lift and Shift)</h2>
+        <p>Move entire VMware clusters to cloud without converting VMs. The hypervisor runs in cloud (VMware Cloud on AWS, Azure VMware Solution, Google Cloud VMware Engine, Oracle Cloud VMware Solution).</p>
+
+        <h3>When Relocate makes sense</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Scenario</th><th>Why Relocate</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>VMware-heavy estate (90%+ virtualized)</td><td>Preserve operational tools, scripts, processes</td></tr>
+            <tr><td>Hardware refresh deadline < 6 months</td><td>Fastest exit, no app changes</td></tr>
+            <tr><td>Strict compliance (validated VMware configs)</td><td>Maintain compliance posture</td></tr>
+            <tr><td>Team has deep VMware, no cloud skills</td><td>Leverage existing expertise</td></tr>
+            <tr><td>vSphere-specific features (DRS, HA, vMotion)</td><td>Feature parity in cloud</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Provider comparison</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Provider</th><th>Service</th><th>Key Characteristics</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AWS</td><td>VMware Cloud on AWS (VMC)</td><td>Native AWS integration, bare metal hosts, min 3 hosts</td></tr>
+            <tr><td>Azure</td><td>Azure VMware Solution (AVS)</td><td>Azure integration, min 3 hosts, Microsoft support</td></tr>
+            <tr><td>GCP</td><td>Google Cloud VMware Engine (GCVE)</td><td>Anthos integration, min 3 nodes</td></tr>
+            <tr><td>OCI</td><td>Oracle Cloud VMware Solution</td><td>OCI integration, flexible scaling, BYOL</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Relocate → Replatform path</h3>
+        <p>Relocate is rarely the end state. Typical evolution:</p>
+        <ol>
+          <li><strong>Month 0–3:</strong> Relocate VMware cluster to cloud</li>
+          <li><strong>Month 3–6:</strong> Identify workloads for Replatform (databases → RDS, caches → ElastiCache)</li>
+          <li><strong>Month 6–12:</strong> Migrate replatformed workloads off VMware hosts</li>
+          <li><strong>Month 12+:</strong> Downsize VMware cluster, eventually decommission</li>
+        </ol>
+
+        <div class="cheat-callout"><strong>Cost warning:</strong> Relocate has highest compute cost (dedicated bare metal). Plan to reduce VMware footprint within 12–18 months. Use as bridge, not destination.</div>
+
+        <h2 id="section8">8. Retire</h2>
+        <p>Decommission applications that no longer deliver value. The fastest migration is the one you don't do.</p>
+
+        <h3>Retirement criteria</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Signal</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Zero active users (check logs, APM)</td><td>Immediate retire</td></tr>
+            <tr><td>Duplicate functionality (mergers, shadow IT)</td><td>Consolidate, retire redundant</td></tr>
+            <tr><td>Replaced by SaaS (Repurchase done)</td><td>Retire legacy after validation</td></tr>
+            <tr><td>Maintenance cost > business value</td><td>Retire or replace</td></tr>
+            <tr><td>Security vulnerabilities unpatchable</td><td>Urgent retire</td></tr>
+            <tr><td>Compliance scope reduction</td><td>Retire to reduce audit surface</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Retirement checklist</h3>
+        <ul>
+          <li>Data retention policy: what to keep, for how long, where (archive to cold storage)</li>
+          <li>Dependency mapping: ensure no hidden consumers (API calls, batch jobs, reports)</li>
+          <li>Contract termination: vendor licenses, support agreements, hardware leases</li>
+          <li>DNS/redirect: graceful shutdown with redirect to replacement</li>
+          <li>Documentation: record retirement decision, data location, contacts for audit</li>
+        </ul>
+
+        <div class="cheat-callout"><strong>Typical yield:</strong> 10–20% of portfolio qualifies for Retire. Average cost savings: 15–30% of infrastructure spend.</div>
+
+        <h2 id="section9">9. Retain (Revisit Later)</h2>
+        <p>Keep on-premises for now with a defined revisit trigger. Not a "no" — a "not now."</p>
+
+        <h3>Valid Retain reasons</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Reason</th><th>Revisit Trigger</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Data sovereignty / residency laws</td><td>Cloud region opens in required jurisdiction</td></tr>
+            <tr><td>Ultra-low latency (< 1ms) to on-prem systems</td><td>Edge / local zone available</td></tr>
+            <tr><td>Mainframe / specialized hardware dependency</td><td>Cloud mainframe service available (AWS Mainframe Modernization, etc.)</td></tr>
+            <tr><td>Massive data gravity (PB+ datasets)</td><td>Direct Connect / Interconnect cost drops</td></tr>
+            <tr><td>Recent large investment (hardware refresh < 2 yrs)</td><td>Depreciation complete</td></tr>
+            <tr><td>Regulatory certification in progress</td><td>Certification complete</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Retain governance</h3>
+        <ul>
+          <li>Document the reason, owner, and revisit date (max 12 months)</li>
+          <li>Apply cloud-like operations on-prem: IaC, monitoring, automation</li>
+          <li>Plan connectivity: Direct Connect, VPN, or Interconnect for hybrid</li>
+          <li>Include in cloud cost models (shadow IT prevention)</li>
+        </ul>
+
+        <h2 id="section10">10. Migration Wave Planning</h2>
+        <p>Don't migrate everything at once. Structure into waves by risk, complexity, and business value.</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Wave</th><th>Focus</th><th>Strategy Mix</th><th>Duration</th><th>Goal</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Wave 0: Foundation</td><td>Landing zone, networking, security, operations</td><td>N/A</td><td>4–8 weeks</td><td>Ready to receive workloads</td></tr>
+            <tr><td>Wave 1: Quick Wins</td><td>Low-risk, non-prod, dev/test</td><td>Rehost, Retire</td><td>4–6 weeks</td><td>Validate process, build confidence</td></tr>
+            <tr><td>Wave 2: Core Migration</td><td>Production apps, grouped by domain</td><td>Rehost, Replatform</td><td>8–16 weeks</td><td>Migrate bulk of estate</td></tr>
+            <tr><td>Wave 3: Optimization</td><td>High-value apps needing cloud-native</td><td>Refactor, Repurchase</td><td>12+ weeks</td><td>Maximize cloud value</td></tr>
+            <tr><td>Wave 4: Legacy/Complex</td><td>Mainframes, specialized, retained</td><td>Relocate, Retain</td><td>Ongoing</td><td>Address remaining</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Wave sizing:</strong> Limit Wave 1 to 5–10 apps. Wave 2 in batches of 10–20. Each wave ends with retrospective: update runbooks, adjust estimates, celebrate wins.</div>
+
+        <h2 id="section11">11. Cost Comparison and ROI</h2>
+        <p>Migration strategy directly impacts 3-year TCO. This model assumes 100 VMs, mixed workloads.</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Strategy</th><th>Migration Cost</th><th>Annual Run Rate (Yr 1)</th><th>Annual Run Rate (Yr 3)</th><th>3-Year TCO</th><th>Cloud-Native Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Rehost only</td><td>$200K</td><td>$1.2M</td><td>$1.0M (RI)</td><td>$3.4M</td><td>Low</td></tr>
+            <tr><td>Rehost + Replatform (DB, cache)</td><td>$500K</td><td>$900K</td><td>$700K</td><td>$2.8M</td><td>Medium</td></tr>
+            <tr><td>Replatform + Selective Refactor</td><td>$1.2M</td><td>$800K</td><td>$500K</td><td>$2.6M</td><td>High</td></tr>
+            <tr><td>Repurchase (SaaS for 30% apps)</td><td>$800K</td><td>$700K</td><td>$600K</td><td>$2.5M</td><td>High</td></tr>
+            <tr><td>Relocate (VMware on AWS)</td><td>$300K</td><td>$1.5M</td><td>$1.3M</td><td>$4.1M</td><td>Low</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Hidden costs to model</h3>
+        <ul>
+          <li><strong>Data egress:</strong> $0.02–0.09/GB between clouds/regions</li>
+          <li><strong>Dual-run period:</strong> 2–4 weeks running both environments</li>
+          <li><strong>Team training:</strong> $5–15K/person for certifications</li>
+          <li><strong>Migration tooling:</strong> $10–50K for specialized tools</li>
+          <li><strong>Validation/testing:</strong> 20–30% of migration effort</li>
+          <li><strong>Rollback plan:</strong> Capacity reserved for fallback</li>
+        </ul>
+
+        <div class="cheat-callout"><strong>ROI reality:</strong> Pure Rehost often has negative ROI Year 1. Break-even typically Year 2–3 after right-sizing, reserved instances, and replatforming. Refactor/Repurchase shows ROI faster for high-value apps.</div>
+
+        <h2 id="section12">12. Common Anti-Patterns</h2>
+        <p>Avoid these migration failure modes:</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Anti-Pattern</th><th>Symptom</th><th>Remediation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Rehost everything, optimize never</td><td>Cloud bill 40% higher than on-prem</td><td>Mandate Replatform wave within 6 months</td></tr>
+            <tr><td>Refactor without business case</td><td>6-month project, zero user value</td><td>Tie refactor to measurable outcome (cost, speed, scale)</td></tr>
+            <tr><td>Lift-and-shift monolith to k8s</td><td>Complexity explosion, no benefit</td><td>Containerize on managed service (Cloud Run, Fargate)</td></tr>
+            <tr><td>Ignore Retire</td><td>Paying for zombie apps</td><td>Automated discovery + quarterly retirement review</td></tr>
+            <tr><td>No landing zone before Wave 1</td><td>Security gaps, inconsistent tagging, no guardrails</td><td>Wave 0 complete before any migration</td></tr>
+            <tr><td>Big bang cutover</td><td>Weekend migration, Monday outage</td><td>Blue/green, canary, CDC sync, feature flags</td></tr>
+            <tr><td>Skills gap ignored</td><td>Team burns out, shadow IT grows</td><td>Training budget = 10% of migration budget</td></tr>
+            <tr><td>License compliance missed</td><td>Audit penalties, unexpected costs</td><td>License assessment in Wave 0</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Success metrics dashboard</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Metric</th><th>Target</th><th>Frequency</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Migration velocity (apps/week)</td><td>> 2 after Wave 1</td><td>Weekly</td></tr>
+            <tr><td>Cost per migrated app</td><td>< $50K (Rehost), < $200K (Replatform)</td><td>Per wave</td></tr>
+            <tr><td>Post-migration incidents</td><td>< 5% increase vs baseline</td><td>30 days post-cutover</td></tr>
+            <tr><td>Right-sizing achieved</td><td>> 80% of apps</td><td>90 days post-migration</td></tr>
+            <tr><td>Retirement rate</td><td>> 10% of portfolio</td><td>Quarterly</td></tr>
+            <tr><td>Team cloud certifications</td><td>100% associate level</td><td>Quarterly</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Final guidance:</strong> The 7 R's are a portfolio tool, not a single-choice tool. Every application gets its own R. Revisit decisions annually — what was Retain last year may be Replatform this year as cloud services evolve. Document the rationale for each decision; it becomes your migration architecture decision record (ADR).</div>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics & Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Cloud Migration</span>
+            <span class="blog-tag">Strategy</span>
+            <span class="blog-tag">Architecture</span>
+            <span class="blog-tag">AWS</span>
+            <span class="blog-tag">Azure</span>
+            <span class="blog-tag">GCP</span>
+            <span class="blog-tag">OCI</span>
+            <span class="blog-tag">Cost Optimization</span>
+            <span class="blog-tag">DevOps</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
