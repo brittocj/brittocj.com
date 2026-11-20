@@ -45,10 +45,11 @@
 
         <p class="blog-lead">A single reference page for the tools DevOps engineers reach for daily: Terraform, Kubernetes, kubectl, K3s, Docker, Docker Compose, Helm, Ansible, Git, and CI/CD. Bookmark it, search it, and use it when you need the command or YAML skeleton fast.</p>
 
-        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+<nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
           <h2>Contents</h2>
           <ol>
             <li><a href="#terraform">Terraform</a></li>
+            <li><a href="#pulumi">Pulumi</a></li>
             <li><a href="#kubectl">kubectl</a></li>
             <li><a href="#kubernetes-yaml">Kubernetes YAML</a></li>
             <li><a href="#k3s">K3s</a></li>
@@ -56,8 +57,8 @@
             <li><a href="#docker-compose">Docker Compose</a></li>
             <li><a href="#helm">Helm</a></li>
             <li><a href="#ansible">Ansible</a></li>
-            <li><a href="#git-cicd">Git &amp; CI/CD</a></li>
-            <li><a href="#linux-shell">Linux &amp; Shell</a></li>
+            <li><a href="#git-cicd">Git & CI/CD</a></li>
+            <li><a href="#linux-shell">Linux & Shell</a></li>
             <li><a href="#observability">Observability</a></li>
           </ol>
         </nav>
@@ -158,6 +159,184 @@ output "bucket_name" {
         </table>
 
         <div class="cheat-callout"><strong>Production tip:</strong> Always run <code>terraform plan</code> in CI before merge. Store state remotely (S3 + DynamoDB lock, Terraform Cloud, or equivalent). Never commit <code>.tfstate</code> or secrets in <code>.tfvars</code>.</div>
+
+        <h2 id="pulumi">Pulumi Cheat Sheet</h2>
+        <p>Pulumi manages infrastructure through general-purpose programming languages (TypeScript, Python, Go, C#, Java, YAML) instead of a custom DSL. It uses the Terraform provider ecosystem under the hood.</p>
+
+        <h3>CLI essentials</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Command</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>pulumi new typescript</code></td><td>Create new project (typescript, python, go, csharp, java, yaml)</td></tr>
+            <tr><td><code>pulumi login</code></td><td>Log in to Pulumi Cloud or self-hosted backend</td></tr>
+            <tr><td><code>pulumi config set key value</code></td><td>Set configuration value</td></tr>
+            <tr><td><code>pulumi config set --secret key value</code></td><td>Set secret configuration value</td></tr>
+            <tr><td><code>pulumi preview</code></td><td>Preview changes before apply</td></tr>
+            <tr><td><code>pulumi up</code></td><td>Create or update resources</td></tr>
+            <tr><td><code>pulumi up --yes</code></td><td>Apply without interactive prompt</td></tr>
+            <tr><td><code>pulumi destroy</code></td><td>Remove all managed resources</td></tr>
+            <tr><td><code>pulumi stack ls</code></td><td>List stacks (dev/stage/prod)</td></tr>
+            <tr><td><code>pulumi stack select &lt;name&gt;</code></td><td>Select stack</td></tr>
+            <tr><td><code>pulumi stack init &lt;name&gt;</code></td><td>Create new stack</td></tr>
+            <tr><td><code>pulumi refresh</code></td><td>Refresh state from real world</td></tr>
+            <tr><td><code>pulumi import &lt;type&gt; &lt;id&gt;</code></td><td>Import existing resource into state</td></tr>
+            <tr><td><code>pulumi state unprotect</code></td><td>Unprotect stack from accidental deletion</td></tr>
+            <tr><td><code>pulumi cancel</code></td><td>Cancel in-progress update</td></tr>
+            <tr><td><code>pulumi about</code></td><td>Show version and backend info</td></tr>
+            <tr><td><code>pulumi plugin install resource aws v6.0.0</code></td><td>Install provider plugin</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Project structure</h3>
+        <pre><code>project/
+├── Pulumi.yaml              # Project metadata
+├── Pulumi.dev.yaml          # Dev stack config
+├── Pulumi.prod.yaml         # Prod stack config
+├── package.json             # Dependencies (TypeScript/JS)
+├── tsconfig.json            # TypeScript config
+├── index.ts                 # Entry point
+├── infrastructure/
+│   ├── vpc.ts               # VPC resources
+│   ├── eks.ts               # EKS cluster
+│   └── rds.ts               # Database
+└── node_modules/</code></pre>
+
+        <h3>TypeScript skeleton</h3>
+        <pre><code>// Pulumi.yaml
+name: my-project
+runtime: nodejs
+description: My Pulumi project
+
+// index.ts
+import * as pulumi from "@pulumi/pulumi";
+import * as aws from "@pulumi/aws";
+import * as awsx from "@pulumi/awsx";
+
+const config = new pulumi.Config();
+const environment = config.get("environment") || "dev";
+const region = config.get("aws:region") || "us-east-1";
+
+const tags = {
+  Environment: environment,
+  ManagedBy: "pulumi",
+  Project: pulumi.getProject(),
+};
+
+// VPC using awsx (higher-level abstraction)
+const vpc = new awsx.ec2.Vpc(`${environment}-vpc`, {
+  numberOfAvailabilityZones: 2,
+  tags,
+});
+
+// EKS cluster
+const cluster = new awsx.eks.Cluster(`${environment}-cluster`, {
+  vpcId: vpc.vpcId,
+  subnetIds: vpc.privateSubnetIds,
+  instanceType: "m5.large",
+  desiredCapacity: 2,
+  minSize: 1,
+  maxSize: 5,
+  tags,
+});
+
+// RDS database
+const db = new aws.rds.Instance(`${environment}-db`, {
+  engine: "postgres",
+  instanceClass: "db.t3.micro",
+  allocatedStorage: 20,
+  dbName: "app",
+  username: "admin",
+  password: config.requireSecret("dbPassword"),
+  vpcSecurityGroupIds: [vpc.defaultSecurityGroupId],
+  dbSubnetGroupName: vpc.privateSubnetIds.map(s => s.id).join(","),
+  tags,
+});
+
+// Export outputs
+export const kubeconfig = cluster.kubeconfig;
+export const dbEndpoint = db.endpoint;
+export const vpcId = vpc.vpcId;</code></pre>
+
+        <h3>Python skeleton</h3>
+        <pre><code># __main__.py
+import pulumi
+import pulumi_aws as aws
+import pulumi_awsx as awsx
+
+config = pulumi.Config()
+environment = config.get("environment") or "dev"
+region = config.get("aws:region") or "us-east-1"
+
+tags = {
+    "Environment": environment,
+    "ManagedBy": "pulumi",
+    "Project": pulumi.get_project(),
+}
+
+# VPC
+vpc = awsx.ec2.Vpc(f"{environment}-vpc",
+    number_of_availability_zones=2,
+    tags=tags)
+
+# EKS Cluster
+cluster = awsx.eks.Cluster(f"{environment}-cluster",
+    vpc_id=vpc.vpc_id,
+    subnet_ids=vpc.private_subnet_ids,
+    instance_type="m5.large",
+    desired_capacity=2,
+    min_size=1,
+    max_size=5,
+    tags=tags)
+
+# RDS
+db = aws.rds.Instance(f"{environment}-db",
+    engine="postgres",
+    instance_class="db.t3.micro",
+    allocated_storage=20,
+    db_name="app",
+    username="admin",
+    password=config.require_secret("dbPassword"),
+    vpc_security_group_ids=[vpc.default_security_group_id],
+    tags=tags)
+
+pulumi.export("kubeconfig", cluster.kubeconfig)
+pulumi.export("db_endpoint", db.endpoint)
+pulumi.export("vpc_id", vpc.vpc_id)</code></pre>
+
+        <h3>Common patterns</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Pattern</th><th>Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Conditional resource</td><td><code>if config.getBool("enableRedis"): redis = ...</code></td></tr>
+            <tr><td>Loop with list</td><td><code>[Bucket(f"b-{i}") for i in range(3)]</code></td></tr>
+            <tr><td>ComponentResource</td><td><code>class MyVpc(pulumi.ComponentResource): ...</code></td></tr>
+            <tr><td>StackReference</td><td><code>ref = StackReference("org/proj/prod")</code></td></tr>
+            <tr><td>Output.apply</td><td><code>output.apply(v => v.id)</code></td></tr>
+            <tr><td>Dynamic Provider</td><td><code>new DynamicProvider("name", resource)</code></td></tr>
+            <tr><td>Secret handling</td><td><code>config.requireSecret("key")</code></td></tr>
+            <tr><td>Provider alias</td><td><code>Provider("aws", alias="eu", region="eu-west-1")</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>State backends</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Backend</th><th>Login Command</th><th>Use Case</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pulumi Cloud (managed)</td><td><code>pulumi login</code></td><td>Default, free for individuals</td></tr>
+            <tr><td>Self-hosted (S3)</td><td><code>pulumi login s3://my-bucket</code></td><td>Team, air-gapped, compliance</td></tr>
+            <tr><td>Self-hosted (Azure Blob)</td><td><code>pulumi login azblob://container</code></td><td>Azure-native</td></tr>
+            <tr><td>Self-hosted (GCS)</td><td><code>pulumi login gs://bucket</code></td><td>GCP-native</td></tr>
+            <tr><td>Local (filesystem)</td><td><code>pulumi login file:///path</code></td><td>Testing, offline</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Production tip:</strong> Always run <code>pulumi preview</code> in CI before merge. Use <code>pulumi stack init</code> per environment. Protect production stacks with <code>pulumi stack protect</code>. Prefer ComponentResources for reusable modules. Use <code>awsx</code> for higher-level abstractions (VPC, EKS, ECS).</div>
 
         <h2 id="kubectl">kubectl Cheat Sheet</h2>
         <p><code>kubectl</code> is the CLI for Kubernetes. Install it separately or use it through K3s (<code>k3s kubectl</code>).</p>
@@ -516,8 +695,8 @@ docker logs -f myapp</code></pre>
             <tr><th>Command</th><th>Purpose</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>docker pause <container_name_or_id></code></td><td>Suspend all processes in a container (freezes cgroup)</td></tr>
-            <tr><td><code>docker unpause <container_name_or_id></code></td><td>Resume all processes in a paused container</td></tr>
+            <tr><td><code>docker pause &lt;container_name_or_id&gt;</code></td><td>Suspend all processes in a container (freezes cgroup)</td></tr>
+            <tr><td><code>docker unpause &lt;container_name_or_id&gt;</code></td><td>Resume all processes in a paused container</td></tr>
           </tbody>
         </table>
 
