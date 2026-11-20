@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SOLID principles explained with practical Python examples: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.">
+  <meta name="author" content="Antony Britto C J">
+  <title>SOLID Principles: Practical Guide with Python Examples | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">SOLID Principles: Practical Guide with Python Examples</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 March 15, 2021</div>
+            <div class="blog-meta-item">⏱️ 18 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">SOLID is an acronym for five design principles that make software more maintainable, extensible, and testable. This guide explains each principle with real-world Python code, showing violations and their fixes.</p>
+
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#section1">S — Single Responsibility Principle</a></li>
+            <li><a href="#section2">O — Open/Closed Principle</a></li>
+            <li><a href="#section3">L — Liskov Substitution Principle</a></li>
+            <li><a href="#section4">I — Interface Segregation Principle</a></li>
+            <li><a href="#section5">D — Dependency Inversion Principle</a></li>
+            <li><a href="#section6">Putting It All Together</a></li>
+            <li><a href="#section7">Anti-Patterns and Code Smells</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="section1">1. S — Single Responsibility Principle (SRP)</h2>
+        <p><strong>Definition:</strong> A class should have only one reason to change — one responsibility, one job.</p>
+
+        <h3>Violation</h3>
+        <pre><code>class UserManager:
+    def __init__(self, db_connection):
+        self.db = db_connection
+    
+    def create_user(self, email, password):
+        # Validation logic
+        if "@" not in email:
+            raise ValueError("Invalid email")
+        if len(password) < 8:
+            raise ValueError("Password too short")
+        
+        # Hashing logic
+        hashed = hashlib.sha256(password.encode()).hexdigest()
+        
+        # Database logic
+        self.db.execute(
+            "INSERT INTO users (email, password_hash) VALUES (?, ?)",
+            (email, hashed)
+        )
+        
+        # Email logic
+        self.send_welcome_email(email)
+        
+        # Logging logic
+        logger.info(f"User created: {email}")
+    
+    def send_welcome_email(self, email):
+        smtp = smtplib.SMTP("smtp.gmail.com", 587)
+        smtp.sendmail("noreply@app.com", email, "Welcome!")
+    
+    def generate_report(self):
+        users = self.db.query("SELECT * FROM users")
+        return pd.DataFrame(users).to_csv()</code></pre>
+
+        <p>This class handles: validation, hashing, database, email, logging, reporting — 6 reasons to change.</p>
+
+        <h3>Fix: Separate Responsibilities</h3>
+        <pre><code># Responsibility 1: Validation
+class UserValidator:
+    def validate(self, email, password):
+        if "@" not in email:
+            raise ValueError("Invalid email")
+        if len(password) < 8:
+            raise ValueError("Password too short")
+
+# Responsibility 2: Password hashing
+class PasswordHasher:
+    def hash(self, password):
+        return hashlib.sha256(password.encode()).hexdigest()
+    
+    def verify(self, password, hashed):
+        return self.hash(password) == hashed
+
+# Responsibility 3: Data access
+class UserRepository:
+    def __init__(self, db_connection):
+        self.db = db_connection
+    
+    def save(self, user):
+        self.db.execute(
+            "INSERT INTO users (email, password_hash) VALUES (?, ?)",
+            (user.email, user.password_hash)
+        )
+    
+    def find_by_email(self, email):
+        row = self.db.execute(
+            "SELECT * FROM users WHERE email = ?", (email,)
+        ).fetchone()
+        return User(row) if row else None
+
+# Responsibility 4: Email service
+class EmailService:
+    def send_welcome(self, email):
+        smtp = smtplib.SMTP("smtp.gmail.com", 587)
+        smtp.sendmail("noreply@app.com", email, "Welcome!")
+
+# Responsibility 5: Orchestration (thin coordinator)
+class UserService:
+    def __init__(self, validator, hasher, repo, email, logger):
+        self.validator = validator
+        self.hasher = hasher
+        self.repo = repo
+        self.email = email
+        self.logger = logger
+    
+    def register(self, email, password):
+        self.validator.validate(email, password)
+        hashed = self.hasher.hash(password)
+        user = User(email=email, password_hash=hashed)
+        self.repo.save(user)
+        self.email.send_welcome(email)
+        self.logger.info(f"User created: {email}")</code></pre>
+
+        <div class="cheat-callout"><strong>Testability win:</strong> Each class can be unit tested in isolation. Mock the repository, email service, and logger when testing <code>UserService.register()</code>.</div>
+
+        <h2 id="section2">2. O — Open/Closed Principle (OCP)</h2>
+        <p><strong>Definition:</strong> Software entities should be open for extension but closed for modification. Add new behavior without changing existing code.</p>
+
+        <h3>Violation</h3>
+        <pre><code>class PaymentProcessor:
+    def process(self, payment):
+        if payment.type == "credit_card":
+            self.charge_credit_card(payment)
+        elif payment.type == "paypal":
+            self.charge_paypal(payment)
+        elif payment.type == "bank_transfer":
+            self.charge_bank_transfer(payment)
+        elif payment.type == "crypto":  # Adding new type requires modifying this class
+            self.charge_crypto(payment)
+    
+    def charge_credit_card(self, payment): ...
+    def charge_paypal(self, payment): ...
+    def charge_bank_transfer(self, payment): ...
+    def charge_crypto(self, payment): ...</code></pre>
+
+        <h3>Fix: Strategy Pattern</h3>
+        <pre><code>from abc import ABC, abstractmethod
+
+# Abstraction: payment method interface
+class PaymentMethod(ABC):
+    @abstractmethod
+    def charge(self, amount, details):
+        pass
+
+# Concrete implementations
+class CreditCardPayment(PaymentMethod):
+    def charge(self, amount, details):
+        # Stripe, etc.
+        return stripe.Charge.create(amount=amount, source=details["token"])
+
+class PayPalPayment(PaymentMethod):
+    def charge(self, amount, details):
+        return paypal.execute_payment(details["payment_id"])
+
+class BankTransferPayment(PaymentMethod):
+    def charge(self, amount, details):
+        return ach.initiate_transfer(details["account"], amount)
+
+# New payment methods added WITHOUT touching existing code
+class CryptoPayment(PaymentMethod):
+    def charge(self, amount, details):
+        return bitcoin.send(details["wallet"], amount)
+
+# Processor depends on abstraction, not concretions
+class PaymentProcessor:
+    def __init__(self):
+        self.methods = {}
+    
+    def register(self, payment_type, method):
+        self.methods[payment_type] = method
+    
+    def process(self, payment):
+        method = self.methods.get(payment.type)
+        if not method:
+            raise ValueError(f"Unknown payment type: {payment.type}")
+        return method.charge(payment.amount, payment.details)
+
+# Usage
+processor = PaymentProcessor()
+processor.register("credit_card", CreditCardPayment())
+processor.register("paypal", PayPalPayment())
+processor.register("bank_transfer", BankTransferPayment())
+processor.register("crypto", CryptoPayment())  # Added without modifying processor</code></pre>
+
+        <h3>Alternative: Plugin Registry</h3>
+        <pre><code>class PaymentRegistry:
+    _methods = {}
+    
+    @classmethod
+    def register(cls, payment_type):
+        def decorator(cls_method):
+            cls._methods[payment_type] = cls_method()
+            return cls_method
+        return decorator
+    
+    @classmethod
+    def get(cls, payment_type):
+        return cls._methods.get(payment_type)
+
+@PaymentRegistry.register("credit_card")
+class CreditCardPayment(PaymentMethod):
+    def charge(self, amount, details): ...
+
+@PaymentRegistry.register("crypto")
+class CryptoPayment(PaymentMethod):
+    def charge(self, amount, details): ...
+
+# Auto-discovery via entry points or imports
+import payments  # Registers all @PaymentRegistry.register classes</code></pre>
+
+        <div class="cheat-callout"><strong>Key insight:</strong> OCP is achieved through abstraction (interfaces/abstract classes) and polymorphism. The core logic depends on contracts, not implementations.</div>
+
+        <h2 id="section3">3. L — Liskov Substitution Principle (LSP)</h2>
+        <p><strong>Definition:</strong> Subtypes must be substitutable for their base types without breaking correctness. If S is a subtype of T, objects of type T can be replaced with objects of type S.</p>
+
+        <h3>Violation: Square-Rectangle Problem</h3>
+        <pre><code>class Rectangle:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+    
+    def set_width(self, w):
+        self.width = w
+    
+    def set_height(self, h):
+        self.height = h
+    
+    def area(self):
+        return self.width * self.height
+
+class Square(Rectangle):
+    def __init__(self, size):
+        super().__init__(size, size)
+    
+    def set_width(self, w):
+        self.width = w
+        self.height = w  # Violates LSP: changes height too!
+    
+    def set_height(self, h):
+        self.width = h
+        self.height = h
+
+# This function expects Rectangle behavior
+def resize_to_area(rectangle, target_area):
+    rectangle.set_width(int(target_area ** 0.5))
+    # For Rectangle: height unchanged, area = w * h
+    # For Square: height also changed, area = w * w
+    return rectangle.area()
+
+r = Rectangle(4, 5)
+print(resize_to_area(r, 100))  # Works: 10 * 5 = 50
+
+s = Square(5)
+print(resize_to_area(s, 100))  # Breaks: 10 * 10 = 100 != expected</code></pre>
+
+        <h3>Fix: Composition over Inheritance</h3>
+        <pre><code>from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Rectangle(Shape):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+    
+    def area(self):
+        return self.width * self.height
+
+class Square(Shape):
+    def __init__(self, size):
+        self.size = size
+    
+    def area(self):
+        return self.size * self.size
+
+# Both are Shapes, but neither inherits from the other
+# No behavioral contract violation
+
+# If you need width/height operations, use protocols
+from typing import Protocol
+
+class Resizable(Protocol):
+    def set_width(self, w): ...
+    def set_height(self, h): ...
+
+def resize(rect: Resizable, w, h):
+    rect.set_width(w)
+    rect.set_height(h)</code></pre>
+
+        <h3>Real-World Example: Bird Hierarchy</h3>
+        <pre><code># Violation: Penguin "is a" Bird but can't fly
+class Bird:
+    def fly(self):
+        return "Flying!"
+
+class Penguin(Bird):
+    def fly(self):
+        raise Exception("Penguins can't fly!")  # Breaks LSP
+
+# Fix: Separate flying capability
+class Bird:
+    def lay_eggs(self): ...
+
+class FlyingBird(Bird):
+    def fly(self): ...
+
+class Penguin(Bird):
+    def swim(self): ...
+
+# Or use composition
+class FlyBehavior:
+    def fly(self): ...
+
+class FlyWithWings(FlyBehavior):
+    def fly(self): return "Flying with wings!"
+
+class FlyNoWay(FlyBehavior):
+    def fly(self): return "Can't fly"
+
+class Bird:
+    def __init__(self, fly_behavior: FlyBehavior):
+        self.fly_behavior = fly_behavior
+    
+    def fly(self):
+        return self.fly_behavior.fly()
+
+# Both satisfy the Bird contract
+eagle = Bird(FlyWithWings())
+penguin = Bird(FlyNoWay())</code></pre>
+
+        <div class="cheat-callout"><strong>Rule of thumb:</strong> If a subclass needs to override a method to throw an exception or do nothing, LSP is violated. Prefer composition and interfaces over deep inheritance hierarchies.</div>
+
+        <h2 id="section4">4. I — Interface Segregation Principle (ISP)</h2>
+        <p><strong>Definition:</strong> Clients should not be forced to depend on interfaces they don't use. Many small interfaces are better than one large interface.</p>
+
+        <h3>Violation: Fat Interface</h3>
+        <pre><code>from abc import ABC, abstractmethod
+
+class IWorker(ABC):
+    @abstractmethod
+    def work(self): pass
+    
+    @abstractmethod
+    def eat(self): pass
+    
+    @abstractmethod
+    def sleep(self): pass
+
+class HumanWorker(IWorker):
+    def work(self): print("Working...")
+    def eat(self): print("Eating lunch")
+    def sleep(self): print("Sleeping at night")
+
+class RobotWorker(IWorker):
+    def work(self): print("Processing tasks...")
+    def eat(self): raise NotImplementedError("Robots don't eat!")
+    def sleep(self): raise NotImplementedError("Robots don't sleep!")</code></pre>
+
+        <h3>Fix: Segregated Interfaces</h3>
+        <pre><code>from abc import ABC, abstractmethod
+
+# Small, focused interfaces
+class IWorkable(ABC):
+    @abstractmethod
+    def work(self): pass
+
+class IEatable(ABC):
+    @abstractmethod
+    def eat(self): pass
+
+class ISleepable(ABC):
+    @abstractmethod
+    def sleep(self): pass
+
+# Implement only what you need
+class HumanWorker(IWorkable, IEatable, ISleepable):
+    def work(self): print("Working...")
+    def eat(self): print("Eating lunch")
+    def sleep(self): print("Sleeping at night")
+
+class RobotWorker(IWorkable):  # Only implements what it needs
+    def work(self): print("Processing tasks...")
+
+# Functions depend on specific interfaces
+def manage_work(worker: IWorkable):
+    worker.work()
+
+def lunch_break(eater: IEatable):
+    eater.eat()
+
+manage_work(HumanWorker())  # Works
+manage_work(RobotWorker())  # Works
+lunch_break(HumanWorker())  # Works
+# lunch_break(RobotWorker())  # Type error - correctly caught</code></pre>
+
+        <h3>Real-World: Printer Interface</h3>
+        <pre><code># Fat interface (violation)
+class IMultiFunctionPrinter:
+    def print(self, doc): pass
+    def scan(self, doc): pass
+    def fax(self, doc): pass
+    def staple(self, doc): pass
+
+# Segregated (fix)
+class IPrinter:
+    def print(self, doc): pass
+
+class IScanner:
+    def scan(self, doc): pass
+
+class IFax:
+    def fax(self, doc): pass
+
+class IStapler:
+    def staple(self, doc): pass
+
+# Compose capabilities
+class BasicPrinter(IPrinter):
+    def print(self, doc): ...
+
+class AllInOnePrinter(IPrinter, IScanner, IFax, IStapler):
+    def print(self, doc): ...
+    def scan(self, doc): ...
+    def fax(self, doc): ...
+    def staple(self, doc): ...
+
+# Client depends only on what it needs
+def print_document(printer: IPrinter, doc):
+    printer.print(doc)
+
+def scan_document(scanner: IScanner, doc):
+    scanner.scan(doc)
+
+# Old printer works for printing, not forced to implement scan
+print_document(BasicPrinter(), "doc.pdf")  # Works</code></pre>
+
+        <div class="cheat-callout"><strong>Guideline:</strong> If implementing an interface requires raising <code>NotImplementedError</code> or returning dummy values, the interface is too fat. Split it.</div>
+
+        <h2 id="section5">5. D — Dependency Inversion Principle (DIP)</h2>
+        <p><strong>Definition:</strong> High-level modules should not depend on low-level modules. Both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.</p>
+
+        <h3>Violation: Direct Dependency</h3>
+        <pre><code># High-level module
+class UserService:
+    def __init__(self):
+        self.db = MySQLDatabase()  # Depends on concrete implementation
+        self.email = SMTPEmailService()
+    
+    def register(self, email, password):
+        self.db.save(User(email, hash(password)))
+        self.email.send(email, "Welcome!")
+
+# Low-level modules
+class MySQLDatabase:
+    def save(self, user): ...
+
+class SMTPEmailService:
+    def send(self, to, message): ...
+
+# Problems:
+# 1. Can't swap MySQL for PostgreSQL without changing UserService
+# 2. Can't test UserService without real database/email
+# 3. UserService coupled to implementation details</code></pre>
+
+        <h3>Fix: Depend on Abstractions</h3>
+        <pre><code>from abc import ABC, abstractmethod
+
+# Abstractions (interfaces)
+class IUserRepository(ABC):
+    @abstractmethod
+    def save(self, user): pass
+    @abstractmethod
+    def find_by_email(self, email): pass
+
+class IEmailService(ABC):
+    @abstractmethod
+    def send(self, to, subject, body): pass
+
+# High-level module depends on abstractions
+class UserService:
+    def __init__(self, repo: IUserRepository, email: IEmailService):
+        self.repo = repo
+        self.email = email
+    
+    def register(self, email, password):
+        if self.repo.find_by_email(email):
+            raise ValueError("Email exists")
+        user = User(email=email, password_hash=hash(password))
+        self.repo.save(user)
+        self.email.send(email, "Welcome", "Thanks for joining!")
+
+# Low-level implementations depend on abstractions
+class MySQLUserRepository(IUserRepository):
+    def __init__(self, connection):
+        self.conn = connection
+    
+    def save(self, user):
+        self.conn.execute("INSERT INTO users ...", (user.email, user.password_hash))
+    
+    def find_by_email(self, email):
+        return self.conn.query("SELECT * FROM users WHERE email=?", (email,))
+
+class PostgreSQLUserRepository(IUserRepository):
+    def __init__(self, pool):
+        self.pool = pool
+    # ... different implementation, same interface
+
+class SMTPEmailService(IEmailService):
+    def send(self, to, subject, body):
+        smtp = smtplib.SMTP("smtp.gmail.com")
+        smtp.sendmail("noreply@app.com", to, f"Subject: {subject}\n{body}")
+
+class SendGridEmailService(IEmailService):
+    def send(self, to, subject, body):
+        sg = sendgrid.SendGridAPIClient(api_key=os.getenv("SENDGRID_KEY"))
+        sg.send(Email(to, subject, body))
+
+# Composition root (wiring)
+def create_user_service():
+    db = get_database_connection()
+    repo = MySQLUserRepository(db)  # or PostgreSQLUserRepository(db)
+    email = SendGridEmailService()  # or SMTPEmailService()
+    return UserService(repo, email)</code></pre>
+
+        <h3>Dependency Injection Container (Optional)</h3>
+        <pre><code>class Container:
+    def __init__(self):
+        self._services = {}
+        self._factories = {}
+    
+    def register(self, interface, factory):
+        self._factories[interface] = factory
+    
+    def singleton(self, interface, factory):
+        self._factories[interface] = lambda: factory()
+        self._services[interface] = None
+    
+    def get(self, interface):
+        if interface in self._services:
+            if self._services[interface] is None:
+                self._services[interface] = self._factories[interface]()
+            return self._services[interface]
+        return self._factories[interface]()
+
+# Usage
+container = Container()
+container.singleton(IUserRepository, lambda: MySQLUserRepository(get_db()))
+container.singleton(IEmailService, SendGridEmailService)
+container.register(UserService, lambda: UserService(
+    container.get(IUserRepository),
+    container.get(IEmailService)
+))
+
+# Get fully wired service
+service = container.get(UserService)</code></pre>
+
+        <div class="cheat-callout"><strong>Testability win:</strong> In tests, inject fakes/mocks:
+<pre><code>class FakeRepo(IUserRepository):
+    def __init__(self): self.users = {}
+    def save(self, u): self.users[u.email] = u
+    def find_by_email(self, e): return self.users.get(e)
+
+class FakeEmail(IEmailService):
+    def __init__(self): self.sent = []
+    def send(self, to, subj, body): self.sent.append((to, subj, body))
+
+def test_register():
+    repo = FakeRepo()
+    email = FakeEmail()
+    service = UserService(repo, email)
+    service.register("test@example.com", "password123")
+    assert len(email.sent) == 1
+    assert email.sent[0][0] == "test@example.com"
+</code></pre>
+</div>
+
+        <h2 id="section6">6. Putting It All Together: E-Commerce Example</h2>
+        <p>A cohesive example showing all five principles in a realistic order processing system.</p>
+
+        <pre><code># ========== ABSTRACTIONS (DIP) ==========
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import List, Protocol
+from enum import Enum
+
+class PaymentMethod(Protocol):  # OCP: extensible
+    def charge(self, amount: float) -> bool: ...
+
+class IOrderRepository(ABC):  # DIP
+    @abstractmethod
+    def save(self, order): pass
+    @abstractmethod
+    def find(self, order_id): pass
+
+class IInventoryService(ABC):  # ISP: separate from payment
+    @abstractmethod
+    def reserve(self, items): pass
+    @abstractmethod
+    def release(self, items): pass
+
+class INotificationService(ABC):  # ISP: separate from email/SMS
+    @abstractmethod
+    def notify(self, user_id, message): pass
+
+# ========== ENTITIES (SRP: single responsibility) ==========
+@dataclass
+class OrderItem:
+    product_id: str
+    quantity: int
+    price: float
+
+@dataclass
+class Order:
+    id: str
+    user_id: str
+    items: List[OrderItem]
+    status: str = "pending"
+    total: float = 0
+
+# ========== IMPLEMENTATIONS (DIP: depend on abstractions) ==========
+class CreditCardPayment:
+    def charge(self, amount): 
+        # stripe.charge(...)
+        return True
+
+class PayPalPayment:
+    def charge(self, amount): 
+        # paypal.charge(...)
+        return True
+
+class SQLOrderRepository(IOrderRepository):
+    def __init__(self, db): self.db = db
+    def save(self, order): self.db.save(order)
+    def find(self, order_id): return self.db.find(order_id)
+
+class RedisInventoryService(IInventoryService):
+    def reserve(self, items): 
+        # redis.decr for each item
+        return True
+    def release(self, items): 
+        # redis.incr for each item
+        pass
+
+class EmailNotificationService(INotificationService):
+    def notify(self, user_id, message):
+        # smtp.send(...)
+        pass
+
+# ========== SERVICES (SRP: each has one job) ==========
+class PricingService:
+    def calculate_total(self, items): 
+        return sum(i.price * i.quantity for i in items)
+
+class OrderValidator:
+    def validate(self, order):
+        if not order.items:
+            raise ValueError("Empty order")
+        if any(i.quantity <= 0 for i in order.items):
+            raise ValueError("Invalid quantity")
+
+# ========== ORCHESTRATOR (SRP: coordinates, no business logic) ==========
+class OrderService:
+    def __init__(
+        self,
+        validator: OrderValidator,
+        pricing: PricingService,
+        repo: IOrderRepository,
+        inventory: IInventoryService,
+        notifier: INotificationService,
+    ):
+        self.validator = validator
+        self.pricing = pricing
+        self.repo = repo
+        self.inventory = inventory
+        self.notifier = notifier
+    
+    def place_order(self, user_id, items, payment: PaymentMethod):
+        order = Order(
+            id=uuid.uuid4().hex,
+            user_id=user_id,
+            items=items
+        )
+        
+        self.validator.validate(order)
+        order.total = self.pricing.calculate_total(items)
+        
+        if not self.inventory.reserve(items):
+            raise ValueError("Insufficient inventory")
+        
+        if not payment.charge(order.total):
+            self.inventory.release(items)
+            raise ValueError("Payment failed")
+        
+        order.status = "confirmed"
+        self.repo.save(order)
+        self.notifier.notify(user_id, f"Order {order.id} confirmed")
+        
+        return order
+
+# ========== COMPOSITION ROOT ==========
+def create_order_service():
+    return OrderService(
+        validator=OrderValidator(),
+        pricing=PricingService(),
+        repo=SQLOrderRepository(get_db()),
+        inventory=RedisInventoryService(),
+        notifier=EmailNotificationService(),
+    )
+
+# ========== USAGE ==========
+service = create_order_service()
+order = service.place_order(
+    user_id="user123",
+    items=[OrderItem("prod1", 2, 29.99)],
+    payment=CreditCardPayment()  # OCP: swap to PayPalPayment()
+)
+</code></pre>
+
+        <h2 id="section7">7. Anti-Patterns and Code Smells</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Smell</th><th>Principle Violated</th><th>Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>God class (does everything)</td><td>SRP</td><td>Extract classes per responsibility</td></tr>
+            <tr><td>Long parameter lists</td><td>SRP/DIP</td><td>Introduce parameter object or DI</td></tr>
+            <tr><td>Switch on type / isinstance chains</td><td>OCP</td><td>Polymorphism / Strategy pattern</td></tr>
+            <tr><td>Subclass overrides with exception</td><td>LSP</td><td>Composition / separate interface</td></tr>
+            <tr><td>NotImplementedError in implementation</td><td>ISP</td><td>Split interface</td></tr>
+            <tr><td>High-level imports low-level</td><td>DIP</td><td>Invert dependency via interface</td></tr>
+            <tr><td>Concrete class in constructor</td><td>DIP</td><td>Inject interface, use factory</td></tr>
+            <tr><td>Static method calls to services</td><td>DIP</td><td>Inject service instance</td></tr>
+            <tr><td>Inheritance for code reuse</td><td>LSP/ISP</td><td>Composition over inheritance</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Refactoring Checklist</h3>
+        <ul>
+          <li><strong>SRP:</strong> Can I describe this class in one sentence without "and"?</li>
+          <li><strong>OCP:</strong> Can I add new behavior without editing this file?</li>
+          <li><strong>LSP:</strong> Can I substitute any subclass without breaking callers?</li>
+          <li><strong>ISP:</strong> Does every method in this interface apply to all implementers?</li>
+          <li><strong>DIP:</strong> Does this class import concrete implementations or only interfaces?</li>
+        </ul>
+
+        <div class="cheat-callout"><strong>Pragmatism note:</strong> SOLID principles are guidelines, not rigid rules. Apply them where the cost of change is high. Over-engineering simple code with interfaces adds complexity. Start simple, refactor when you feel pain (duplicate changes, hard to test, fragile).</div>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics & Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Software Design</span>
+            <span class="blog-tag">SOLID</span>
+            <span class="blog-tag">Clean Code</span>
+            <span class="blog-tag">Architecture</span>
+            <span class="blog-tag">Python</span>
+            <span class="blog-tag">OOP</span>
+            <span class="blog-tag">Refactoring</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
