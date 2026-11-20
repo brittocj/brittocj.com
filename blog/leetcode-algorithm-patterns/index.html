@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LeetCode-style algorithm patterns: sliding window, two pointers, binary search, DFS/BFS, dynamic programming, backtracking, heap, trie, and graph algorithms with Python solutions.">
+  <meta name="author" content="Antony Britto C J">
+  <title>LeetCode Algorithm Patterns: Complete Reference Guide | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">LeetCode Algorithm Patterns: Complete Reference Guide</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 August 23, 2020</div>
+            <div class="blog-meta-item">⏱️ 22 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">Master the recurring patterns behind LeetCode problems. This guide covers 15 essential algorithm patterns with templates, complexity analysis, and Python implementations — organized by frequency and interview relevance.</p>
+
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#section1">Sliding Window</a></li>
+            <li><a href="#section2">Two Pointers</a></li>
+            <li><a href="#section3">Binary Search</a></li>
+            <li><a href="#section4">DFS / Backtracking</a></li>
+            <li><a href="#section5">BFS / Topological Sort</a></li>
+            <li><a href="#section6">Dynamic Programming</a></li>
+            <li><a href="#section7">Heap / Priority Queue</a></li>
+            <li><a href="#section8">Monotonic Stack</a></li>
+            <li><a href="#section9">Prefix Sum / Difference Array</a></li>
+            <li><a href="#section10">Union Find (DSU)</a></li>
+            <li><a href="#section11">Trie (Prefix Tree)</a></li>
+            <li><a href="#section12">Bit Manipulation</a></li>
+            <li><a href="#section13">Greedy Algorithms</a></li>
+            <li><a href="#section14">Interval Problems</a></li>
+            <li><a href="#section15">Design Problems</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="section1">1. Sliding Window</h2>
+        <p>Fixed or variable window over array/string. O(n) time, O(1) or O(k) space.</p>
+
+        <h3>Fixed window template</h3>
+        <pre><code>def fixed_window(arr, k):
+    n = len(arr)
+    if n < k: return []
+    
+    window_sum = sum(arr[:k])
+    result = [window_sum]
+    
+    for i in range(k, n):
+        window_sum += arr[i] - arr[i - k]
+        result.append(window_sum)
+    
+    return result
+
+# Example: Maximum sum subarray of size k
+def max_subarray_k(arr, k):
+    max_sum = curr = sum(arr[:k])
+    for i in range(k, len(arr)):
+        curr += arr[i] - arr[i - k]
+        max_sum = max(max_sum, curr)
+    return max_sum</code></pre>
+
+        <h3>Variable window template</h3>
+        <pre><code>def variable_window(s, condition):
+    left = 0
+    count = defaultdict(int)
+    result = 0
+    
+    for right, char in enumerate(s):
+        count[char] += 1
+        
+        while not condition(count):
+            count[s[left]] -= 1
+            left += 1
+        
+        result = max(result, right - left + 1)
+    
+    return result
+
+# Example: Longest substring without repeating characters
+def length_of_longest_substring(s):
+    left = 0
+    seen = {}
+    max_len = 0
+    
+    for right, char in enumerate(s):
+        if char in seen and seen[char] >= left:
+            left = seen[char] + 1
+        seen[char] = right
+        max_len = max(max_len, right - left + 1)
+    
+    return max_len</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Pattern</th><th>Key Insight</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Longest Substring Without Repeating Characters</td><td>Variable</td><td>Hash map tracks last index</td></tr>
+            <tr><td>Minimum Window Substring</td><td>Variable</td><td>Count chars needed, expand/contract</td></tr>
+            <tr><td>Max Consecutive Ones III</td><td>Variable</td><td>Count zeros, shrink when > k</td></tr>
+            <tr><td>Subarray Sum Equals K</td><td>Variable + Prefix</td><td>Hash map of prefix sums</td></tr>
+            <tr><td>Fruit Into Baskets</td><td>Variable</td><td>At most 2 distinct types</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Decision:</strong> Fixed window when window size given. Variable when condition defines validity (unique chars, sum target, at most k distinct).</div>
+
+        <h2 id="section2">2. Two Pointers</h2>
+        <p>Left/right pointers moving toward center or same direction. Sorted arrays or linked lists.</p>
+
+        <h3>Templates</h3>
+        <pre><code># Opposite directions (sorted array)
+def two_sum_sorted(arr, target):
+    left, right = 0, len(arr) - 1
+    while left < right:
+        s = arr[left] + arr[right]
+        if s == target:
+            return [left, right]
+        elif s < target:
+            left += 1
+        else:
+            right -= 1
+    return []
+
+# Same direction (fast/slow)
+def remove_duplicates(arr):
+    if not arr: return 0
+    slow = 0
+    for fast in range(1, len(arr)):
+        if arr[fast] != arr[slow]:
+            slow += 1
+            arr[slow] = arr[fast]
+    return slow + 1
+
+# Cycle detection (Floyd's Tortoise and Hare)
+def has_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Variant</th><th>Key Insight</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Two Sum II (sorted)</td><td>Opposite</td><td>Move toward target sum</td></tr>
+            <tr><td>3Sum / 4Sum</td><td>Opposite + loop</td><td>Fix one, two-pointer rest</td></tr>
+            <tr><td>Container With Most Water</td><td>Opposite</td><td>Move shorter wall inward</td></tr>
+            <tr><td>Trapping Rain Water</td><td>Opposite</td><td>Track max left/right</td></tr>
+            <tr><td>Remove Nth Node From End</td><td>Fast/slow</td><td>Gap of n between pointers</td></tr>
+            <tr><td>Linked List Cycle II</td><td>Fast/slow</td><td>Math: distance from head to cycle start</td></tr>
+            <tr><td>Palindrome Linked List</td><td>Fast/slow + reverse</td><td>Find middle, reverse second half</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section3">3. Binary Search</h2>
+        <p>Search in sorted space: arrays, answer space, or monotonic functions. O(log n).</p>
+
+        <h3>Templates</h3>
+        <pre><code># Classic: find exact target
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+# Lower bound: first index >= target
+def lower_bound(arr, target):
+    left, right = 0, len(arr)
+    while left < right:
+        mid = (left + right) // 2
+        if arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid
+    return left
+
+# Upper bound: first index > target
+def upper_bound(arr, target):
+    left, right = 0, len(arr)
+    while left < right:
+        mid = (left + right) // 2
+        if arr[mid] <= target:
+            left = mid + 1
+        else:
+            right = mid
+    return left
+
+# Search answer space (e.g., min max capacity)
+def search_answer(lo, hi, check):
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if check(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Type</th><th>Search Space</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Search Insert Position</td><td>Lower bound</td><td>Array index</td></tr>
+            <tr><td>Find First/Last Position</td><td>Lower/Upper bound</td><td>Array index</td></tr>
+            <tr><td>Koko Eating Bananas</td><td>Answer space</td><td>Speed 1..max(piles)</td></tr>
+            <tr><td>Capacity To Ship Packages</td><td>Answer space</td><td>Capacity max(w)..sum(w)</td></tr>
+            <tr><td>Median of Two Sorted Arrays</td><td>Partition</td><td>Partition index</td></tr>
+            <tr><td>Find Minimum in Rotated Sorted Array</td><td>Modified</td><td>Find pivot</td></tr>
+            <tr><td>Search in Rotated Sorted Array</td><td>Modified</td><td>Determine sorted half</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Template choice:</strong> Use `left <= right` for exact match. Use `left < right` for lower/upper bound and answer space — terminates with `left == right` at answer.</div>
+
+        <h2 id="section4">4. DFS / Backtracking</h2>
+        <p>Explore all possibilities: subsets, permutations, combinations, path finding. State space tree traversal.</p>
+
+        <h3>Templates</h3>
+        <pre><code># Subsets / Combinations
+def backtrack(start, path):
+    if condition_met(path):
+        result.append(path[:])
+        return
+    
+    for i in range(start, len(candidates)):
+        if i > start and candidates[i] == candidates[i-1]:
+            continue  # Skip duplicates
+        path.append(candidates[i])
+        backtrack(i + 1, path)  # i+1 for combinations, 0 for permutations
+        path.pop()
+
+# Permutations
+def permute(nums):
+    result = []
+    def backtrack(path, used):
+        if len(path) == len(nums):
+            result.append(path[:])
+            return
+        for i, n in enumerate(nums):
+            if used[i]: continue
+            used[i] = True
+            path.append(n)
+            backtrack(path, used)
+            path.pop()
+            used[i] = False
+    backtrack([], [False]*len(nums))
+    return result
+
+# Grid DFS (islands, paths)
+def dfs(grid, i, j):
+    if i < 0 or i >= m or j < 0 or j >= n or grid[i][j] != '1':
+        return
+    grid[i][j] = '0'  # Mark visited
+    for di, dj in [(0,1),(1,0),(0,-1),(-1,0)]:
+        dfs(grid, i+di, j+dj)
+
+# Tree DFS
+def dfs(node):
+    if not node: return
+    # Pre-order
+    dfs(node.left)
+    # In-order
+    dfs(node.right)
+    # Post-order</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Pattern</th><th>Pruning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Subsets / Subsets II</td><td>Include/exclude</td><td>Skip duplicates</td></tr>
+            <tr><td>Combination Sum / II / III</td><td>Target sum</td><td>Early stop if sum > target</td></tr>
+            <tr><td>Permutations / II</td><td>All orders</td><td>Used array / skip dups</td></tr>
+            <tr><td>Palindrome Partitioning</td><td>Partition string</td><td>Memoize palindrome check</td></tr>
+            <tr><td>Word Search / II</td><td>Grid + Trie</td><td>Trie prunes dead ends</td></tr>
+            <tr><td>N-Queens</td><td>Constraint satisfaction</td><td>Track cols, diag1, diag2</td></tr>
+            <tr><td>Generate Parentheses</td><td>Valid sequences</td><td>open < n, close < open</td></tr>
+            <tr><td>Number of Islands</td><td>Grid flood fill</td><td>Mark visited in-place</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section5">5. BFS / Topological Sort</h2>
+        <p>Shortest path in unweighted graph, level-order traversal, dependency resolution.</p>
+
+        <h3>Templates</h3>
+        <pre><code># Standard BFS
+from collections import deque
+
+def bfs(graph, start):
+    visited = set([start])
+    q = deque([start])
+    while q:
+        node = q.popleft()
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                q.append(neighbor)
+
+# BFS with level tracking (shortest path)
+def bfs_levels(graph, start, target):
+    visited = set([start])
+    q = deque([(start, 0)])
+    while q:
+        node, dist = q.popleft()
+        if node == target:
+            return dist
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                q.append((neighbor, dist + 1))
+    return -1
+
+# Multi-source BFS (rotting oranges, walls and gates)
+def multi_source_bfs(grid):
+    q = deque()
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j] == 2:  # Source
+                q.append((i, j, 0))
+    # Process...
+
+# Topological Sort (Kahn's algorithm)
+def topo_sort(n, edges):
+    graph = defaultdict(list)
+    indegree = [0] * n
+    for u, v in edges:
+        graph[u].append(v)
+        indegree[v] += 1
+    
+    q = deque([i for i in range(n) if indegree[i] == 0])
+    order = []
+    while q:
+        u = q.popleft()
+        order.append(u)
+        for v in graph[u]:
+            indegree[v] -= 1
+            if indegree[v] == 0:
+                q.append(v)
+    return order if len(order) == n else []  # Cycle detection</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Pattern</th><th>Key Insight</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Rotting Oranges</td><td>Multi-source BFS</td><td>Time = levels processed</td></tr>
+            <tr><td>Walls and Gates</td><td>Multi-source BFS</td><td>Gates as sources</td></tr>
+            <tr><td>Shortest Path Binary Matrix</td><td>Grid BFS</td><td>8 directions</td></tr>
+            <tr><td>Course Schedule / II</td><td>Topo sort</td><td>Cycle = impossible</td></tr>
+            <tr><td>Alien Dictionary</td><td>Topo sort</td><td>Build graph from adjacent words</td></tr>
+            <tr><td>Minimum Height Trees</td><td>Topo (leaf removal)</td><td>Peel leaves layer by layer</td></tr>
+            <tr><td>Word Ladder</td><td>BFS + pattern</td><td>Generic states (*ot, h*t, ho*)</td></tr>
+            <tr><td>01 Matrix</td><td>Multi-source BFS</td><td>Zeros as sources</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section6">6. Dynamic Programming</h2>
+        <p>Overlapping subproblems + optimal substructure. Memoization (top-down) or tabulation (bottom-up).</p>
+
+        <h3>Patterns and Templates</h3>
+        <pre><code># 1D DP: Linear sequence
+def dp_1d(nums):
+    n = len(nums)
+    dp = [0] * (n + 1)
+    dp[0], dp[1] = base_cases
+    for i in range(2, n + 1):
+        dp[i] = transition(dp[i-1], dp[i-2], nums[i-1])
+    return dp[n]
+
+# House Robber
+def rob(nums):
+    if not nums: return 0
+    prev2, prev1 = 0, nums[0]
+    for i in range(1, len(nums)):
+        prev2, prev1 = prev1, max(prev1, prev2 + nums[i])
+    return prev1
+
+# 2D DP: Grid / Strings
+def dp_2d(s1, s2):
+    m, n = len(s1), len(s2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if s1[i-1] == s2[j-1]:
+                dp[i][j] = 1 + dp[i-1][j-1]
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    return dp[m][n]
+
+# LCS / Edit Distance / Longest Common Substring
+
+# Interval DP
+def interval_dp(arr):
+    n = len(arr)
+    dp = [[0]*n for _ in range(n)]
+    for length in range(2, n+1):
+        for i in range(n-length+1):
+            j = i + length - 1
+            for k in range(i, j):
+                dp[i][j] = max(dp[i][j], dp[i][k] + dp[k+1][j] + cost)
+    return dp[0][n-1]
+
+# Knapsack / Subset Sum
+def knapsack(weights, values, capacity):
+    dp = [0] * (capacity + 1)
+    for w, v in zip(weights, values):
+        for c in range(capacity, w-1, -1):
+            dp[c] = max(dp[c], dp[c-w] + v)
+    return dp[capacity]</code></pre>
+
+        <h3>Classic Problems by Pattern</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Pattern</th><th>Problems</th><th>State</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Linear (1D)</td><td>House Robber, Climbing Stairs, Coin Change, Decode Ways</td><td>dp[i] = best up to i</td></tr>
+            <tr><td>Two Strings (2D)</td><td>LCS, Edit Distance, Longest Common Substring, Interleaving String</td><td>dp[i][j] = best for s1[:i], s2[:j]</td></tr>
+            <tr><td>Grid Path</td><td>Unique Paths, Min Path Sum, Dungeon Game</td><td>dp[i][j] = best to reach (i,j)</td></tr>
+            <tr><td>Interval</td><td>Burst Balloons, Matrix Chain Multiplication, Stone Game</td><td>dp[i][j] = best for range i..j</td></tr>
+            <tr><td>Knapsack</td><td>0/1 Knapsack, Subset Sum, Partition Equal Subset Sum, Target Sum</td><td>dp[c] = max value for capacity c</td></tr>
+            <tr><td>Stock Trading</td><td>Buy/Sell Stock I-VI</td><td>dp[i][k][holding]</td></tr>
+            <tr><td>Bitmask</td><td>TSP, Minimum Incompatibility</td><td>dp[mask][i]</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Decision: Top-down vs Bottom-up</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Approach</th><th>When to Use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Memoization (top-down)</td><td>Sparse states, easier to code, natural recursion</td></tr>
+            <tr><td>Tabulation (bottom-up)</td><td>Dense states, space optimization possible, iterative</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section7">7. Heap / Priority Queue</h2>
+        <p>Always extract min/max. O(log n) insert/extract. Use for top-k, merging, scheduling.</p>
+
+        <h3>Python heapq (min-heap)</h3>
+        <pre><code>import heapq
+
+# Basic operations
+heap = []
+heapq.heappush(heap, 5)     # Push
+val = heapq.heappop(heap)   # Pop min
+heapq.heapify(arr)          # O(n) build heap
+heapq.heappushpop(heap, x)  # Push then pop (or pop then push)
+heapq.heapreplace(heap, x)  # Pop then push
+
+# Max heap: negate values
+max_heap = []
+heapq.heappush(max_heap, -5)
+val = -heapq.heappop(max_heap)
+
+# Heap with tuples (priority, data)
+heapq.heappush(heap, (priority, data))
+
+# nlargest / nsmallest (O(n log k))
+heapq.nlargest(k, iterable)
+heapq.nsmallest(k, iterable)</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Pattern</th><th>Key Insight</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Kth Largest Element</td><td>Min heap size k</td><td>Keep k largest, root is answer</td></tr>
+            <tr><td>Top K Frequent Elements</td><td>Count + min heap k</td><td>Or bucket sort O(n)</td></tr>
+            <tr><td>Merge K Sorted Lists</td><td>Min heap of heads</td><td>Push (val, node), pop, push next</td></tr>
+            <tr><td>Find Median from Data Stream</td><td>Two heaps</td><td>Max heap lower half, min heap upper</td></tr>
+            <tr><td>Task Scheduler</td><td>Max heap + queue</td><td>Cool down with queue</td></tr>
+            <tr><td>Meeting Rooms II</td><td>Min heap of end times</td><td>Reuse room if earliest end <= start</td></tr>
+            <tr><td>K Closest Points to Origin</td><td>Max heap size k</td><td>Distance squared as key</td></tr>
+            <tr><td>Network Delay Time</td><td>Dijkstra (min heap)</td><td>Shortest path weighted graph</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Dijkstra template:</strong> Use min-heap of (dist, node). Skip if popped distance > recorded distance. O(E log V) with adjacency list.</div>
+
+        <h2 id="section8">8. Monotonic Stack</h2>
+        <p>Stack maintaining increasing/decreasing order. Find next greater/smaller element. O(n).</p>
+
+        <h3>Templates</h3>
+        <pre><code># Next Greater Element (increasing stack)
+def next_greater(arr):
+    n = len(arr)
+    result = [-1] * n
+    stack = []  # Stores indices
+    
+    for i in range(n):
+        while stack and arr[stack[-1]] < arr[i]:
+            result[stack.pop()] = arr[i]
+        stack.append(i)
+    return result
+
+# Next Greater Element II (circular)
+def next_greater_circular(arr):
+    n = len(arr)
+    result = [-1] * n
+    stack = []
+    
+    for i in range(2 * n):
+        while stack and arr[stack[-1]] < arr[i % n]:
+            result[stack.pop()] = arr[i % n]
+        if i < n:
+            stack.append(i)
+    return result
+
+# Largest Rectangle in Histogram
+def largest_rectangle(heights):
+    stack = []  # Increasing heights
+    max_area = 0
+    heights.append(0)  # Sentinel
+    
+    for i, h in enumerate(heights):
+        while stack and heights[stack[-1]] > h:
+            height = heights[stack.pop()]
+            width = i if not stack else i - stack[-1] - 1
+            max_area = max(max_area, height * width)
+        stack.append(i)
+    return max_area
+
+# Daily Temperatures (next warmer day)
+def daily_temperatures(temps):
+    n = len(temps)
+    result = [0] * n
+    stack = []
+    
+    for i, t in enumerate(temps):
+        while stack and temps[stack[-1]] < t:
+            prev = stack.pop()
+            result[prev] = i - prev
+        stack.append(i)
+    return result</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Direction</th><th>Stack Order</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Next Greater Element I/II</td><td>Forward</td><td>Increasing</td></tr>
+            <tr><td>Daily Temperatures</td><td>Forward</td><td>Increasing</td></tr>
+            <tr><td>Largest Rectangle in Histogram</td><td>Forward</td><td>Increasing</td></tr>
+            <tr><td>Trapping Rain Water (stack version)</td><td>Forward</td><td>Decreasing</td></tr>
+            <tr><td>Remove K Digits</td><td>Forward</td><td>Increasing</td></tr>
+            <tr><td>Maximal Rectangle</td><td>Row by row</td><td>Increasing</td></tr>
+            <tr><td>Sum of Subarray Minimums</td><td>Forward</td><td>Increasing</td></tr>
+            <tr><td>Next Smaller Element</td><td>Forward/Back</td><td>Decreasing</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section9">9. Prefix Sum / Difference Array</h2>
+        <p>O(1) range queries/updates after O(n) preprocessing.</p>
+
+        <h3>Templates</h3>
+        <pre><code># Prefix Sum (range sum query)
+def prefix_sum(arr):
+    n = len(arr)
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i+1] = prefix[i] + arr[i]
+    return prefix
+
+def range_sum(prefix, l, r):  # inclusive
+    return prefix[r+1] - prefix[l]
+
+# Subarray Sum Equals K
+def subarray_sum_k(arr, k):
+    from collections import defaultdict
+    count = defaultdict(int)
+    count[0] = 1
+    curr = 0
+    result = 0
+    for num in arr:
+        curr += num
+        result += count[curr - k]
+        count[curr] += 1
+    return result
+
+# Difference Array (range update)
+def diff_array(n):
+    diff = [0] * (n + 1)
+    return diff
+
+def range_add(diff, l, r, val):
+    diff[l] += val
+    if r + 1 < len(diff):
+        diff[r+1] -= val
+
+def build(diff):
+    arr = [0] * len(diff)
+    arr[0] = diff[0]
+    for i in range(1, len(diff)):
+        arr[i] = arr[i-1] + diff[i]
+    return arr
+
+# 2D Prefix Sum
+def prefix_2d(grid):
+    m, n = len(grid), len(grid[0])
+    prefix = [[0]*(n+1) for _ in range(m+1)]
+    for i in range(m):
+        for j in range(n):
+            prefix[i+1][j+1] = grid[i][j] + prefix[i][j+1] + prefix[i+1][j] - prefix[i][j]
+    return prefix
+
+def rect_sum(prefix, r1, c1, r2, c2):
+    return prefix[r2+1][c2+1] - prefix[r1][c2+1] - prefix[r2+1][c1] + prefix[r1][c1]</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Technique</th><th>Key Insight</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Subarray Sum Equals K</td><td>Prefix + HashMap</td><td>count[prefix - k]</td></tr>
+            <tr><td>Maximum Subarray (Kadane)</td><td>Prefix min</td><td>max(curr - min_prefix)</td></tr>
+            <tr><td>Range Sum Query Immutable</td><td>Prefix array</td><td>O(1) query after O(n) build</td></tr>
+            <tr><td>Range Addition (Difference)</td><td>Diff array</td><td>O(1) update, O(n) build</td></tr>
+            <tr><td>Car Pooling</td><td>Diff array</td><td>+passengers at pickup, - at dropoff</td></tr>
+            <tr><td>Corporate Flight Bookings</td><td>Diff array</td><td>Range add seats</td></tr>
+            <tr><td>2D Range Sum</td><td>2D Prefix</td><td>Inclusion-exclusion</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section10">10. Union Find (Disjoint Set Union)</h2>
+        <p>Dynamic connectivity. Near O(1) amortized with path compression + union by rank.</p>
+
+        <h3>Template</h3>
+        <pre><code>class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n  # Number of components
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # Path compression
+        return self.parent[x]
+    
+    def union(self, x, y):
+        px, py = self.find(x), self.find(y)
+        if px == py:
+            return False
+        # Union by rank
+        if self.rank[px] < self.rank[py]:
+            self.parent[px] = py
+        elif self.rank[px] > self.rank[py]:
+            self.parent[py] = px
+        else:
+            self.parent[py] = px
+            self.rank[px] += 1
+        self.count -= 1
+        return True
+    
+    def connected(self, x, y):
+        return self.find(x) == self.find(y)</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Application</th><th>Key Insight</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Number of Islands (DSU version)</td><td>Connect adjacent lands</td><td>Union 4-directional neighbors</td></tr>
+            <tr><td>Number of Connected Components</td><td>Count roots after unions</td><td>UF.count</td></tr>
+            <tr><td>Redundant Connection</td><td>Detect cycle</td><td>Union returns False = cycle</td></tr>
+            <tr><td>Accounts Merge</td><td>Merge emails per person</td><td>Email -> index, union same person</td></tr>
+            <tr><td>Most Stones Removed</td><td>Row/col as nodes</td><td>Union row_i with col_j</td></tr>
+            <tr><td>Swim in Rising Water</td><td>Binary search + UF</td><td>Connect when height <= t</td></tr>
+            <tr><td>Satisfiability of Equality Equations</td><td>== then !=</td><td>Process == first, check !=</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section11">11. Trie (Prefix Tree)</h2>
+        <p>String storage with prefix queries. O(L) insert/search where L = string length.</p>
+
+        <h3>Template</h3>
+        <pre><code>class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+        self.count = 0  # For prefix count
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+    
+    def insert(self, word):
+        node = self.root
+        for ch in word:
+            if ch not in node.children:
+                node.children[ch] = TrieNode()
+            node = node.children[ch]
+            node.count += 1
+        node.is_end = True
+    
+    def search(self, word):
+        node = self.root
+        for ch in word:
+            if ch not in node.children:
+                return False
+            node = node.children[ch]
+        return node.is_end
+    
+    def starts_with(self, prefix):
+        node = self.root
+        for ch in prefix:
+            if ch not in node.children:
+                return False
+            node = node.children[ch]
+        return True
+    
+    def count_prefix(self, prefix):
+        node = self.root
+        for ch in prefix:
+            if ch not in node.children:
+                return 0
+            node = node.children[ch]
+        return node.count</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Application</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Implement Trie</td><td>Basic insert/search/prefix</td></tr>
+            <tr><td>Word Search II</td><td>DFS + Trie pruning</td></tr>
+            <tr><td>Replace Words</td><td>Shortest prefix match</td></tr>
+            <tr><td>Maximum XOR of Two Numbers</td><td>Bitwise Trie</td></tr>
+            <tr><td>Map Sum Pairs</td><td>Prefix sum with values</td></tr>
+            <tr><td>Longest Word in Dictionary</td><td>All prefixes must exist</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section12">12. Bit Manipulation</h2>
+        <p>O(1) operations on bits. Powerful for subsets, parity, XOR properties.</p>
+
+        <h3>Essential Operations</h3>
+        <pre><code># Check bit
+(x >> i) & 1
+
+# Set bit
+x | (1 << i)
+
+# Clear bit
+x & ~(1 << i)
+
+# Toggle bit
+x ^ (1 << i)
+
+# Lowest set bit
+x & -x  # or x & (x - 1) to clear lowest set bit
+
+# Power of two check
+x > 0 and (x & (x - 1)) == 0
+
+# Swap without temp
+a ^= b; b ^= a; a ^= b
+
+# Count set bits (Brian Kernighan)
+count = 0
+while x:
+    x &= x - 1
+    count += 1
+
+# XOR properties
+# a ^ a = 0
+# a ^ 0 = a
+# a ^ b = b ^ a
+# (a ^ b) ^ c = a ^ (b ^ c)
+
+# Find single number (others appear twice)
+def single_number(nums):
+    result = 0
+    for n in nums:
+        result ^= n
+    return result
+
+# Find single number II (others appear thrice)
+def single_number_ii(nums):
+    ones = twos = 0
+    for n in nums:
+        twos |= ones & n
+        ones ^= n
+        common = ~(ones & twos)
+        ones &= common
+        twos &= common
+    return ones
+
+# Generate subsets using bits
+def subsets(nums):
+    n = len(nums)
+    result = []
+    for mask in range(1 << n):
+        subset = [nums[i] for i in range(n) if mask & (1 << i)]
+        result.append(subset)
+    return result</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Technique</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Single Number / II / III</td><td>XOR / bit counting</td></tr>
+            <tr><td>Counting Bits</td><td>dp[i] = dp[i>>1] + (i&1)</td></tr>
+            <tr><td>Power of Two / Four</td><td>Bit tricks</td></tr>
+            <tr><td>Sum of Two Integers</td><td>XOR + AND << 1</td></tr>
+            <tr><td>Reverse Bits</td><td>Bit by bit</td></tr>
+            <tr><td>Maximum XOR of Two Numbers</td><td>Bitwise Trie</td></tr>
+            <tr><td>Subsets / Subsets II</td><td>Bit mask iteration</td></tr>
+            <tr><td>Minimum XOR Sum</td><td>DP + bit mask</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section13">13. Greedy Algorithms</h2>
+        <p>Local optimal choice at each step leads to global optimum. Prove with exchange argument or matroid theory.</p>
+
+        <h3>Common Patterns</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Pattern</th><th>Problems</th><th>Sort Key</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Interval scheduling</td><td>Non-overlapping Intervals, Meeting Rooms</td><td>End time ascending</td></tr>
+            <tr><td>Minimize maximum lateness</td><td>Task scheduling with deadlines</td><td>Deadline ascending</td></tr>
+            <tr><td>Gas Station</td><td>Circular tour</td><td>Total gas >= cost</td></tr>
+            <tr><td>Jump Game / II</td><td>Furthest reachable</td><td>Greedy BFS</td></tr>
+            <tr><td>Candy</td><td>Two-pass greedy</td><td>Left-right then right-left</td></tr>
+            <tr><td>Lemonade Change</td><td>Prefer larger bills</td><td>Greedy change</td></tr>
+            <tr><td>Assign Cookies</td><td>Match smallest sufficient</td><td>Sort both</td></tr>
+            <tr><td>Queue Reconstruction by Height</td><td>Tallest first, insert at k</td><td>Height desc, k asc</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Classic: Task Scheduler (cooldown)</h3>
+        <pre><code>def leastInterval(tasks, n):
+    count = Counter(tasks)
+    max_freq = max(count.values())
+    max_count = sum(1 for v in count.values() if v == max_freq)
+    # (max_freq - 1) * (n + 1) + max_count
+    return max(len(tasks), (max_freq - 1) * (n + 1) + max_count)</code></pre>
+
+        <h2 id="section14">14. Interval Problems</h2>
+        <p>Overlap, merge, insert, intersection. Sort by start time.</p>
+
+        <h3>Templates</h3>
+        <pre><code># Merge intervals
+def merge(intervals):
+    if not intervals: return []
+    intervals.sort(key=lambda x: x[0])
+    merged = [intervals[0]]
+    for start, end in intervals[1:]:
+        if start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged
+
+# Insert interval
+def insert(intervals, newInterval):
+    result = []
+    i = 0
+    n = len(intervals)
+    # Add all before newInterval
+    while i < n and intervals[i][1] < newInterval[0]:
+        result.append(intervals[i])
+        i += 1
+    # Merge overlaps
+    while i < n and intervals[i][0] <= newInterval[1]:
+        newInterval[0] = min(newInterval[0], intervals[i][0])
+        newInterval[1] = max(newInterval[1], intervals[i][1])
+        i += 1
+    result.append(newInterval)
+    # Add remaining
+    while i < n:
+        result.append(intervals[i])
+        i += 1
+    return result
+
+# Interval intersection (two lists)
+def interval_intersection(A, B):
+    i = j = 0
+    result = []
+    while i < len(A) and j < len(B):
+        lo = max(A[i][0], B[j][0])
+        hi = min(A[i][1], B[j][1])
+        if lo <= hi:
+            result.append([lo, hi])
+        if A[i][1] < B[j][1]:
+            i += 1
+        else:
+            j += 1
+    return result
+
+# Meeting rooms (min rooms needed)
+def min_meeting_rooms(intervals):
+    starts = sorted(i[0] for i in intervals)
+    ends = sorted(i[1] for i in intervals)
+    rooms = end_ptr = 0
+    for s in starts:
+        if s >= ends[end_ptr]:
+            end_ptr += 1
+        else:
+            rooms += 1
+    return rooms</code></pre>
+
+        <h3>Common problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Technique</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Merge Intervals</td><td>Sort + linear scan</td></tr>
+            <tr><td>Insert Interval</td><td>Three phases</td></tr>
+            <tr><td>Non-overlapping Intervals</td><td>Greedy by end time</td></tr>
+            <tr><td>Meeting Rooms I/II</td><td>Sort + heap / two pointers</td></tr>
+            <tr><td>Interval List Intersections</td><td>Two pointers</td></tr>
+            <tr><td>Partition Labels</td><td>Track last occurrence</td></tr>
+            <tr><td>Range Module</td><td>Interval tree / SortedList</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section15">15. Design Problems</h2>
+        <p>Implement data structures with specific APIs. Focus on time complexity trade-offs.</p>
+
+        <h3>Classic Design Problems</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Problem</th><th>Data Structures</th><th>Key Operations</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>LRU Cache</td><td>HashMap + Doubly Linked List</td><td>O(1) get/put</td></tr>
+            <tr><td>LFU Cache</td><td>HashMap + freq->DLL + minFreq</td><td>O(1) get/put</td></tr>
+            <tr><td>Min Stack</td><td>Two stacks or tuple stack</td><td>O(1) getMin</td></tr>
+            <tr><td>Max Stack</td><td>Two stacks or TreeMap</td><td>O(1) getMax</td></tr>
+            <tr><td>Design HashMap</td><td>Array + linked list (chaining)</td><td>O(1) avg</td></tr>
+            <tr><td>Design HashSet</td><td>Same as HashMap</td><td>O(1) avg</td></tr>
+            <tr><td>Implement Trie</td><td>TrieNode children dict</td><td>O(L) operations</td></tr>
+            <tr><td>Add and Search Word</td><td>Trie + DFS for '.' wildcard</td><td>O(L) search</td></tr>
+            <tr><td>Design File System</td><td>Trie-like tree</td><td>Path operations</td></tr>
+            <tr><td>Design In-Memory File System</td><td>Tree with files/dirs</td><td>ls, mkdir, addContent</td></tr>
+            <tr><td>Design Twitter</td><td>Heap + HashMap + follow graph</td><td>Post, follow, getNewsFeed</td></tr>
+            <tr><td>Design Search Autocomplete</td><td>Trie + freq count</td><td>Top k suggestions</td></tr>
+          </tbody>
+        </table>
+
+        <h3>LRU Cache Template</h3>
+        <pre><code>class Node:
+    def __init__(self, key=0, val=0):
+        self.key, self.val = key, val
+        self.prev = self.next = None
+
+class LRUCache:
+    def __init__(self, capacity):
+        self.cap = capacity
+        self.cache = {}
+        self.head = Node()
+        self.tail = Node()
+        self.head.next = self.tail
+        self.tail.prev = self.head
+    
+    def _remove(self, node):
+        node.prev.next = node.next
+        node.next.prev = node.prev
+    
+    def _add_to_head(self, node):
+        node.next = self.head.next
+        node.prev = self.head
+        self.head.next.prev = node
+        self.head.next = node
+    
+    def get(self, key):
+        if key not in self.cache:
+            return -1
+        node = self.cache[key]
+        self._remove(node)
+        self._add_to_head(node)
+        return node.val
+    
+    def put(self, key, value):
+        if key in self.cache:
+            self._remove(self.cache[key])
+        node = Node(key, value)
+        self.cache[key] = node
+        self._add_to_head(node)
+        if len(self.cache) > self.cap:
+            lru = self.tail.prev
+            self._remove(lru)
+            del self.cache[lru.key]</code></pre>
+
+        <div class="cheat-callout"><strong>Interview tip:</strong> Always clarify constraints first (capacity, thread safety, eviction policy). Start with brute force, then optimize. Explain trade-offs: time vs space, readability vs performance.</div>
+
+        <h2>Complexity Cheat Sheet</h2>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Pattern</th><th>Time</th><th>Space</th><th>When to Use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Sliding Window</td><td>O(n)</td><td>O(1)/O(k)</td><td>Subarray/string with condition</td></tr>
+            <tr><td>Two Pointers</td><td>O(n)</td><td>O(1)</td><td>Sorted array, linked list cycle</td></tr>
+            <tr><td>Binary Search</td><td>O(log n)</td><td>O(1)</td><td>Sorted array, answer space</td></tr>
+            <tr><td>DFS/Backtracking</td><td>O(b^d)</td><td>O(d)</td><td>Subsets, permutations, path finding</td></tr>
+            <tr><td>BFS</td><td>O(V+E)</td><td>O(V)</td><td>Shortest path unweighted, topo sort</td></tr>
+            <tr><td>DP</td><td>O(n) to O(n^3)</td><td>O(n) to O(n^2)</td><td>Optimal substructure + overlap</td></tr>
+            <tr><td>Heap</td><td>O(n log k)</td><td>O(k)</td><td>Top-k, merge, scheduling</td></tr>
+            <tr><td>Monotonic Stack</td><td>O(n)</td><td>O(n)</td><td>Next greater/smaller element</td></tr>
+            <tr><td>Prefix Sum</td><td>O(n)</td><td>O(n)</td><td>Range queries, subarray sums</td></tr>
+            <tr><td>Union Find</td><td>O(α(n))</td><td>O(n)</td><td>Dynamic connectivity</td></tr>
+            <tr><td>Trie</td><td>O(L)</td><td>O(ALPHABET * N * L)</td><td>Prefix queries, string set</td></tr>
+            <tr><td>Bit Manipulation</td><td>O(1)/O(n)</td><td>O(1)</td><td>XOR, subsets, bit counting</td></tr>
+            <tr><td>Greedy</td><td>O(n log n)</td><td>O(1)</td><td>Interval scheduling, matroids</td></tr>
+          </tbody>
+        </table>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics & Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Algorithms</span>
+            <span class="blog-tag">LeetCode</span>
+            <span class="blog-tag">Data Structures</span>
+            <span class="blog-tag">Interview Prep</span>
+            <span class="blog-tag">Python</span>
+            <span class="blog-tag">Dynamic Programming</span>
+            <span class="blog-tag">Graph</span>
+            <span class="blog-tag">Tree</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
