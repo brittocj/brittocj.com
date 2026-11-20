@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Building AI agents with n8n, WhatsApp WAHA, LangChain, AutoGen, CrewAI. Advanced patterns: multi-agent workflows, RAG, tool calling, memory, evaluation, and production deployment.">
+  <meta name="author" content="Antony Britto C J">
+  <title>AI Agents & Automation: n8n, WhatsApp WAHA, LangChain, and Advanced Patterns | Antony Britto C J</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../post.css">
+  <link rel="icon" type="image/png" href="../../assets/favicon.png">
+</head>
+<body>
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="blog-post">
+    <div class="container">
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">AI Agents & Automation: n8n, WhatsApp WAHA, LangChain, and Advanced Patterns</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 November 20, 2026</div>
+            <div class="blog-meta-item">⏱️ 25 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">From no-code n8n workflows to multi-agent AutoGen crews, this guide covers the complete AI agent stack: orchestration frameworks, WhatsApp integration via WAHA, RAG pipelines, tool calling patterns, memory management, evaluation frameworks, and production deployment strategies.</p>
+
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#section1">AI Agent Architecture Overview</a></li>
+            <li><a href="#section2">n8n: No-Code Agent Orchestration</a></li>
+            <li><a href="#section3">WhatsApp Integration with WAHA</a></li>
+            <li><a href="#section4">LangChain & LangGraph: Code-First Agents</a></li>
+            <li><a href="#section5">Multi-Agent Frameworks: AutoGen, CrewAI, Swarm</a></li>
+            <li><a href="#section6">RAG & Knowledge Retrieval</a></li>
+            <li><a href="#section6b">Advanced Tool Calling Patterns</a></li>
+            <li><a href="#section7">Memory & State Management</a></li>
+            <li><a href="#section8">Evaluation & Observability</a></li>
+            <li><a href="#section9">Production Deployment</a></li>
+            <li><a href="#section10">Advanced Tricks & Patterns</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="section1">1. AI Agent Architecture Overview</h2>
+        <p>An AI agent is an LLM equipped with tools, memory, and the ability to plan and execute tasks autonomously. The architecture has evolved from simple chains to sophisticated multi-agent systems.</p>
+
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Layer</th><th>Components</th><th>Tools/Frameworks</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Orchestration</td><td>Workflow engine, state machine, DAG</td><td>n8n, LangGraph, Temporal, Prefect</td></tr>
+            <tr><td>Reasoning</td><td>LLM, prompt templates, few-shot</td><td>OpenAI, Anthropic, Ollama, vLLM</td></tr>
+            <tr><td>Tools</td><td>Function calling, API wrappers, skills</td><td>LangChain tools, MCP, custom functions</td></tr>
+            <tr><td>Memory</td><td>Short-term, long-term, episodic, semantic</td><td>LangChain memory, Mem0, Zep, Redis</td></tr>
+            <tr><td>Knowledge</td><td>Vector DB, reranking, hybrid search</td><td>Qdrant, Weaviate, Pinecone, pgvector</td></tr>
+            <tr><td>Communication</td><td>Chat, webhooks, A2A protocols</td><td>WAHA, Slack, Discord, A2A, MCP</td></tr>
+            <tr><td>Evaluation</td><td>Metrics, tracing, human feedback</td><td>LangSmith, Langfuse, Phoenix, Ragas</td></tr>
+          </tbody>
+        </table>
+
+        <div class="cheat-callout"><strong>Agent vs Workflow:</strong> Workflows are deterministic (A→B→C). Agents are non-deterministic: the LLM decides the next action based on context. Use workflows for reliability; agents for flexibility.</div>
+
+        <h2 id="section2">2. n8n: No-Code Agent Orchestration</h2>
+        <p>n8n is a fair-code workflow automation tool with native AI nodes. It excels at connecting APIs, databases, and LLMs without code.</p>
+
+        <h3>Self-Hosted Setup</h3>
+        <pre><code># docker-compose.yml
+version: '3.8'
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=UTC
+      - N8N_ENCRYPTION_KEY=your-32-char-key
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=secure-password
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=secure-password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  n8n_data:
+  postgres_data:</code></pre>
+
+        <h3>Key AI Nodes in n8n</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Node</th><th>Purpose</th><th>Use Case</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>OpenAI / Anthropic</td><td>LLM chat/completion</td><td>Core reasoning</td></tr>
+            <tr><td>LangChain Agent</td><td>Agent executor with tools</td><td>ReAct, OpenAI Functions agent</td></tr>
+            <tr><td>Vector Store</td><td>Qdrant, Pinecone, pgvector</td><td>RAG retrieval</td></tr>
+            <tr><td>Document Loader</td><td>PDF, CSV, Web, Notion</td><td>Knowledge ingestion</td></tr>
+            <tr><td>Text Splitter</td><td>Recursive, token-based</td><td>Chunking for embeddings</td></tr>
+            <tr><td>Embeddings</td><td>OpenAI, Ollama, Cohere</td><td>Vector generation</td></tr>
+            <tr><td>HTTP Request</td><td>Custom API calls</td><td>Tool integration</td></tr>
+            <tr><td>Code</td><td>JavaScript/Python snippets</td><td>Custom logic</td></tr>
+            <tr><td>Wait / Webhook</td><td>Async human-in-the-loop</td><td>Approval workflows</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Example: Customer Support Agent Workflow</h3>
+        <pre><code># n8n workflow JSON (simplified)
+{
+  "nodes": [
+    {"name": "Webhook", "type": "n8n-nodes-base.webhook", "webhookPath": "support"},
+    {"name": "Classify", "type": "n8n-nodes-base.openAi", 
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "prompt": "Classify: billing, technical, general. Reply JSON only."
+      }},
+    {"name": "Route", "type": "n8n-nodes-base.switch", 
+      "conditions": {
+        "string": [{"value1": "={{ $json.classification }}", "operation": "equals", "value2": "billing"}]
+      }},
+    {"name": "BillingAgent", "type": "n8n-nodes-base.langChainAgent",
+      "tools": ["Stripe", "Database", "Email"]},
+    {"name": "TechnicalAgent", "type": "n8n-nodes-base.langChainAgent",
+      "tools": ["Docs Search", "Jira", "GitHub"]},
+    {"name": "Respond", "type": "n8n-nodes-base.httpRequest",
+      "url": "https://api.whatsapp.com/send",
+      "method": "POST"}
+  ],
+  "connections": {
+    "Webhook": {"main": [["Classify"]]},
+    "Classify": {"main": [["Route"]]},
+    "Route": {"main": [["BillingAgent"], ["TechnicalAgent"], ["GeneralAgent"]]},
+    "BillingAgent": {"main": [["Respond"]]},
+    "TechnicalAgent": {"main": [["Respond"]]}
+  }
+}</code></pre>
+
+        <div class="cheat-callout"><strong>n8n tips:</strong> Use "Execute Workflow" node for sub-workflows. Enable "Continue On Fail" for resilience. Store credentials in n8n's encrypted credential store. Use queue mode (Redis) for production scale.</div>
+
+        <h2 id="section3">3. WhatsApp Integration with WAHA</h2>
+        <p>WAHA (WhatsApp HTTP API) is a self-hosted WhatsApp gateway with REST API and webhooks. It supports multi-session, media, and webhooks for real-time messaging.</p>
+
+        <h3>WAHA Setup</h3>
+        <pre><code># docker-compose.yml (add to n8n stack)
+services:
+  waha:
+    image: devlikeapro/waha:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - WAHA_API_KEY=your-secure-api-key
+      - WAHA_WEBHOOK_URL=http://n8n:5678/webhook/waha
+      - WAHA_DEFAULT_ENGINE=WEBJS
+      - WAHA_AUTO_START=true
+      - WAHA_SESSIONS=default
+    volumes:
+      - waha_data:/app/data
+    restart: unless-stopped
+    depends_on:
+      - n8n
+
+volumes:
+  waha_data:</code></pre>
+
+        <h3>WAHA API Essentials</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Endpoint</th><th>Method</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>/api/sendText</td><td>POST</td><td>Send text message</td></tr>
+            <tr><td>/api/sendImage</td><td>POST</td><td>Send image (URL or base64)</td></tr>
+            <tr><td>/api/sendFile</td><td>POST</td><td>Send document/PDF</td></tr>
+            <tr><td>/api/sendButtons</td><td>POST</td><td>Interactive buttons</td></tr>
+            <tr><td>/api/sendList</td><td>POST</td><td>List picker message</td></tr>
+            <tr><td>/api/start</td><td>POST</td><td>Start WhatsApp session</td></tr>
+            <tr><td>/api/logout</td><td>POST</td><td>End session</td></tr>
+            <tr><td>/api/sessions</td><td>GET</td><td>List active sessions</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Send Message Example</h3>
+        <pre><code>curl -X POST http://localhost:3000/api/sendText \
+  -H "X-Api-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "session": "default",
+    "chatId": "15551234567@c.us",
+    "text": "Hello from AI Agent! 🤖",
+    "reply_to": "msg_id_optional",
+    "linkPreview": true
+  }'</code></pre>
+
+        <h3>Receive Messages: Webhook Handler in n8n</h3>
+        <pre><code># n8n Webhook node receives:
+{
+  "event": "message",
+  "session": "default",
+  "payload": {
+    "id": "msg_id",
+    "from": "15551234567@c.us",
+    "to": "default@c.us",
+    "body": "Hello bot!",
+    "type": "text",
+    "timestamp": 1700000000,
+    "fromMe": false,
+    "hasMedia": false
+  }
+}
+
+# Process in n8n:
+# 1. Webhook → Extract payload
+# 2. LangChain Agent → Process with tools
+# 3. WAHA HTTP Request → Send response</code></pre>
+
+        <h3>Interactive Buttons for Agent Actions</h3>
+        <pre><code>curl -X POST http://localhost:3000/api/sendButtons \
+  -H "X-Api-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "session": "default",
+    "chatId": "15551234567@c.us",
+    "text": "How can I help?",
+    "buttons": [
+      {"id": "billing", "title": "💳 Billing Issue"},
+      {"id": "technical", "title": "🔧 Technical Support"},
+      {"id": "general", "title": "❓ General Question"}
+    ],
+    "footer": "AI Support Bot"
+  }'</code></pre>
+
+        <div class="cheat-callout"><strong>WAHA production notes:</strong> Use WEBJS engine for stability. Run multiple sessions for scale. Monitor session health (QR re-scan needed occasionally). Store media in S3-compatible storage. Rate limit: ~80 messages/minute per session.</div>
+
+        <h2 id="section4">4. LangChain & LangGraph: Code-First Agents</h2>
+        <p>LangChain provides the building blocks; LangGraph adds stateful, cyclic graph orchestration for complex agents.</p>
+
+        <h3>Basic Agent (LangChain)</h3>
+        <pre><code>from langchain.agents import create_openai_functions_agent, AgentExecutor
+from langchain.tools import tool
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+
+@tool
+def get_weather(city: str) -> str:
+    """Get current weather for a city."""
+    # API call here
+    return f"Weather in {city}: Sunny, 22°C"
+
+@tool
+def search_docs(query: str) -> str:
+    """Search internal documentation."""
+    # Vector search here
+    return f"Results for: {query}"
+
+llm = ChatOpenAI(model="gpt-4o", temperature=0)
+tools = [get_weather, search_docs]
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful assistant with access to tools."),
+    ("human", "{input}"),
+    ("placeholder", "{agent_scratchpad}"),
+])
+
+agent = create_openai_functions_agent(llm, tools, prompt)
+executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+result = executor.invoke({"input": "What's the weather in London?"})</code></pre>
+
+        <h3>LangGraph: Stateful Multi-Step Agents</h3>
+        <pre><code>from langgraph.graph import StateGraph, END
+from typing import TypedDict, Annotated
+import operator
+
+class AgentState(TypedDict):
+    messages: Annotated[list, operator.add]
+    user_id: str
+    context: dict
+
+def call_llm(state: AgentState):
+    response = llm.invoke(state["messages"])
+    return {"messages": [response]}
+
+def call_tool(state: AgentState):
+    last_message = state["messages"][-1]
+    if hasattr(last_message, "tool_calls"):
+        for tool_call in last_message.tool_calls:
+            # Execute tool
+            result = execute_tool(tool_call)
+            state["messages"].append(ToolMessage(content=result, tool_call_id=tool_call["id"]))
+    return state
+
+def should_continue(state: AgentState):
+    last_message = state["messages"][-1]
+    if hasattr(last_message, "tool_calls") and last_message.tool_calls:
+        return "tools"
+    return END
+
+workflow = StateGraph(AgentState)
+workflow.add_node("agent", call_llm)
+workflow.add_node("tools", call_tool)
+workflow.set_entry_point("agent")
+workflow.add_conditional_edges("agent", should_continue)
+workflow.add_edge("tools", "agent")
+
+app = workflow.compile()
+
+# Run with checkpointing
+config = {"configurable": {"thread_id": "user-123"}}
+result = app.invoke({"messages": [HumanMessage(content="Book a flight to NYC")]}, config=config)</code></pre>
+
+        <h3>LangGraph Patterns</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Pattern</th><th>Graph Structure</th><th>Use Case</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>ReAct Loop</td><td>Agent ↔ Tools</td><td>General reasoning with tools</td></tr>
+            <tr><td>Plan-and-Execute</td><td>Planner → Executor → Replan</td><td>Complex multi-step tasks</td></tr>
+            <tr><td>Reflection</td><td>Agent → Critic → Revise</td><td>Code generation, writing</td></tr>
+            <tr><td>Human-in-the-Loop</td><td>Agent → Interrupt → Resume</td><td>Approval workflows</td></tr>
+            <tr><td>Multi-Agent</td><td>Supervisor → Specialists</td><td>Specialized sub-agents</td></tr>
+            <tr><td>Map-Reduce</td><td>Parallel → Aggregate</td><td>Batch processing</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section5">5. Multi-Agent Frameworks</h2>
+        <p>Specialized agents collaborating via a supervisor or peer-to-peer.</p>
+
+        <h3>AutoGen (Microsoft)</h3>
+        <pre><code>import autogen
+
+# Define agents
+config_list = [{"model": "gpt-4o", "api_key": "..."}]
+
+user_proxy = autogen.UserProxyAgent(
+    name="User",
+    human_input_mode="NEVER",
+    max_consecutive_auto_reply=10,
+    code_execution_config={"work_dir": "coding"},
+)
+
+assistant = autogen.AssistantAgent(
+    name="Assistant",
+    llm_config={"config_list": config_list},
+    system_message="You are a helpful coding assistant."
+)
+
+critic = autogen.AssistantAgent(
+    name="Critic",
+    llm_config={"config_list": config_list},
+    system_message="Review code for bugs, security, and best practices."
+)
+
+# Group chat
+group_chat = autogen.GroupChat(
+    agents=[user_proxy, assistant, critic],
+    messages=[],
+    max_round=20,
+)
+
+manager = autogen.GroupChatManager(
+    groupchat=group_chat,
+    llm_config={"config_list": config_list},
+)
+
+user_proxy.initiate_chat(manager, message="Write a REST API for user management with FastAPI")</code></pre>
+
+        <h3>CrewAI</h3>
+        <pre><code>from crewai import Agent, Task, Crew, Process
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(model="gpt-4o")
+
+researcher = Agent(
+    role="Research Analyst",
+    goal="Find latest info on {topic}",
+    backstory="Expert at finding and synthesizing information",
+    tools=[search_tool],
+    llm=llm,
+    verbose=True,
+)
+
+writer = Agent(
+    role="Technical Writer",
+    goal="Write comprehensive report on {topic}",
+    backstory="Expert at clear technical communication",
+    llm=llm,
+    verbose=True,
+)
+
+reviewer = Agent(
+    role="Editor",
+    goal="Review and improve the report",
+    backstory="Expert editor with attention to detail",
+    llm=llm,
+    verbose=True,
+)
+
+research_task = Task(
+    description="Research {topic} thoroughly",
+    agent=researcher,
+    expected_output="Research summary with sources",
+)
+
+write_task = Task(
+    description="Write report based on research",
+    agent=writer,
+    expected_output="Full report in markdown",
+    context=[research_task],
+)
+
+review_task = Task(
+    description="Review and edit report",
+    agent=reviewer,
+    expected_output="Polished final report",
+    context=[write_task],
+)
+
+crew = Crew(
+    agents=[researcher, writer, reviewer],
+    tasks=[research_task, write_task, review_task],
+    process=Process.sequential,
+    verbose=2,
+)
+
+result = crew.kickoff(inputs={"topic": "AI Agents in 2026"})</code></pre>
+
+        <h3>OpenAI Swarm (Lightweight)</h3>
+        <pre><code>from swarm import Swarm, Agent
+
+client = Swarm()
+
+def transfer_to_billing():
+    return billing_agent
+
+def transfer_to_technical():
+    return technical_agent
+
+triage_agent = Agent(
+    name="Triage",
+    instructions="Route to billing or technical based on query.",
+    functions=[transfer_to_billing, transfer_to_technical],
+)
+
+billing_agent = Agent(
+    name="Billing",
+    instructions="Handle billing queries. Refund, invoices, payments.",
+)
+
+technical_agent = Agent(
+    name="Technical",
+    instructions="Handle technical issues. Debug, config, API.",
+)
+
+client.run(
+    agent=triage_agent,
+    messages=[{"role": "user", "content": "I need a refund"}],
+)</code></pre>
+
+        <h3>Framework Comparison</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Framework</th><th>Best For</th><th>Complexity</th><th>State Management</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AutoGen</td><td>Code generation, group chat</td><td>Medium</td><td>Conversation history</td></tr>
+            <tr><td>CrewAI</td><td>Role-based workflows</td><td>Low</td><td>Task context passing</td></tr>
+            <tr><td>LangGraph</td><td>Custom graphs, stateful</td><td>High</td><td>Full state + checkpoints</td></tr>
+            <tr><td>Swarm</td><td>Simple handoffs</td><td>Very Low</td><td>Minimal (stateless)</td></tr>
+            <tr><td>n8n</td><td>No-code, visual</td><td>None</td><td>Workflow state</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="section6">6. RAG & Knowledge Retrieval</h2>
+        <p>Retrieval-Augmented Generation grounds LLMs in your data.</p>
+
+        <h3>Pipeline Architecture</h3>
+        <pre><code># Ingestion Pipeline
+from langchain.document_loaders import (
+    PyPDFLoader, CSVLoader, WebBaseLoader, NotionLoader
+)
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Qdrant
+
+# 1. Load
+loaders = [
+    PyPDFLoader("docs/manual.pdf"),
+    CSVLoader("data/faq.csv"),
+    WebBaseLoader("https://docs.company.com"),
+]
+docs = []
+for loader in loaders:
+    docs.extend(loader.load())
+
+# 2. Chunk
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200,
+    separators=["\n\n", "\n", ". ", " ", ""]
+)
+chunks = splitter.split_documents(docs)
+
+# 3. Embed & Store
+embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+vectorstore = Qdrant.from_documents(
+    chunks,
+    embeddings,
+    url="http://localhost:6333",
+    collection_name="knowledge_base",
+)
+
+# 4. Retrieval (in agent)
+retriever = vectorstore.as_retriever(
+    search_type="mmr",
+    search_kwargs={"k": 5, "fetch_k": 20, "lambda_mult": 0.5}
+)</code></pre>
+
+        <h3>Advanced RAG Techniques</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Technique</th><th>Description</th><th>Implementation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Hybrid Search</td><td>BM25 + Vector combined</td><td>Qdrant hybrid, Weaviate hybrid</td></tr>
+            <tr><td>Reranking</td><td>Cross-encoder re-scores top-k</td><td>Cohere Rerank, BGE Reranker</td></tr>
+            <tr><td>Query Expansion</td><td>LLM generates sub-queries</td><td>MultiQueryRetriever</td></tr>
+            <tr><td>Parent Document Retriever</td><td>Small chunks → parent doc</td><td>ParentDocumentRetriever</td></tr>
+            <tr><td>Self-Query</td><td>LLM extracts filters</td><td>SelfQueryRetriever</td></tr>
+            <tr><td>Graph RAG</td><td>Knowledge graph + vector</td><td>Neo4j + LangChain GraphIndex</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Reranking Example</h3>
+        <pre><code>from langchain.retrievers import ContextualCompressionRetriever
+from langchain_cohere import CohereRerank
+
+compressor = CohereRerank(model="rerank-english-v3.0", top_n=3)
+compression_retriever = ContextualCompressionRetriever(
+    base_compressor=compressor,
+    base_retriever=vectorstore.as_retriever(search_kwargs={"k": 20})
+)
+
+# Returns only top 3 after reranking
+results = compression_retriever.get_relevant_documents("How to reset password?")</code></pre>
+
+        <div class="cheat-callout"><strong>RAG evaluation:</strong> Use Ragas (faithfulness, answer relevance, context precision, context recall). Track: retrieval latency, tokens used, answer quality scores.</div>
+
+        <h2 id="section6b">6b. Advanced Tool Calling Patterns</h2>
+        <p>Structured tool calling enables reliable agent actions.</p>
+
+        <h3>Parallel Tool Calling</h3>
+        <pre><code># OpenAI parallel function calling
+tools = [
+    {"type": "function", "function": {"name": "get_weather", "parameters": {...}}},
+    {"type": "function", "function": {"name": "get_stocks", "parameters": {...}}},
+    {"type": "function", "function": {"name": "get_news", "parameters": {...}}},
+]
+
+# LLM can call multiple in one turn
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Weather, stocks, and news for NYC"}],
+    tools=tools,
+    tool_choice="auto",  # Allows parallel
+)
+
+# Execute all in parallel
+import asyncio
+async def execute_all(tool_calls):
+    tasks = [execute_tool(tc) for tc in tool_calls]
+    return await asyncio.gather(*tasks)</code></pre>
+
+        <h3>Structured Output with Pydantic</h3>
+        <pre><code>from pydantic import BaseModel, Field
+from langchain_core.utils.function_calling import convert_to_openai_function
+
+class WeatherResponse(BaseModel):
+    city: str = Field(description="City name")
+    temperature: float = Field(description="Temperature in Celsius")
+    condition: str = Field(description="Weather condition")
+    humidity: int = Field(description="Humidity percentage")
+    forecast: list[str] = Field(description="3-day forecast")
+
+# Convert to OpenAI function schema
+weather_function = convert_to_openai_function(WeatherResponse)
+
+# Use with structured output
+response = client.beta.chat.completions.parse(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Weather in Tokyo"}],
+    tools=[weather_function],
+    tool_choice={"type": "function", "function": {"name": "WeatherResponse"}},
+)
+
+parsed = response.choices[0].message.parsed  # WeatherResponse object</code></pre>
+
+        <h3>Tool Composition: Chaining</h3>
+        <pre><code>@tool
+def search_products(query: str) -> list[dict]:
+    """Search product catalog."""
+    return db.search(query)
+
+@tool
+def get_reviews(product_id: str) -> list[dict]:
+    """Get reviews for a product."""
+    return db.get_reviews(product_id)
+
+@tool
+def compare_products(product_ids: list[str]) -> dict:
+    """Compare multiple products."""
+    return db.compare(product_ids)
+
+# Agent can chain: search → get_reviews → compare
+# "Find me the best laptop under $1000 and compare top 3"</code></pre>
+
+        <h2 id="section7">7. Memory & State Management</h2>
+        <p>Agents need short-term (conversation) and long-term (facts, preferences) memory.</p>
+
+        <h3>Memory Types</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Type</th><th>Duration</th><th>Storage</th><th>Use Case</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Conversation Buffer</td><td>Session</td><td>In-memory / Redis</td><td>Chat history</td></tr>
+            <tr><td>Summary Memory</td><td>Session</td><td>In-memory</td><td>Long conversations</td></tr>
+            <tr><td>Entity Memory</td><td>Long-term</td><td>Vector DB / SQL</td><td>Facts about user/entities</td></tr>
+            <tr><td>Semantic Memory</td><td>Long-term</td><td>Vector DB</td><td>Knowledge, preferences</td></tr>
+            <tr><td>Episodic Memory</td><td>Long-term</td><td>Vector DB + time</td><td>Past experiences, outcomes</td></tr>
+            <tr><td>Procedural Memory</td><td>Permanent</td><td>Code / Prompts</td><td>Skills, workflows</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Implementation with LangChain + Redis</h3>
+        <pre><code>from langchain.memory import ConversationBufferMemory, ConversationSummaryMemory
+from langchain_community.chat_message_histories import RedisChatMessageHistory
+from langchain_openai import ChatOpenAI
+
+# Short-term: Redis-backed conversation history
+history = RedisChatMessageHistory(
+    session_id="user-123",
+    url="redis://localhost:6379/0",
+    ttl=86400 * 7,  # 7 days
+)
+
+memory = ConversationBufferMemory(
+    chat_memory=history,
+    return_messages=True,
+    memory_key="chat_history",
+)
+
+# Long-term: Entity memory with vector store
+from langchain.memory import VectorStoreRetrieverMemory
+
+entity_memory = VectorStoreRetrieverMemory(
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 3}),
+    memory_key="entities",
+)
+
+# Combined in agent
+agent = create_openai_functions_agent(
+    llm, tools, prompt
+)
+executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    memory=memory,  # Short-term
+    # entity_memory injected via prompt
+)</code></pre>
+
+        <h3>Mem0: Dedicated Memory Layer</h3>
+        <pre><code># pip install mem0ai
+from mem0 import Memory
+
+memory = Memory.from_config({
+    "vector_store": {"provider": "qdrant", "config": {"collection_name": "mem0"}},
+    "embedder": {"provider": "openai", "config": {"model": "text-embedding-3-small"}},
+})
+
+# Add memories
+memory.add("User prefers vegetarian food", user_id="user-123")
+memory.add("User works at Acme Corp as DevOps engineer", user_id="user-123")
+
+# Retrieve relevant memories
+memories = memory.search("What does the user eat?", user_id="user-123")
+# Returns: ["User prefers vegetarian food"]
+
+# In agent prompt
+system_prompt = f"""User context: {memory.get_all(user_id="user-123")}"""
+</code></pre>
+
+        <h2 id="section8">8. Evaluation & Observability</h2>
+        <p>You can't improve what you don't measure.</p>
+
+        <h3>Key Metrics</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Category</th><th>Metrics</th><th>Tools</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Quality</td><td>Faithfulness, Relevance, Hallucination Rate</td><td>Ragas, LangSmith, Phoenix</td></tr>
+            <tr><td>Retrieval</td><td>Precision@K, Recall@K, MRR, NDCG</td><td>Ragas, custom eval</td></tr>
+            <tr><td>Agent</td><td>Task Success Rate, Steps to Completion, Tool Accuracy</td><td>LangSmith, custom</td></tr>
+            <tr><td>Latency</td><td>P50, P95, P99 per step</td><td>Langfuse, Datadog</td></tr>
+            <tr><td>Cost</td><td>Tokens per task, $ per 1k tasks</td><td>LangSmith, custom</td></tr>
+            <tr><td>User</td><td>CSAT, Resolution Rate, Escalation Rate</td><td>Post-interaction survey</td></tr>
+          </tbody>
+        </table>
+
+        <h3>LangSmith Tracing Setup</h3>
+        <pre><code># pip install langsmith
+import os
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_API_KEY"] = "your-langsmith-key"
+os.environ["LANGCHAIN_PROJECT"] = "ai-agents-prod"
+
+# Automatic tracing for all LangChain/LangGraph calls
+# View at https://smith.langchain.com
+
+# Custom evaluation
+from langsmith.evaluation import evaluate
+from langchain.smith import RunEvaluator
+
+def accuracy_evaluator(run, example):
+    prediction = run.outputs.get("output", "")
+    reference = example.outputs.get("answer", "")
+    # Custom logic: exact match, semantic similarity, etc.
+    return {"score": 1.0 if prediction == reference else 0.0}
+
+results = evaluate(
+    lambda inputs: agent.invoke(inputs),
+    data="my-dataset",
+    evaluators=[accuracy_evaluator],
+    experiment_prefix="agent-v2",
+)</code></pre>
+
+        <h3>Langfuse (Open Source Alternative)</h3>
+        <pre><code># docker-compose.yml
+services:
+  langfuse:
+    image: langfuse/langfuse:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/langfuse
+      - NEXTAUTH_SECRET=your-secret
+      - SALT=your-salt
+    depends_on:
+      - postgres
+
+# Python SDK
+from langfuse import Langfuse
+
+langfuse = Langfuse(
+    public_key="pk-...",
+    secret_key="sk-...",
+    host="http://localhost:3000"
+)
+
+# Trace a generation
+generation = langfuse.generation(
+    name="agent-step",
+    model="gpt-4o",
+    input={"messages": [...]},
+    output={"content": "..."},
+    usage={"input": 100, "output": 50},
+    metadata={"user_id": "123", "session_id": "abc"}
+)
+generation.end()
+</code></pre>
+
+        <h2 id="section9">9. Production Deployment</h2>
+        <p>Moving from notebook to production requires infrastructure, monitoring, and safety.</p>
+
+        <h3>Deployment Architecture</h3>
+        <pre><code># Kubernetes deployment (LangGraph agent)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-agent
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ai-agent
+  template:
+    metadata:
+      labels:
+        app: ai-agent
+    spec:
+      containers:
+      - name: agent
+        image: your-registry/ai-agent:v1.2.3
+        ports:
+        - containerPort: 8000
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-secrets
+              key: openai-key
+        - name: REDIS_URL
+          value: "redis://redis:6379/0"
+        - name: QDRANT_URL
+          value: "http://qdrant:6333"
+        - name: LANGSMITH_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-secrets
+              key: langsmith-key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 10</code></pre>
+
+        <h3>Safety & Guardrails</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Guardrail</th><th>Implementation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Input validation</td><td>Pydantic schemas, length limits, PII detection</td></tr>
+            <tr><td>Output validation</td><td>JSON schema, regex, safety classifier</td></tr>
+            <tr><td>Rate limiting</td><td>Redis token bucket per user/session</td></tr>
+            <tr><td>Timeout</td><td>Asyncio wait_for with 30s default</td></tr>
+            <tr><td>Circuit breaker</td><td>pybreaker or custom for external APIs</td></tr>
+            <tr><td>Content filter</td><td>OpenAI Moderation API, custom rules</td></tr>
+            <tr><td>PII redaction</td><td>Presidio, regex before logging</td></tr>
+            <tr><td>Cost control</td><td>Token budgets per session/day</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Input Guardrail Example</h3>
+        <pre><code>from pydantic import BaseModel, validator
+import re
+
+class AgentInput(BaseModel):
+    message: str
+    user_id: str
+    session_id: str
+    
+    @validator("message")
+    def validate_message(cls, v):
+        if len(v) > 4000:
+            raise ValueError("Message too long")
+        # PII detection
+        if re.search(r"\b\d{3}-\d{2}-\d{4}\b", v):  # SSN
+            raise ValueError("PII detected")
+        if re.search(r"\b\d{16}\b", v):  # Credit card
+            raise ValueError("PII detected")
+        return v
+
+# In FastAPI endpoint
+@app.post("/agent/chat")
+async def chat(input: AgentInput):
+    # Validated automatically
+    result = await agent.ainvoke({"input": input.message})
+    return {"response": result["output"]}</code></pre>
+
+        <h2 id="section10">10. Advanced Tricks & Patterns</h2>
+
+        <h3>1. Agent as a Service (AaaS) with MCP</h3>
+        <pre><code># Model Context Protocol (MCP) - expose tools as standardized servers
+# Server: mcp-server-weather
+from mcp.server import Server
+from mcp.types import Tool
+
+server = Server("weather")
+
+@server.list_tools()
+async def list_tools():
+    return [Tool(
+        name="get_weather",
+        description="Get weather for a city",
+        inputSchema={"type": "object", "properties": {"city": {"type": "string"}}}
+    )]
+
+@server.call_tool()
+async def call_tool(name, args):
+    if name == "get_weather":
+        return {"text": await fetch_weather(args["city"])}
+
+# Client: agent connects to multiple MCP servers
+from mcp.client import Client
+
+weather_client = Client("stdio", command=["python", "mcp_weather.py"])
+tools = await weather_client.list_tools()
+# Agent can now use weather tool via standard protocol</code></pre>
+
+        <h3>2. Recursive Self-Improvement Loop</h3>
+        <pre><code>async def improve_agent(agent, task, max_iterations=3):
+    for i in range(max_iterations):
+        result = await agent.run(task)
+        critique = await critic_agent.run(f"Review: {result}")
+        if critique.score >= 0.9:
+            return result
+        agent = await update_agent_prompt(agent, critique.feedback)
+    return result</code></pre>
+
+        <h3>3. Dynamic Tool Discovery</h3>
+        <pre><code>class DynamicToolRegistry:
+    def __init__(self):
+        self.tools = {}
+    
+    def register_from_openapi(self, spec_url: str):
+        # Parse OpenAPI spec, generate tools automatically
+        pass
+    
+    def register_from_graphql(self, schema_url: str):
+        # Generate tools from GraphQL schema
+        pass
+    
+    def get_tools_for_agent(self, agent_role: str) -> list:
+        # Return subset of tools based on agent role
+        return [t for t in self.tools.values() if agent_role in t.allowed_roles]
+
+# Agent gets only relevant tools
+registry = DynamicToolRegistry()
+registry.register_from_openapi("https://api.stripe.com/openapi.json")
+registry.register_from_openapi("https://api.github.com/openapi.json")
+
+billing_tools = registry.get_tools_for_agent("billing")
+devops_tools = registry.get_tools_for_agent("devops")</code></pre>
+
+        <h3>4. Agent Swarm for Parallel Processing</h3>
+        <pre><code>async def process_batch_with_swarm(items: list, agent_factory, max_concurrent=5):
+    semaphore = asyncio.Semaphore(max_concurrent)
+    
+    async def process_one(item):
+        async with semaphore:
+            agent = agent_factory()
+            return await agent.run(item)
+    
+    results = await asyncio.gather(*[process_one(item) for item in items])
+    return results
+
+# Process 1000 documents with 5 parallel agents
+results = await process_batch_with_swarm(documents, lambda: create_summarizer_agent())</code></pre>
+
+        <h3>5. Streaming Responses for UX</h3>
+        <pre><code>from langchain.callbacks import AsyncIteratorCallbackHandler
+
+async def stream_agent_response(input: str):
+    callback = AsyncIteratorCallbackHandler()
+    agent = create_agent(callbacks=[callback])
+    
+    task = asyncio.create_task(agent.ainvoke({"input": input}))
+    
+    async for token in callback.aiter():
+        yield f"data: {json.dumps({'token': token})}\n\n"
+    
+    result = await task
+    yield f"data: {json.dumps({'done': True, 'result': result})}\n\n"
+
+# FastAPI streaming endpoint
+@app.get("/agent/stream")
+async def stream_chat(q: str):
+    return StreamingResponse(stream_agent_response(q), media_type="text/event-stream")</code></pre>
+
+        <h3>6. Cost Optimization: Model Routing</h3>
+        <pre><code>class ModelRouter:
+    def __init__(self):
+        self.models = {
+            "simple": "gpt-4o-mini",      # $0.15/1M
+            "complex": "gpt-4o",          # $5/1M
+            "reasoning": "o1-preview",    # $15/1M
+            "local": "llama3.1:70b",      # Free (self-hosted)
+        }
+    
+    def select(self, task_complexity: str, budget_remaining: float) -> str:
+        if budget_remaining < 0.01:
+            return self.models["local"]
+        if task_complexity == "simple":
+            return self.models["simple"]
+        elif task_complexity == "reasoning":
+            return self.models["reasoning"]
+        return self.models["complex"]
+
+# Usage in agent
+router = ModelRouter()
+llm = ChatOpenAI(model=router.select(complexity, budget))
+</code></pre>
+
+        <div class="cheat-callout"><strong>Pro tip:</strong> Use "mixture of experts" routing: classifier LLM (cheap) routes to specialized agents. Cache frequent queries. Batch embeddings. Use smaller models for classification/extraction, larger only for reasoning.</div>
+
+        <h3>7. Offline-First with Local LLMs</h3>
+        <pre><code># Ollama + LangChain for air-gapped environments
+from langchain_community.llms import Ollama
+from langchain_community.embeddings import OllamaEmbeddings
+
+llm = Ollama(
+    model="llama3.1:70b",
+    base_url="http://localhost:11434",
+    temperature=0.1,
+)
+
+embeddings = OllamaEmbeddings(
+    model="nomic-embed-text",
+    base_url="http://localhost:11434",
+)
+
+# Full RAG pipeline locally
+# Requires: 48GB+ RAM for 70B, 16GB for 8B quantized</code></pre>
+
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics & Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">AI Agents</span>
+            <span class="blog-tag">n8n</span>
+            <span class="blog-tag">LangChain</span>
+            <span class="blog-tag">LangGraph</span>
+            <span class="blog-tag">AutoGen</span>
+            <span class="blog-tag">CrewAI</span>
+            <span class="blog-tag">WAHA</span>
+            <span class="blog-tag">WhatsApp</span>
+            <span class="blog-tag">RAG</span>
+            <span class="blog-tag">Automation</span>
+            <span class="blog-tag">Production</span>
+          </div>
+        </div>
+
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script src="../../script.js"></script>
+</body>
+</html>
