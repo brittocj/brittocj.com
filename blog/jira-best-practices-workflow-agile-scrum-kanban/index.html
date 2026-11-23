@@ -25,6 +25,7 @@
         <li><a href="../../index.html#expertise">Expertise</a></li>
         <li><a href="../../index.html#experience">Experience</a></li>
         <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../../index.html#certifications">Certifications</a></li>
         <li><a href="../index.html">Blog</a></li>
         <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
       </ul>
@@ -46,7 +47,7 @@
         
         <p>Most production incidents trace back to poor workflow design, not tool limitations. This ready reckoner provides a comprehensive framework for structuring your Jira instance to support Agile, Scrum, and Kanban methodologies while maintaining flexibility and scalability.</p>
         
-        <nav class="reckoner-toc" id="jira-contents" aria-label="Table of contents">
+        <nav class="reckoner-toc" id="reckoner-contents" aria-label="Table of contents">
           <h2>Contents</h2>
           <ol>
             <li><a href="#jira-setup">Jira Setup and Configuration</a></li>
@@ -78,6 +79,8 @@
         
         <p><strong>Key principle:</strong> Your Jira configuration should reflect your team's actual workflow, not an idealized version. Start simple and iterate based on real feedback.</p>
         
+        <div class="cheat-callout"><strong>Setup rule:</strong> The best Jira configuration is the one your team actually uses. Avoid over-engineering for edge cases that rarely occur.</div>
+        
         <h2 id="agile-workflow">Agile Workflow Principles</h2>
         <p>Agile isn't just about methodologies - it's about creating a sustainable rhythm for delivering value. Jira should facilitate, not hinder, this rhythm.</p>
         
@@ -92,6 +95,8 @@
           <li>Not regularly reviewing and refining your setup based on team feedback</li>
           <li>Using Jira for purposes it wasn't designed for (e.g., complex financial tracking)</li>
         </ul>
+        
+        <div class="cheat-callout"><strong>Agile rule:</strong> Your workflow should reflect reality, not theory. If your team can't complete a story in a sprint, your workflow is too complex.</div>
         
         <h2 id="scrum">Scrum Implementation Guide</h2>
         <p>Scrum is the most widely adopted Agile framework. Jira supports Scrum through its built-in Agile boards and workflow features.</p>
@@ -124,6 +129,8 @@
           <li>Use Jira's built-in burndown charts for sprint progress tracking</li>
         </ul>
         
+        <div class="cheat-callout"><strong>Scrum rule:</strong> The sprint backlog is a living document that should be refined regularly. Never commit to more work than your team can realistically complete in a sprint.</div>
+        
         <h2 id="kanban">Kanban Implementation Guide</h2>
         <p>Kanban is ideal for teams with continuous flow work or maintenance-oriented responsibilities. It complements Scrum well for hybrid approaches.</p>
         
@@ -150,6 +157,8 @@
           <li>Set up service level agreements (SLAs) for flow metrics</li>
           <li>Use swimlanes or quick filters to categorize work types</li>
         </ul>
+        
+        <div class="cheat-callout"><strong>Kanban rule:</strong> WIP limits are not suggestions - they are hard constraints that must be respected to maintain flow efficiency.</div>
         
         <h2 id="issue-types">Issue Types and Prioritization</h2>
         <p>Effective issue types and prioritization are critical for maintaining clarity and focus.</p>
@@ -206,6 +215,8 @@
           <li>Document all customizations with clear purpose and usage guidelines</li>
         </ul>
         
+        <div class="cheat-callout"><strong>Customization rule:</strong> Every customization should have a clear business purpose and documented usage. If you can't explain why it exists, remove it.</div>
+        
         <h2 id="automation">Automation and Efficiency</h2>
         <p>Jira's automation capabilities can dramatically reduce manual effort and improve consistency.</p>
         
@@ -229,6 +240,8 @@
           <li>Avoid creating rules that trigger on every change</li>
           <li>Use Jira's built-in conditions and validators</li>
         </ul>
+        
+        <div class="cheat-callout"><strong>Automation rule:</strong> Start with simple rules and gradually increase complexity. Document all automation rules with purpose and trigger conditions.</div>
         
         <h2 id="reports">Reports and Dashboards</h2>
         <p>Effective reporting provides visibility without overwhelming your team.</p>
@@ -254,6 +267,8 @@
           <li>Use Jira's native dashboard widgets for consistency</li>
         </ul>
         
+        <div class="cheat-callout"><strong>Reporting rule:</strong> Effective reporting provides visibility without overwhelming your team. Limit dashboard items to 5-7 key metrics per view.</div>
+        
         <h2 id="anti-patterns">Common Anti-Patterns to Avoid</h2>
         <p>These practices undermine Jira's effectiveness and create more problems than they solve:</p>
         
@@ -267,13 +282,7 @@
           <li>Over-automating without proper testing and review</li>
         </ul>
         
-        <div class="cheat-callout"><strong>Practical rule:</strong> Keep the feedback loop from fastest to slowest — developer workstation → CI → dev → QA/SIT → test → UAT → production. A 5-minute unit test failure beats a 5-day production incident. Do not compensate for weak earlier stages by adding only more manual testing later.</div>
-        
-        <div class="cheat-callout"><strong>Scrum rule:</strong> The sprint backlog is a living document that should be refined regularly. Never commit to more work than your team can realistically complete in a sprint.</div>
-        
-        <div class="cheat-callout"><strong>Kanban rule:</strong> WIP limits are not suggestions - they are hard constraints that must be respected to maintain flow efficiency.</div>
-        
-        <div class="cheat-callout"><strong>Jira rule:</strong> Your Jira configuration should serve your team, not the other way around. Regularly solicit feedback and iterate on your setup.</div>
+        <div class="cheat-callout"><strong>Anti-pattern rule:</strong> These practices undermine Jira's effectiveness and create more problems than they solve. Regularly audit your Jira setup to identify and eliminate anti-patterns.</div>
         
         <div class="blog-tags">
           <div class="blog-tags-title">Topics & Tags</div>
@@ -298,4 +307,3 @@
   <script src="../../script.js"></script>
 </body>
 </html>
-</content>
