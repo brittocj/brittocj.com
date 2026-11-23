@@ -247,9 +247,8 @@
 
     if (!sortSelect || !blogGrid) return;
 
-    const cards = Array.from(blogGrid.querySelectorAll('.blog-card'));
-
     const sortCards = (criteria) => {
+      const cards = Array.from(blogGrid.querySelectorAll('.blog-card'));
       const sorted = [...cards].sort((a, b) => {
         const dateA = parseInt(a.dataset.date || '0', 10);
         const dateB = parseInt(b.dataset.date || '0', 10);
@@ -274,8 +273,9 @@
         }
       });
 
-      sorted.forEach((card, index) => {
-        card.style.order = index;
+      // Reorder DOM nodes directly for reliable visual reordering
+      sorted.forEach((card) => {
+        blogGrid.appendChild(card);
       });
     };
 
@@ -285,6 +285,10 @@
 
     // Initial sort (newest first)
     sortCards('date-desc');
+
+    // Expose for re-sorting after views load
+    window.__blogSortCards = sortCards;
+    window.__blogSortSelect = sortSelect;
   }
 
   initBlogSort();
@@ -478,6 +482,11 @@
       });
     } catch {
       // Views API unavailable - leave cards unchanged.
+    }
+
+    // Re-apply current sort after views are loaded
+    if (window.__blogSortCards && window.__blogSortSelect) {
+      window.__blogSortCards(window.__blogSortSelect.value);
     }
   }
 
