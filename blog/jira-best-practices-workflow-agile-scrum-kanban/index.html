@@ -16,229 +16,282 @@
 <body>
   <nav class="nav" id="nav">
     <div class="nav__inner container">
-      <a href="../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
+      <a href="../../index.html" class="nav__logo">AB<span class="nav__logo-accent">.</span></a>
       <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
       </button>
       <ul class="nav__links" id="navLinks">
-        <li><a href="../index.html#about">About</a></li>
-        <li><a href="../index.html#expertise">Expertise</a></li>
-        <li><a href="../index.html#experience">Experience</a></li>
-        <li><a href="../index.html#projects">Projects</a></li>
-        <li><a href="../index.html#certifications">Certifications</a></li>
-        <li><a href="../index.html#contact" class="nav__cta">Contact</a></li>
+        <li><a href="../../index.html#about">About</a></li>
+        <li><a href="../../index.html#expertise">Expertise</a></li>
+        <li><a href="../../index.html#experience">Experience</a></li>
+        <li><a href="../../index.html#projects">Projects</a></li>
+        <li><a href="../index.html">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav__cta">Contact</a></li>
       </ul>
     </div>
   </nav>
 
-  <section class="blog-section">
+  <section class="blog-post">
     <div class="container">
-      <div class="blog-header">
-        <h1 class="blog-title">Jira Best Practices: Agile Workflow, Scrum and Kanban</h1>
-        <p class="blog-lead">A comprehensive guide to configuring Jira for maximum productivity, optimizing Agile workflows, and implementing Scrum and Kanban effectively.</p>
-      </div>
-      
-      <nav class="reckoner-toc" id="jira-contents" aria-label="Table of contents">
-        <h2>Contents</h2>
+      <article class="blog-content">
+        <div class="blog-header">
+          <h1 class="blog-title">Jira Best Practices: Agile Workflow, Scrum and Kanban</h1>
+          <div class="blog-meta">
+            <div class="blog-meta-item">📅 January 24, 2021</div>
+            <div class="blog-meta-item">⏱️ 20 min read</div>
+          </div>
+        </div>
+
+        <p class="blog-lead">A comprehensive guide to configuring Jira for maximum productivity, optimizing Agile workflows, and implementing Scrum and Kanban effectively. Learn how to structure your Jira instance for maximum team collaboration and delivery velocity.</p>
+        
+        <p>Most production incidents trace back to poor workflow design, not tool limitations. This ready reckoner provides a comprehensive framework for structuring your Jira instance to support Agile, Scrum, and Kanban methodologies while maintaining flexibility and scalability.</p>
+        
+        <nav class="reckoner-toc" id="jira-contents" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#jira-setup">Jira Setup and Configuration</a></li>
+            <li><a href="#agile-workflow">Agile Workflow Principles</a></li>
+            <li><a href="#scrum">Scrum Implementation Guide</a></li>
+            <li><a href="#kanban">Kanban Implementation Guide</a></li>
+            <li><a href="#issue-types">Issue Types and Prioritization</a></li>
+            <li><a href="#customization">Customization Best Practices</a></li>
+            <li><a href="#automation">Automation and Efficiency</a></li>
+            <li><a href="#reports">Reports and Dashboards</a></li>
+            <li><a href="#anti-patterns">Common Anti-Patterns to Avoid</a></li>
+          </ol>
+        </nav>
+        
+        <h2 id="jira-setup">Jira Setup and Configuration</h2>
+        <p>Effective Jira usage begins with proper initial configuration rather than treating it as a generic ticketing system. The foundation determines how well your team can collaborate and track work.</p>
+        
+        <p><strong>Golden rule:</strong> Don't start with Jira's default settings. Configure issue types, fields, screens, and workflows to match your actual development and operational processes.</p>
+        
+        <h3>Essential Setup Steps</h3>
         <ol>
-          <li><a href="#jira-setup">Jira Setup and Configuration</a></li>
-          <li><a href="#agile-workflow">Agile Workflow Principles</a></li>
-          <li><a href="#scrum">Scrum Implementation Guide</a></li>
-          <li><a href="#kanban">Kanban Implementation Guide</a></li>
-          <li><a href="#issue-types">Issue Types and Prioritization</a></li>
-          <li><a href="#customization">Customization Best Practices</a></li>
-          <li><a href="#automation">Automation and Efficiency</a></li>
-          <li><a href="#reports">Reports and Dashboards</a></li>
-          <li><a href="#anti-patterns">Common Anti-Patterns to Avoid</a></li>
+          <li>Define clear issue types that align with your workflow stages (Story, Task, Bug, Epic, Sub-task, etc.)</li>
+          <li>Set up appropriate field configurations with mandatory fields where needed</li>
+          <li>Create screens that capture essential information without overwhelming users</li>
+          <li>Establish a workflow that reflects your actual process, not an idealized version</li>
+          <li>Configure permissions and workflow conditions to ensure proper access control</li>
+          <li>Implement a clear issue type scheme with appropriate workflows for each type</li>
         </ol>
-      </nav>
-      
-      <h2 id="jira-setup">Jira Setup and Configuration</h2>
-      <p>Effective Jira usage begins with proper initial configuration rather than treating it as a generic ticketing system. The foundation determines how well your team can collaborate and track work.</p>
-      
-      <p><strong>Golden rule:</strong> Don't start with Jira's default settings. Configure issue types, fields, screens, and workflows to match your actual development and operational processes.</p>
-      
-      <h3>Essential Setup Steps</h3>
-      <ol>
-        <li>Define clear issue types that align with your workflow stages (Story, Task, Bug, Epic, Sub-task, etc.)</li>
-        <li>Set up appropriate field configurations with mandatory fields where needed</li>
-        <li>Create screens that capture essential information without overwhelming users</li>
-        <li>Establish a workflow that reflects your actual process, not an idealized version</li>
-        <li>Configure permissions and workflow conditions to ensure proper access control</li>
-      </ol>
-      
-      <h2 id="agile-workflow">Agile Workflow Principles</h2>
-      <p>Agile isn't just about methodologies - it's about creating a sustainable rhythm for delivering value. Jira should facilitate, not hinder, this rhythm.</p>
-      
-      <p><strong>Key principle:</strong> Your workflow should reflect reality, not theory. If your team can't complete a story in a sprint, your workflow is too complex.</p>
-      
-      <h3>Agile Anti-Patterns</h3>
-      <ul>
-        <li>Using too many issue types that confuse rather than clarify</li>
-        <li>Over-customizing fields without clear purpose</li>
-        <li>Treating Jira as the source of truth rather than a collaboration tool</li>
-        <li>Having workflows with too many statuses that create bottlenecks</li>
-        <li>Not regularly reviewing and refining your setup based on team feedback</li>
-      </ul>
-      
-      <h2 id="scrum">Scrum Implementation Guide</h2>
-      <p>Scrum is the most widely adopted Agile framework. Jira supports Scrum through its built-in Agile boards and workflow features.</p>
-      
-      <h3>Scrum Implementation Checklist</h3>
-      <ol>
-        <li>Configure a Scrum board with appropriate swimlanes or quick filters</li>
-        <li>Set up sprint cycles that match your team's cadence (typically 1-4 weeks)</li>
-        <li>Define clear Definition of Done criteria for each issue type</li>
-        <li>Configure sprint planning, daily standups, sprint reviews, and retrospectives in Jira</li>
-        <li>Establish a backlog grooming process with regular refinement sessions</li>
-        <li>Implement a clear way to track velocity and capacity</li>
-      </ol>
-      
-      <h3>Scrum Workflow Tips</h3>
-      <ul>
-        <li>Use story points consistently - don't mix with time-based estimates</li>
-        <li>Keep your backlog well-groomed with ready-to-start items</li>
-        <li>Limit Work in Progress (WIP) to maintain focus</li>
-        <li>Use labels or components to categorize work within sprints</li>
-        <li>Schedule regular backlog refinement sessions (bi-weekly recommended)</li>
-      </ul>
-      
-      <h2 id="kanban">Kanban Implementation Guide</h2>
-      <p>Kanban is ideal for teams with continuous flow work or maintenance-oriented responsibilities. It complements Scrum well for hybrid approaches.</p>
-      
-      <h3>Kanban Setup Essentials</h3>
-      <ol>
-        <li>Define clear workflow stages (To Do, In Progress, Review, Done)</li>
-        <li>Set explicit WIP limits for each stage to prevent bottlenecks</li>
-        <li>Establish a pull system rather than push-based work assignment</li>
-        <li>Implement a regular review cadence (weekly or bi-weekly)</li>
-        <li>Set up cycle time metrics to measure flow efficiency</li>
-      </ol>
-      
-      <h3>Kanban Best Practices</h3>
-      <ul>
-        <li>Limit WIP strictly - this is the core of Kanban effectiveness</li>
-        <li>Visualize bottlenecks immediately and address them</li>
-        <li>Use cumulative flow diagrams to track flow efficiency</li>
-        <li>Limit work items in progress to maintain focus</li>
-        <li>Review your board daily to identify and resolve blockers</li>
-      </ul>
-      
-      <h2 id="issue-types">Issue Types and Prioritization</h2>
-      <p>Effective issue types and prioritization are critical for maintaining clarity and focus.</p>
-      
-      <h3>Recommended Issue Types</h3>
-      <table class="cheat-table">
-        <thead>
-          <tr><th>Issue Type</th><th>When to Use</th><th>Typical Owner</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Story</td><td>User-facing functionality</td><td>Developer</td></tr>
-          <tr><td>Task</td><td>Non-story work (maintenance, research)</td><td>Team member</td></tr>
-          <tr><td>Bug</td><td>Defect report</td><td>QA/Developer</td></tr>
-          <tr><td>Epic</td><td>Large initiative broken into stories</td><td>Product Owner</td></tr>
-          <tr><td>Sub-task</td><td>Breakdown of a story or task</td><td>Developer</td></tr>
-          <tr><td>Spike</td><td>Research investigation</td><td>Team member</td></tr>
-        </tbody>
-      </table>
-      
-      <h3>Prioritization Framework</h3>
-      <table class="cheat-table">
-        <thead>
-          <tr><th>Priority</th><th>Description</th><th>Action</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Critical</td><td>Blocks production, affects all users</td><td>Immediate attention</td></tr>
-          <tr><td>High</td><td>Significant impact, multiple users</td><td>Within current sprint</td></tr>
-          <tr><td>Medium</td><td>Moderate impact, limited users</td><td>Next sprint</td></tr>
-          <tr><td>Low</td><td>Minor impact, cosmetic issues</td><td>Backlog</td></tr>
-        </tbody>
-      </table>
-      
-      <h2 id="customization">Customization Best Practices</h2>
-      <p>Jira's flexibility can be both a blessing and a curse. Customize thoughtfully to avoid complexity.</p>
-      
-      <h3>Custom Field Guidelines</h3>
-      <ul>
-        <li>Only add custom fields when absolutely necessary</li>
-        <li>Use custom fields for specialized data, not generic information</li>
-        <li>Document all custom fields with clear purpose</li>
-        <li>Review custom fields quarterly to assess necessity</li>
-        <li>Prefer standard fields over custom when possible</li>
-      </ul>
-      
-      <h3>Screen and Workflow Design</h3>
-      <p>Focus on simplicity and usability:</p>
-      <ul>
-        <li>Group related fields logically on screens</li>
-        <li>Make essential fields mandatory, optional fields truly optional</li>
-        <li>Minimize the number of screens in your workflow</li>
-        <li>Use transitions that reflect actual process steps</li>
-        <li>Test your setup with real team members</li>
-      </ul>
-      
-      <h2 id="automation">Automation and Efficiency</h2>
-      <p>Jira's automation capabilities can dramatically reduce manual effort and improve consistency.</p>
-      
-      <h3>Top Automation Use Cases</h3>
-      <ul>
-        <li>Automatically transition issues based on status changes</li>
-        <li>Set field values when issues are created or updated</li>
-        <li>Send notifications for specific conditions (e.g., SLA breaches)</li>
-        <li>Create related issues automatically from templates</li>
-        <li>Close inactive issues after defined periods</li>
-      </ul>
-      
-      <h3>Automation Best Practices</h3>
-      <ul>
-        <li>Start with simple rules and gradually increase complexity</li>
-        <li>Test automation rules in a staging environment</li>
-        <li>Document all automation rules with purpose and trigger conditions</li>
-        <li>Review automation rules quarterly for relevance</li>
-        <li>Avoid creating rules that trigger on every change</li>
-      </ul>
-      
-      <h2 id="reports">Reports and Dashboards</h2>
-      <p>Effective reporting provides visibility without overwhelming your team.</p>
-      
-      <h3>Essential Reports</h3>
-      <ul>
-        <li>Burndown charts for sprint progress tracking</li>
-        <li>Cumulative flow diagrams for Kanban flow analysis</li>
-        <li>Control charts to measure cycle time</li>
-        <li>Velocity reports for sprint planning</li>
-        <li>Issue type reports for workload analysis</li>
-      </ul>
-      
-      <h3>Dashboard Best Practices</h3>
-      <ul>
-        <li>Create role-specific dashboards (e.g., PO dashboard, dev dashboard)</li>
-        <li>Limit dashboard items to 5-7 key metrics per view</li>
-        <li>Use filters to show relevant data only</li>
-        <li>Update dashboards regularly to reflect current state</li>
-        <li>Include trend data for historical context</li>
-      </ul>
-      
-      <h2 id="anti-patterns">Common Anti-Patterns to Avoid</h2>
-      <p>These practices undermine Jira's effectiveness and create more problems than they solve:</p>
-      
-      <ul>
-        <li>Using Jira as the only source of truth without integrating with other tools</li>
-        <li>Creating excessive custom fields and screens that confuse users</li>
-        <li>Having workflows with too many statuses that create bottlenecks</li>
-        <li>Not regularly reviewing and refining your Jira setup</li>
-        <li>Treating Jira tickets as documentation rather than living artifacts</li>
-        <li>Using Jira for purposes it wasn't designed for (e.g., complex financial tracking)</li>
-        <li>Over-automating without proper testing and review</li>
-      </ul>
-      
-      <h2>Conclusion</h2>
-      <p>Jira is a powerful tool that can significantly enhance team collaboration and project visibility when configured thoughtfully. The key is to start simple, iterate based on real feedback, and continuously refine your setup to match your team's evolving needs.</p>
-      <p>Remember that the best Jira configuration is the one that works for your team - not the most complex or feature-rich setup. Focus on creating a system that enables your team to deliver value efficiently and sustainably.</p>
-      
-      <div class="blog-nav">
-        <a href="../index.html">← Back to All Posts</a>
-      </div>
+        
+        <p><strong>Key principle:</strong> Your Jira configuration should reflect your team's actual workflow, not an idealized version. Start simple and iterate based on real feedback.</p>
+        
+        <h2 id="agile-workflow">Agile Workflow Principles</h2>
+        <p>Agile isn't just about methodologies - it's about creating a sustainable rhythm for delivering value. Jira should facilitate, not hinder, this rhythm.</p>
+        
+        <p><strong>Key principle:</strong> Your workflow should reflect reality, not theory. If your team can't complete a story in a sprint, your workflow is too complex.</p>
+        
+        <h3>Agile Anti-Patterns</h3>
+        <ul>
+          <li>Using too many issue types that confuse rather than clarify</li>
+          <li>Over-customizing fields without clear purpose</li>
+          <li>Treating Jira as the source of truth rather than a collaboration tool</li>
+          <li>Having workflows with too many statuses that create bottlenecks</li>
+          <li>Not regularly reviewing and refining your setup based on team feedback</li>
+          <li>Using Jira for purposes it wasn't designed for (e.g., complex financial tracking)</li>
+        </ul>
+        
+        <h2 id="scrum">Scrum Implementation Guide</h2>
+        <p>Scrum is the most widely adopted Agile framework. Jira supports Scrum through its built-in Agile boards and workflow features.</p>
+        
+        <p><strong>Golden rule:</strong> Scrum is about inspecting and adapting, not rigidly following a process. Your Jira setup should support this empirical approach.</p>
+        
+        <h3>Scrum Implementation Checklist</h3>
+        <ol>
+          <li>Configure a Scrum board with appropriate swimlanes or quick filters</li>
+          <li>Set up sprint cycles that match your team's cadence (typically 1-4 weeks)</li>
+          <li>Define clear Definition of Done criteria for each issue type</li>
+          <li>Configure sprint planning, daily standups, sprint reviews, and retrospectives in Jira</li>
+          <li>Establish a backlog grooming process with regular refinement sessions</li>
+          <li>Implement a clear way to track velocity and capacity</li>
+          <li>Use story points consistently - don't mix with time-based estimates</li>
+          <li>Keep your backlog well-groomed with ready-to-start items</li>
+          <li>Limit Work in Progress (WIP) to maintain focus</li>
+          <li>Use labels or components to categorize work within sprints</li>
+          <li>Schedule regular backlog refinement sessions (bi-weekly recommended)</li>
+        </ol>
+        
+        <h3>Scrum Workflow Tips</h3>
+        <ul>
+          <li>Use story points consistently - don't mix with time-based estimates</li>
+          <li>Keep your backlog well-groomed with ready-to-start items</li>
+          <li>Limit Work in Progress (WIP) to maintain focus</li>
+          <li>Use labels or components to categorize work within sprints</li>
+          <li>Schedule regular backlog refinement sessions (bi-weekly recommended)</li>
+          <li>Track velocity to improve sprint planning accuracy</li>
+          <li>Use Jira's built-in burndown charts for sprint progress tracking</li>
+        </ul>
+        
+        <h2 id="kanban">Kanban Implementation Guide</h2>
+        <p>Kanban is ideal for teams with continuous flow work or maintenance-oriented responsibilities. It complements Scrum well for hybrid approaches.</p>
+        
+        <p><strong>Key principle:</strong> Kanban is about visualizing workflow and limiting WIP, not imposing rigid timeboxes.</p>
+        
+        <h3>Kanban Setup Essentials</h3>
+        <ol>
+          <li>Define clear workflow stages (To Do, In Progress, Review, Done)</li>
+          <li>Set explicit WIP limits for each stage to prevent bottlenecks</li>
+          <li>Establish a pull system rather than push-based work assignment</li>
+          <li>Implement a regular review cadence (weekly or bi-weekly)</li>
+          <li>Set up cycle time metrics to measure flow efficiency</li>
+          <li>Use cumulative flow diagrams to track flow efficiency</li>
+          <li>Visualize bottlenecks immediately and address them</li>
+        </ol>
+        
+        <h3>Kanban Best Practices</h3>
+        <ul>
+          <li>Limit WIP strictly - this is the core of Kanban effectiveness</li>
+          <li>Visualize bottlenecks immediately and address them</li>
+          <li>Use cumulative flow diagrams to track flow efficiency</li>
+          <li>Limit work items in progress to maintain focus</li>
+          <li>Review your board daily to identify and resolve blockers</li>
+          <li>Set up service level agreements (SLAs) for flow metrics</li>
+          <li>Use swimlanes or quick filters to categorize work types</li>
+        </ul>
+        
+        <h2 id="issue-types">Issue Types and Prioritization</h2>
+        <p>Effective issue types and prioritization are critical for maintaining clarity and focus.</p>
+        
+        <h3>Recommended Issue Types</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Issue Type</th><th>When to Use</th><th>Typical Owner</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Story</td><td>User-facing functionality</td><td>Developer</td></tr>
+            <tr><td>Task</td><td>Non-story work (maintenance, research)</td><td>Team member</td></tr>
+            <tr><td>Bug</td><td>Defect report</td><td>QA/Developer</td></tr>
+            <tr><td>Epic</td><td>Large initiative broken into stories</td><td>Product Owner</td></tr>
+            <tr><td>Sub-task</td><td>Breakdown of a story or task</td><td>Developer</td></tr>
+            <tr><td>Spike</td><td>Research investigation</td><td>Team member</td></tr>
+          </tbody>
+        </table>
+        
+        <h3>Prioritization Framework</h3>
+        <table class="cheat-table">
+          <thead>
+            <tr><th>Priority</th><th>Description</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Critical</td><td>Blocks production, affects all users</td><td>Immediate attention</td></tr>
+            <tr><td>High</td><td>Significant impact, multiple users</td><td>Within current sprint</td></tr>
+            <tr><td>Medium</td><td>Moderate impact, limited users</td><td>Next sprint</td></tr>
+            <tr><td>Low</td><td>Minor impact, cosmetic issues</td><td>Backlog</td></tr>
+          </tbody>
+        </table>
+        
+        <h2 id="customization">Customization Best Practices</h2>
+        <p>Jira's flexibility can be both a blessing and a curse. Customize thoughtfully to avoid complexity.</p>
+        
+        <h3>Custom Field Guidelines</h3>
+        <ul>
+          <li>Only add custom fields when absolutely necessary</li>
+          <li>Use custom fields for specialized data, not generic information</li>
+          <li>Document all custom fields with clear purpose</li>
+          <li>Review custom fields quarterly to assess necessity</li>
+          <li>Prefer standard fields over custom when possible</li>
+          <li>Avoid creating custom fields that duplicate standard functionality</li>
+        </ul>
+        
+        <h3>Screen and Workflow Design</h3>
+        <p>Focus on simplicity and usability:</p>
+        <ul>
+          <li>Group related fields logically on screens</li>
+          <li>Make essential fields mandatory, optional fields truly optional</li>
+          <li>Minimize the number of screens in your workflow</li>
+          <li>Use transitions that reflect actual process steps</li>
+          <li>Test your setup with real team members</li>
+          <li>Document all customizations with clear purpose and usage guidelines</li>
+        </ul>
+        
+        <h2 id="automation">Automation and Efficiency</h2>
+        <p>Jira's automation capabilities can dramatically reduce manual effort and improve consistency.</p>
+        
+        <h3>Top Automation Use Cases</h3>
+        <ul>
+          <li>Automatically transition issues based on status changes</li>
+          <li>Set field values when issues are created or updated</li>
+          <li>Send notifications for specific conditions (e.g., SLA breaches)</li>
+          <li>Create related issues automatically from templates</li>
+          <li>Close inactive issues after defined periods</li>
+          <li>Update issue types based on workflow progression</li>
+          <li>Send reminders for overdue tasks</li>
+        </ul>
+        
+        <h3>Automation Best Practices</h3>
+        <ul>
+          <li>Start with simple rules and gradually increase complexity</li>
+          <li>Test automation rules in a staging environment</li>
+          <li>Document all automation rules with purpose and trigger conditions</li>
+          <li>Review automation rules quarterly for relevance</li>
+          <li>Avoid creating rules that trigger on every change</li>
+          <li>Use Jira's built-in conditions and validators</li>
+        </ul>
+        
+        <h2 id="reports">Reports and Dashboards</h2>
+        <p>Effective reporting provides visibility without overwhelming your team.</p>
+        
+        <h3>Essential Reports</h3>
+        <ul>
+          <li>Burndown charts for sprint progress tracking</li>
+          <li>Cumulative flow diagrams for Kanban flow analysis</li>
+          <li>Control charts to measure cycle time</li>
+          <li>Velocity reports for sprint planning</li>
+          <li>Issue type reports for workload analysis</li>
+          <li>Control chart for cycle time measurement</li>
+          <li>Control chart for throughput measurement</li>
+        </ul>
+        
+        <h3>Dashboard Best Practices</h3>
+        <ul>
+          <li>Create role-specific dashboards (e.g., PO dashboard, dev dashboard)</li>
+          <li>Limit dashboard items to 5-7 key metrics per view</li>
+          <li>Use filters to show relevant data only</li>
+          <li>Update dashboards regularly to reflect current state</li>
+          <li>Include trend data for historical context</li>
+          <li>Use Jira's native dashboard widgets for consistency</li>
+        </ul>
+        
+        <h2 id="anti-patterns">Common Anti-Patterns to Avoid</h2>
+        <p>These practices undermine Jira's effectiveness and create more problems than they solve:</p>
+        
+        <ul>
+          <li>Using Jira as the only source of truth without integrating with other tools</li>
+          <li>Creating excessive custom fields and screens that confuse users</li>
+          <li>Having workflows with too many statuses that create bottlenecks</li>
+          <li>Not regularly reviewing and refining your Jira setup</li>
+          <li>Treating Jira tickets as documentation rather than living artifacts</li>
+          <li>Using Jira for purposes it wasn't designed for (e.g., complex financial tracking)</li>
+          <li>Over-automating without proper testing and review</li>
+        </ul>
+        
+        <div class="cheat-callout"><strong>Practical rule:</strong> Keep the feedback loop from fastest to slowest — developer workstation → CI → dev → QA/SIT → test → UAT → production. A 5-minute unit test failure beats a 5-day production incident. Do not compensate for weak earlier stages by adding only more manual testing later.</div>
+        
+        <div class="cheat-callout"><strong>Scrum rule:</strong> The sprint backlog is a living document that should be refined regularly. Never commit to more work than your team can realistically complete in a sprint.</div>
+        
+        <div class="cheat-callout"><strong>Kanban rule:</strong> WIP limits are not suggestions - they are hard constraints that must be respected to maintain flow efficiency.</div>
+        
+        <div class="cheat-callout"><strong>Jira rule:</strong> Your Jira configuration should serve your team, not the other way around. Regularly solicit feedback and iterate on your setup.</div>
+        
+        <div class="blog-tags">
+          <div class="blog-tags-title">Topics & Tags</div>
+          <div class="blog-tags-list">
+            <span class="blog-tag">Jira</span>
+            <span class="blog-tag">Agile</span>
+            <span class="blog-tag">Scrum</span>
+            <span class="blog-tag">Kanban</span>
+            <span class="blog-tag">Agile Workflow</span>
+            <span class="blog-tag">Project Management</span>
+            <span class="blog-tag">Team Collaboration</span>
+          </div>
+        </div>
+        
+        <div class="blog-nav">
+          <a href="../index.html">← Back to All Posts</a>
+        </div>
+      </article>
     </div>
   </section>
 
