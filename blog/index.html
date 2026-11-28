@@ -237,9 +237,39 @@
       transition: background var(--transition), color var(--transition);
     }
 
+    .blog-search__clear[hidden] {
+      display: none;
+    }
+
+    /* Hide browser native search clear button to avoid duplicate */
+    input[type="search"] {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    input[type="search"]::-webkit-search-cancel-button,
+    input[type="search"]::-webkit-search-decoration,
+    input[type="search"]::-webkit-search-results-button,
+    input[type="search"]::-webkit-search-results-decoration,
+    input[type="search"]::-moz-search-clear-button,
+    input[type="search"]::-ms-clear {
+      display: none !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      width: 0;
+      height: 0;
+    }
+
+    /* Gradient text for clear button */
+    .blog-search__clear {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
     .blog-search__clear:hover {
-      background: rgba(148, 163, 184, 0.12);
-      color: var(--text-primary);
+      background-color: rgba(148, 163, 184, 0.12);
     }
 
     .blog-sort {
@@ -340,7 +370,7 @@
             <path d="M20 20l-3.5-3.5"></path>
           </svg>
           <input
-            type="search"
+            type="text"
             id="blogSearch"
             class="blog-search__input"
             placeholder="Search by title, topic, or keyword..."
